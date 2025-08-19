@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { CartItem } from "./CartItem";
 import { CartSkeleton } from "./CartSkeleton";
 import { RelatedProducts } from "./RelatedProducts";
-import { DELETE_ITEM, GET_CART } from "../features/cart/CartSlice";
+import { GET_CART } from "../features/cart/CartSlice";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Divider } from "@mui/material";

@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import Container from "@mui/material/Container";
 import AlarmOnIcon from "@mui/icons-material/AlarmOn";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   verifyEmail,
@@ -15,6 +15,7 @@ import { SendNewConfirmationCode } from "../features/emailVerification/sendVerif
 import CountdownTimer from "./CountdownTimer";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
+  SEVERITY_ERROR,
   SEVERITY_SUCCESS,
   showMessage,
 } from "../features/snackbar/SnackbarSlice";
@@ -29,7 +30,10 @@ export function EmailConfirmation() {
       ? { createdAt: created, expiresAt: expires }
       : null;
   });
-  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+
+  const currentUser = useMemo(() => {
+    return JSON.parse(sessionStorage.getItem("currentUser"));
+  }, []);
 
   const location = useLocation();
   const dispatch = useDispatch();
@@ -39,12 +43,10 @@ export function EmailConfirmation() {
     dispatch(clearVerifyEmailState());
   }, [location.pathname, dispatch]);
 
-  const {
-    data,
-    loading,
-    error,
-    success: emailVerified,
-  } = useSelector((state) => state.verifyEmail);
+  const [staus, setStatus] = useState({ loading: false, error: null });
+
+  const [resendDisabled, setResendDisabled] = useState(false);
+
   const { data: verificationObject, success: emailSent } = useSelector(
     (state) => state.sendVerificationCode
   );
@@ -58,30 +60,53 @@ export function EmailConfirmation() {
     }
   }, [verificationObject, emailSent]);
 
-  useEffect(() => {
-    if (emailVerified) {
-      dispatch(clearVerifyEmailState());
-      dispatch(
-        showMessage({
-          message: "Thank you! Your email has been confirmed.",
-          sevirity: SEVERITY_SUCCESS,
-        })
-      );
-      navigate("/");
-    }
-  });
   function handleVerification() {
+    setStatus({ loading: true, error: null });
     dispatch(
       verifyEmail({
         userId: currentUser.id,
         verificationCode: verificationCode,
       })
-    );
+    )
+      .unwrap()
+      .then(() => {
+        setStatus({ loading: false, error: null });
+        dispatch(clearVerifyEmailState());
+        dispatch(
+          showMessage({
+            message: "Thank you! Your email has been confirmed.",
+            severity: SEVERITY_SUCCESS,
+          })
+        );
+        navigate("/");
+      })
+      .catch((err) => {
+        setStatus({ loading: false, error: err });
+      });
   }
+
   function handleResend() {
-    dispatch(SendNewConfirmationCode(currentUser.id));
-    console.log("verification sent");
-    setverificationCode("");
+    setResendDisabled(true);
+    dispatch(SendNewConfirmationCode(currentUser.id))
+      .unwrap()
+      .then(() => {
+        setverificationCode("");
+        setResendDisabled(false);
+        dispatch(
+          showMessage({
+            message: "verification code sent!",
+            severity: SEVERITY_SUCCESS,
+          })
+        );
+      })
+      .catch(() => {
+        setResendDisabled(true);
+        showMessage({
+          message:
+            "Failed to send verification code due to a server issue. Please try again later.",
+          severity: SEVERITY_ERROR,
+        });
+      });
   }
 
   return (
@@ -89,12 +114,7 @@ export function EmailConfirmation() {
       <Container maxWidth="xl">
         <div className="content">
           <div className="box">
-            {emailVerified && (
-              <div className="success">
-                <VerifiedIcon /> Email verified
-              </div>
-            )}
-            {loading && (
+            {staus.loading && (
               <div className="loading">
                 <div className="circle"></div>
               </div>
@@ -108,10 +128,10 @@ export function EmailConfirmation() {
               please check your inbox and enter the verification code below to
               verify your email address
             </p>
-            {error && (
+            {staus.error && (
               <div class="error-message">
                 <span class="icon">⚠️</span>
-                <span class="text">{error}</span>
+                <span class="text">{staus.error}</span>
               </div>
             )}
             <form>
@@ -146,7 +166,13 @@ export function EmailConfirmation() {
               </Button>
             </form>
             <div className="resend-wraper">
-              <Button className="resend" variant="text" onClick={handleResend}>
+              <Button
+                className="resend"
+                variant="text"
+                disabled={resendDisabled}
+                style={{ color: resendDisabled ? "gray" : "green" }}
+                onClick={handleResend}
+              >
                 resend code
               </Button>
               <div className="timer">

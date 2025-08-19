@@ -18,23 +18,33 @@ import { ProtectedRoute } from "./Components/ProtectedRoute";
 
 import SnackBar from "./Components/SnackBar";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { GetCurrentUser } from "./features/users/UserSlice";
-import { GetUserCart } from "./features/cart/CartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { GetCurrentUser, markUserAsReady } from "./features/users/UserSlice";
+import { GetUserCart, markCartAsReady } from "./features/cart/CartSlice";
 
 function App() {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
   useEffect(() => {
     const login = JSON.parse(localStorage.getItem("login"));
     if (login && login.autoLogin) {
-      dispatch(GetCurrentUser({ email: login.email, password: login.password }))
-        .unwrap()
-        .then((user) => {
-          dispatch(GetUserCart(user.id));
-        })
-        .catch();
+      dispatch(
+        GetCurrentUser({ email: login.email, password: login.password })
+      );
+    } else {
+      dispatch(markUserAsReady());
+      dispatch(markCartAsReady());
     }
   }, []);
+
+  useEffect(() => {
+    const hasCart = localStorage.getItem("hasCart");
+    if (user && hasCart === "true") {
+      dispatch(GetUserCart(user.id));
+    } else {
+      dispatch(markCartAsReady());
+    }
+  }, [user, dispatch]);
 
   const location = useLocation();
   return (
@@ -67,9 +77,10 @@ function App() {
             />
           </Route>
 
-          <Route element={<ProtectedRoute requireLogin requireCart />}></Route>
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route element={<ProtectedRoute requireLogin requireCart />}>
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Route>
 
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
         </Routes>

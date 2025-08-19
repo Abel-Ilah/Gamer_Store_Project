@@ -11,15 +11,10 @@ import Container from "@mui/material/Container";
 import {
   showMessage,
   SEVERITY_SUCCESS,
+  SEVERITY_WARNING,
 } from "../features/snackbar/SnackbarSlice";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import {
-  ADD_NEW_USER,
-  AddNewUser,
-  clearUserStatus,
-} from "../features/users/UserSlice";
+import { useDispatch } from "react-redux";
+import { AddNewUser, clearUserStatus } from "../features/users/UserSlice";
 import { SendNewConfirmationCode } from "../features/emailVerification/sendVerificationCodeSlice";
 
 export function SignUp() {
@@ -34,10 +29,7 @@ export function SignUp() {
 
   const dispatch = useDispatch();
 
-  const { loading, success, error, user, request } = useSelector(
-    (state) => state.user
-  );
-
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,34 +37,6 @@ export function SignUp() {
       dispatch(clearUserStatus());
     };
   }, []);
-
-  useEffect(() => {
-    if (request === ADD_NEW_USER && error) {
-      setErrors({ email: error });
-    }
-  }, [error, request]);
-
-  useEffect(() => {
-    if (request === ADD_NEW_USER && success && user?.id) {
-      localStorage.setItem(
-        "login",
-        JSON.stringify({
-          email: NewUser.email,
-          password: NewUser.password,
-          autoLogin: true,
-        })
-      );
-      dispatch(SendNewConfirmationCode(user.id));
-      dispatch(clearUserStatus());
-      dispatch(
-        showMessage({
-          message: "Your account has been successfully created.",
-          severity: SEVERITY_SUCCESS,
-        })
-      );
-      navigate("/verify-email");
-    }
-  }, [user, success, dispatch, navigate, NewUser, request]);
 
   const [passowrdVisible, setPasswordVisible] = useState(true);
 
@@ -114,7 +78,46 @@ export function SignUp() {
     const errors = validate();
     setErrors(errors);
     if (Object.keys(errors).length === 0) {
-      dispatch(AddNewUser(NewUser));
+      setLoading(true);
+      dispatch(AddNewUser(NewUser))
+        .unwrap()
+        .then((createdUser) => {
+          localStorage.setItem(
+            "login",
+            JSON.stringify({
+              email: createdUser.email,
+              password: createdUser.password,
+              autoLogin: true,
+            })
+          );
+          dispatch(SendNewConfirmationCode(createdUser.id))
+            .unwrap()
+            .then(() => {
+              setLoading(false);
+              dispatch(
+                showMessage({
+                  message: "Your account has been successfully created.",
+                  severity: SEVERITY_SUCCESS,
+                })
+              );
+              navigate("/verify-email");
+            })
+            .catch(() => {
+              setLoading(false);
+              dispatch(
+                showMessage({
+                  message:
+                    "Your account was created, but we couldn’t send the verification code due to a server issue. Please try again later.",
+                  severity: SEVERITY_WARNING,
+                })
+              );
+              navigate("/");
+            });
+        })
+        .catch((err) => {
+          setLoading(false);
+          setErrors({ email: err });
+        });
     }
   }
 

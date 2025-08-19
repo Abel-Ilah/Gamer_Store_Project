@@ -46,7 +46,6 @@ const sendVerificationCodeSlice = createSlice({
         state.success = true;
         state.data = action.payload;
         state.error = null;
-
         const createdAt = new Date();
         const expiresAt = new Date(createdAt.getTime() + 15 * 60 * 1000);
 

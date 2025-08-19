@@ -1,18 +1,22 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
+import { LoadingPage } from "./LoadingPage";
 
 export function ProtectedRoute({
   requireLogin = false,
   requireLogout = false,
   requireCart = false,
 }) {
-  const { user, loading: userLoading } = useSelector((state) => state.user);
-  const { cart, loading: cartLoading } = useSelector((state) => state.cart);
-  console.log(user);
-  console.log(cart);
+  const { user, ready: isUserReady } = useSelector((state) => state.user);
+  const { cart, ready: isCartReady } = useSelector((state) => state.cart);
 
-  if ((requireLogin && userLoading) || (requireCart && cartLoading)) {
-    return <div>Loading...</div>; // or your spinner
+  console.log("cart", cart);
+  console.log("user", user);
+  if (
+    ((requireLogin || requireLogout) && !isUserReady) ||
+    (requireCart && !isCartReady)
+  ) {
+    return <LoadingPage />;
   }
 
   if (requireLogin && !user) {
@@ -21,7 +25,7 @@ export function ProtectedRoute({
   if (requireLogout && user) {
     return <Navigate to="/" />;
   }
-  if (requireCart && (!cart || cart.length === 0)) {
+  if (requireCart && (cart === null || cart === undefined)) {
     return <Navigate to="/" />;
   }
 

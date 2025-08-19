@@ -9,18 +9,19 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CloseIcon from "@mui/icons-material/Close";
 import Container from "@mui/material/Container";
 import InputAdornment from "@mui/material/InputAdornment";
-
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import {
-  GET_CURRENT_USER,
   GetCurrentUser,
   clearUserState,
   clearUserStatus,
 } from "../features/users/UserSlice";
 import { SendNewConfirmationCode } from "../features/emailVerification/sendVerificationCodeSlice";
+import {
+  SEVERITY_ERROR,
+  showMessage,
+} from "../features/snackbar/SnackbarSlice";
 
 export function Login() {
   const [login, setLogin] = useState(() => {
@@ -41,36 +42,7 @@ export function Login() {
     };
   }, []);
 
-  const {
-    user: currentUser,
-    loading,
-    error,
-    success,
-    request,
-  } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    if (request === GET_CURRENT_USER && error) {
-      setErrors({ general: error });
-    }
-  }, [error, request]);
-
-  useEffect(() => {
-    if (request === GET_CURRENT_USER && success && currentUser?.id) {
-      localStorage.setItem(
-        "login",
-        JSON.stringify({ ...login, autoLogin: true })
-      );
-      if (currentUser.isEmailConfirmed) {
-        navigate("/");
-      } else {
-        dispatch(SendNewConfirmationCode(currentUser.id));
-        dispatch(clearUserStatus());
-        navigate("/verify-email/");
-      }
-    }
-  }, [success, currentUser, dispatch, navigate, login, request]);
-
+  const [loading, setLoading] = useState(false);
   const validate = () => {
     const newErrors = {};
     if (!login.email) {
@@ -91,9 +63,41 @@ export function Login() {
     const validationErrors = validate();
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length === 0) {
-      dispatch(
-        GetCurrentUser({ email: login.email, password: login.password })
-      );
+      setLoading(true);
+      dispatch(GetCurrentUser({ email: login.email, password: login.password }))
+        .unwrap()
+        .then((user) => {
+          localStorage.setItem(
+            "login",
+            JSON.stringify({ ...login, autoLogin: true })
+          );
+          if (user.isEmailConfirmed) {
+            setLoading(false);
+            navigate("/");
+          } else {
+            dispatch(SendNewConfirmationCode(user.id))
+              .unwrap()
+              .then(() => {
+                setLoading(false);
+                navigate("/verify-email");
+              })
+              .catch(() => {
+                setLoading(false);
+                dispatch(
+                  showMessage({
+                    message:
+                      "Failed to send verification code due to a server issue. Please try again later.",
+                    severity: SEVERITY_ERROR,
+                  })
+                );
+                navigate("/");
+              });
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          setErrors({ general: err });
+        });
     }
   };
 

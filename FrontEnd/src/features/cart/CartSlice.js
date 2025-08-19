@@ -64,6 +64,7 @@ export const DeleteItem = createAsyncThunk(
     }
   }
 );
+
 export const DeleteCart = createAsyncThunk(
   "cart/deleteCart",
   async (userId, { rejectWithValue }) => {
@@ -91,11 +92,15 @@ export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    markCartAsReady: (state) => {
+      state.ready = true;
+    },
     clearCartStatus: (state) => {
       state.error = null;
       state.loading = false;
       state.success = false;
       state.operation = null;
+      state.ready = false;
     },
     clearCartState: (state) => {
       state.cart = null;
@@ -103,6 +108,7 @@ export const cartSlice = createSlice({
       state.loading = false;
       state.success = false;
       state.operation = null;
+      state.ready = false;
     },
 
     AddNewItemLocal: (state, action) => {
@@ -111,6 +117,10 @@ export const cartSlice = createSlice({
         state.cart && state.cart.length > 0
           ? [...state.cart, newItem]
           : [newItem];
+
+      if (state.cart.length === 1) {
+        localStorage.setItem("hasCart", true);
+      }
     },
     updateItemQuantityLocal: (state, action) => {
       const { itemId, quantity } = action.payload;
@@ -125,6 +135,9 @@ export const cartSlice = createSlice({
       const itemId = action.payload;
       if (state.cart) {
         state.cart = state.cart.filter((item) => item.id !== itemId);
+        if (state.cart.length === 0) {
+          localStorage.setItem("hasCart", false);
+        }
       }
     },
   },
@@ -253,6 +266,7 @@ export const cartSlice = createSlice({
 
 export default cartSlice.reducer;
 export const {
+  markCartAsReady,
   clearCartStatus,
   clearCartState,
   AddNewItemLocal,

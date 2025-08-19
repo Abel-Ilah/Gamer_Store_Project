@@ -1,10 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-//requests:
-export const ADD_NEW_USER = "ADD_NEW_USER";
-export const GET_CURRENT_USER = "GET_CURRENT_USER";
-
 export const AddNewUser = createAsyncThunk(
   "user/addUser",
   async (newUser, { rejectWithValue }) => {
@@ -42,7 +38,6 @@ const initialState = {
   loading: false,
   error: null,
   success: false,
-  request: null,
   ready: false,
 };
 
@@ -51,19 +46,21 @@ const userSlice = createSlice({
   initialState,
 
   reducers: {
+    markUserAsReady: (state) => {
+      state.ready = true;
+    },
     clearUserStatus: (state) => {
       state.loading = false;
       state.error = null;
       state.success = false;
-      state.request = null;
-      // keep state.user intact!
+      state.ready = false;
     },
     clearUserState: (state) => {
       state.user = null;
       state.loading = false;
       state.error = null;
       state.success = false;
-      state.request = null;
+      state.ready = false;
     },
   },
   extraReducers: (builder) => {
@@ -73,17 +70,19 @@ const userSlice = createSlice({
       state.success = false;
       state.error = null;
       state.user = null;
-      state.request = null;
       state.ready = false;
     });
 
     builder.addCase(AddNewUser.fulfilled, (state, action) => {
+      //indicat that this new user have no shopping cart yet to fetch
+      localStorage.setItem("hasCart", false);
+
       state.loading = false;
       state.success = true;
       state.user = action.payload;
       state.error = null;
-      state.request = ADD_NEW_USER;
       state.ready = true;
+
       sessionStorage.setItem(
         "currentUser",
         JSON.stringify({ id: state.user.id, email: state.user.email })
@@ -95,7 +94,6 @@ const userSlice = createSlice({
       state.success = false;
       state.error = action.payload;
       state.user = null;
-      state.request = ADD_NEW_USER;
       state.ready = true;
     });
 
@@ -105,7 +103,6 @@ const userSlice = createSlice({
       state.success = false;
       state.error = null;
       state.user = null;
-      state.request = null;
       state.ready = false;
     });
 
@@ -114,7 +111,6 @@ const userSlice = createSlice({
       state.success = true;
       state.user = action.payload;
       state.error = null;
-      state.request = GET_CURRENT_USER;
       state.ready = true;
       sessionStorage.setItem(
         "currentUser",
@@ -127,11 +123,11 @@ const userSlice = createSlice({
       state.success = false;
       state.error = action.payload;
       state.user = null;
-      state.request = GET_CURRENT_USER;
       state.ready = true;
     });
   },
 });
 
 export default userSlice.reducer;
-export const { clearUserState, clearUserStatus } = userSlice.actions;
+export const { clearUserState, clearUserStatus, markUserAsReady } =
+  userSlice.actions;
