@@ -1,0 +1,75 @@
+.order-confirmation-page {
+  padding: 20px 0;
+  background-color: rgb(252, 252, 252);
+  min-height: 100vh;
+}
+.order-confirmation-page .content {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-confirmation-page .sub-title {
+  text-decoration: underline;
+  text-align: start;
+  font-weight: bold;
+  background-color: antiquewhite;
+  color: gray;
+  border-radius: 5px;
+  padding: 5px;
+}
+.order-confirmation-page .content #thanks {
+  background-color: rgb(4, 189, 4);
+  border-left: 15px solid green;
+  color: white;
+  border-radius: 0;
+}
+
+.order-confirmation-page .content > .box {
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px gray;
+  padding: 10px;
+  background-color: white;
+}
+
+.order-confirmation-page .content .details li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  font-weight: bold;
+  color: rgb(109, 108, 108);
+}
+.order-confirmation-page .content .shipping-address .address {
+  text-align: start;
+  font-size: 18px;
+}
+.order-confirmation-page .content .shipping-address .address::first-line {
+  font-weight: bold;
+}
+
+.order-confirmation-page .content .btns-wraper {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+.order-confirmation-page .content .btns-wraper button {
+  background-color: #009697;
+  font-weight: bold;
+  text-transform: capitalize;
+  transition: all 0.3s;
+  border-radius: 10px;
+}
+.order-confirmation-page .content .btns-wraper button:hover {
+  background-color: red;
+}
+
+@media (max-width: 400px) {
+  .order-confirmation-page .content #thanks h3 {
+    font-size: 1rem;
+  }
+  .order-confirmation-page .content .btns-wraper {
+    flex-direction: column;
+  }
+}

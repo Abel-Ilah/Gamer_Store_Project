@@ -1,0 +1,63 @@
+a {
+  text-decoration: none !important;
+  color: #1e1e1e !important;
+  /* font-weight: bold !important; */
+}
+.list-container {
+  position: relative;
+}
+.list-container .list {
+  position: absolute;
+  width: 600px;
+  top: 20px;
+  left: 0;
+  border-top: 2px solid rgb(10, 159, 245);
+  padding: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  background-color: white;
+  z-index: 201;
+  gap: 1%;
+}
+.list-container .list::before {
+  position: absolute;
+  content: "";
+  width: 0px;
+  height: 0px;
+  border: 13px solid rgb(10, 159, 245);
+  top: -28px;
+  left: 92.5px;
+  border-color: transparent transparent rgb(10, 159, 245);
+}
+.list-container .list li {
+  flex-basis: 32%;
+  padding: 10px 0;
+}
+.list-container .list li:hover a {
+  color: red !important;
+  font-weight: bold;
+}
+
+.categories-list {
+  padding: 0;
+  margin: 0;
+  z-index: 10000000;
+}
+
+.categories-list li {
+  padding: 6px 8px 6px 20px;
+}
+
+#list-btn {
+  display: flex;
+  justify-content: space-between;
+}
+.categories-list .list-item {
+  transition: padding 0.3s ease;
+}
+.categories-list .list-item:hover {
+  padding-left: 30px;
+}
+#menu-appbar {
+  border-radius: 0% !important;
+}

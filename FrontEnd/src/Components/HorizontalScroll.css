@@ -1,0 +1,127 @@
+:root {
+  --items-per-screen: 6;
+}
+
+.scroll-container {
+  position: relative;
+  width: 100%;
+}
+
+.scroll-content {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10.5px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0 5px;
+  border-radius: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-padding: 0 0.5rem;
+  padding: 5px;
+}
+
+.scroll-content > * {
+  scroll-snap-align: start;
+  flex: 0 0 calc(100% / var(--items-per-screen) - 8.9px);
+  box-sizing: border-box;
+}
+
+@media (max-width: 399px) {
+  .scroll-content {
+    --items-per-screen: 1;
+    gap: 8px;
+  }
+  .scroll-content > * {
+    flex: 0 0 calc(100% / var(--items-per-screen));
+    scroll-snap-align: center;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 724px) {
+  .scroll-content {
+    --items-per-screen: 2;
+  }
+  .scroll-content > * {
+    flex: 0 0 calc(100% / var(--items-per-screen) - 7px);
+  }
+}
+
+@media (min-width: 605px) and (max-width: 724px) {
+  .scroll-content {
+    --items-per-screen: 3;
+  }
+  .scroll-content > * {
+    flex: 0 0 calc(100% / var(--items-per-screen) - 7px);
+  }
+}
+
+@media (min-width: 725px) and (max-width: 900px) {
+  .scroll-content {
+    --items-per-screen: 3;
+  }
+  .scroll-content > * {
+    flex: 0 0 calc(100% / var(--items-per-screen) - 7px);
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1071px) {
+  .scroll-content {
+    --items-per-screen: 4;
+  }
+  .scroll-content > * {
+    flex: 0 0 calc(100% / var(--items-per-screen) - 8px);
+  }
+}
+@media (min-width: 1072px) and (max-width: 1200px) {
+  .scroll-content {
+    --items-per-screen: 5;
+  }
+}
+
+@media (min-width: 1201px) {
+  .scroll-content {
+    --items-per-screen: 6;
+  }
+}
+
+.btn {
+  visibility: visible;
+  background-color: teal !important;
+  transition: all 0.3s !important;
+  position: absolute !important;
+  z-index: 1;
+  transform: translateY(-50%) !important;
+  padding: 10px 5px !important;
+  color: white !important;
+}
+@media (min-width: 600px) {
+  .btn {
+    visibility: hidden !important;
+  }
+  .scroll-container:hover .btn {
+    visibility: visible !important;
+  }
+}
+
+.right {
+  top: 50%;
+  right: 7px;
+}
+
+.left {
+  top: 50%;
+  left: 7px;
+}
+
+.btn svg {
+  color: white !important;
+}
+
+.btn:hover {
+  background-color: red !important;
+}
+
+.btn:hover svg {
+  color: white !important;
+}

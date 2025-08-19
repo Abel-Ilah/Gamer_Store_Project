@@ -1,0 +1,52 @@
+:root {
+  --primaryColor: rgb(163, 163, 163);
+}
+.title {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.title .main-title {
+  color: var(--primaryColor);
+  font-weight: bold;
+  text-transform: capitalize;
+  padding: 10px;
+  position: relative;
+  background-color: white;
+}
+.title .main-title::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 80%;
+  border-left: 2px solid var(--primaryColor);
+  border-top: 2px solid var(--primaryColor);
+}
+.title .main-title::after {
+  position: absolute;
+  content: "";
+  bottom: 5px;
+  right: 0;
+  width: 40px;
+  height: 80%;
+  border-right: 2px solid var(--primaryColor);
+  border-bottom: 2px solid var(--primaryColor);
+}
+.line {
+  position: absolute;
+  width: 80%;
+  height: 2px;
+  background-color: var(--primaryColor);
+  top: 56%;
+  right: calc(-40% + 50%);
+  z-index: -1;
+}
+@media (max-width: 560px) {
+  .line {
+    display: none;
+  }
+}

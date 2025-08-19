@@ -1,0 +1,15 @@
+.account-box {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.account-menu .menu-item {
+  padding: 10px;
+  min-width: 200px;
+}
+.account-menu .menu-item .wish-list {
+  color: red;
+}
+.account-menu .menu-item:hover {
+  background-color: rgb(211, 208, 208);
+}

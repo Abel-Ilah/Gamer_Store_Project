@@ -1,0 +1,264 @@
+import "./Nav.css";
+import { useState } from "react";
+import { useCategories } from "../contexts/CategoriesProvider";
+import { Link } from "react-router-dom";
+import { GET_PRODUCTS_BY_CATEGORY } from "../reducers/ProductsReducer";
+import { useSelector, useDispatch } from "react-redux";
+import { getFilter } from "../features/filter/filterSlice";
+import { updateFilter } from "../features/filter/filterSlice";
+//mui componenets:
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+
+export function Nav() {
+  const categories = useCategories();
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [showCategoriesList_sm_md, setShowCategoriesList_sm_md] =
+    useState(false);
+  const [showCategoriesList_lg, setShowCategoriesList_lg] = useState(false);
+
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+  const handleCategoryClick = (categoryName) => {
+    dispatch(
+      updateFilter({
+        ...filter,
+        action: {
+          actionType: GET_PRODUCTS_BY_CATEGORY,
+          actionValue: categoryName,
+        },
+      })
+    );
+    handleCloseNavMenu();
+  };
+
+  return (
+    <div className="nav">
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: { xs: "flex", md: "none" },
+        }}
+      >
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
+          onClick={handleOpenNavMenu}
+          color="white"
+          sx={{ padding: "0px" }}
+        >
+          <MenuIcon sx={{ color: "white", fontSize: "40px" }} />
+        </IconButton>
+        <Menu
+          id="menu-appbar"
+          anchorEl={anchorElNav}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          open={Boolean(anchorElNav)}
+          onClose={handleCloseNavMenu}
+          sx={{
+            display: { xs: "block", md: "none" },
+          }}
+          PaperProps={{
+            sx: {
+              minWidth: "80vw",
+              borderRadius: 0,
+              borderBottom: "2px solid teal",
+
+              boxShadow: "none",
+            },
+          }}
+        >
+          <div>
+            <Button
+              id="list-btn"
+              sx={{
+                color: "black",
+                display: "block",
+                width: "100%",
+                textAlign: "start",
+              }}
+              onClick={() => {
+                showCategoriesList_sm_md
+                  ? setShowCategoriesList_sm_md(false)
+                  : setShowCategoriesList_sm_md(true);
+              }}
+            >
+              Categories{" "}
+              {showCategoriesList_sm_md ? (
+                <KeyboardArrowUpIcon />
+              ) : (
+                <KeyboardArrowDownIcon />
+              )}
+            </Button>
+            <ul
+              className="categories-list"
+              style={{
+                display: showCategoriesList_sm_md ? "block" : "none",
+              }}
+            >
+              {Array.isArray(categories) &&
+                categories.map((c) => {
+                  return (
+                    <Link
+                      key={c.id}
+                      to={`/products/${c.name}`}
+                      onClick={() => handleCategoryClick(c.name)}
+                    >
+                      <ListItemButton className="list-item">
+                        <ListItemIcon sx={{ minWidth: "30px" }}>
+                          <KeyboardArrowRightIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={c.name} />
+                      </ListItemButton>
+                    </Link>
+                  );
+                })}
+            </ul>
+          </div>
+          <Button
+            sx={{
+              color: "black",
+              display: "block",
+              width: "100%",
+              textAlign: "start",
+            }}
+          >
+            New Products
+          </Button>
+          <Button
+            sx={{
+              color: "black",
+              display: "block",
+              width: "100%",
+              textAlign: "start",
+            }}
+          >
+            % Promotions
+          </Button>
+          <Button
+            sx={{
+              color: "black",
+              display: "block",
+              width: "100%",
+              textAlign: "start",
+            }}
+          >
+            Contact Us
+          </Button>
+          <Button
+            sx={{
+              color: "black",
+              display: "block",
+              width: "100%",
+              textAlign: "start",
+            }}
+          >
+            Location
+          </Button>
+        </Menu>
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: {
+            xs: "none",
+            md: "flex",
+            justifyContent: "center",
+            gap: "30px",
+          },
+        }}
+      >
+        <div
+          className="list-container"
+          onMouseEnter={() => {
+            setShowCategoriesList_lg(true);
+          }}
+          onMouseLeave={() => {
+            setShowCategoriesList_lg(false);
+          }}
+        >
+          <Button
+            className="list-btn"
+            sx={{
+              color: "white",
+              display: "flex",
+              padding: "0px",
+              alignItems: "center",
+            }}
+          >
+            Categories{" "}
+            {showCategoriesList_lg ? (
+              <KeyboardArrowUpIcon />
+            ) : (
+              <KeyboardArrowDownIcon />
+            )}
+          </Button>
+
+          <ul
+            className="list"
+            style={{
+              opacity: showCategoriesList_lg ? 1 : 0,
+              visibility: showCategoriesList_lg ? "visible" : "hidden",
+              transition: "opacity 0.3s ease",
+            }}
+          >
+            {Array.isArray(categories) &&
+              categories.map((c) => {
+                return (
+                  <li key={c.id}>
+                    <Link
+                      onClick={() => {
+                        handleCategoryClick(c.name);
+                        setShowCategoriesList_lg(false);
+                      }}
+                      to={`/products/${c.name}`}
+                    >
+                      {c.name}
+                    </Link>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+        <Button sx={{ color: "white", display: "block", padding: "0px" }}>
+          New Products
+        </Button>
+        <Button sx={{ color: "white", display: "block", padding: "0px" }}>
+          % Promotions
+        </Button>
+        <Button sx={{ color: "white", display: "block", padding: "0px" }}>
+          Contact Us
+        </Button>
+        <Button sx={{ color: "white", display: "block", padding: "0px" }}>
+          Location
+        </Button>
+      </Box>
+    </div>
+  );
+}

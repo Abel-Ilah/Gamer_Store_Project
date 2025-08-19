@@ -1,0 +1,32 @@
+.footer {
+  background-color: #1e1e1e;
+  padding: 40px 0;
+  color: white;
+}
+.footer .info {
+  text-align: start;
+}
+.footer .info .logo {
+  width: 150px;
+}
+.footer .info .social-media .title {
+  text-transform: capitalize;
+  text-decoration: underline;
+  display: inline-block;
+}
+.footer .info .social-media .icon {
+  font-size: 40px;
+  color: white;
+}
+.footer .info .social-media .youtube:hover {
+  color: red;
+}
+.footer .info .social-media .facebook:hover {
+  color: rgb(21, 143, 243);
+}
+.footer .info .social-media .twitter:hover {
+  color: rgb(21, 143, 243);
+}
+.footer .info .social-media .instagram:hover {
+  color: rgb(231, 31, 98);
+}
