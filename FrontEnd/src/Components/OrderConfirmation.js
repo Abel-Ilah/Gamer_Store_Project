@@ -6,7 +6,7 @@ import settings from "../appsettings.json";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import Button from "@mui/material/Button";
 import { useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export function OrderConfirmation() {
   const { data } = useSelector((state) => state.order);
@@ -14,8 +14,6 @@ export function OrderConfirmation() {
   const order = useMemo(() => {
     return data ? data : JSON.parse(sessionStorage.getItem("order"));
   }, [data]);
-
-  const navigate = useNavigate();
 
   return (
     <div className="order-confirmation-page">
@@ -67,9 +65,9 @@ export function OrderConfirmation() {
               </p>
             </div>
             <div className="btns-wraper">
-              <Link to={"/"}>
-                <Button variant="contained">Continue shopping</Button>
-              </Link>
+              <Button variant="contained">
+                <Link to={"/"}>Continue shopping</Link>
+              </Button>
               <Button variant="contained">Orders history</Button>
             </div>
           </div>

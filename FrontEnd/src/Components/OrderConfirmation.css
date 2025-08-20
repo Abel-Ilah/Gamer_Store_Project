@@ -64,7 +64,9 @@
 .order-confirmation-page .content .btns-wraper button:hover {
   background-color: red;
 }
-
+.order-confirmation-page .content .btns-wraper button a {
+  color: white !important;
+}
 @media (max-width: 400px) {
   .order-confirmation-page .content #thanks h3 {
     font-size: 1rem;

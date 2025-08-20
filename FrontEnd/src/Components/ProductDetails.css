@@ -173,3 +173,13 @@
     transform: rotate(360deg);
   }
 }
+
+.product-details .box .sub-title {
+  color: rgb(71, 71, 71);
+  font-weight: bold;
+  text-decoration: underline;
+  text-align: start;
+  background-color: #ffeb3b;
+  color: #747373;
+  width: fit-content;
+}

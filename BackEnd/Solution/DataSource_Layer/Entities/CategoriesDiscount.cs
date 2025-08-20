@@ -13,5 +13,5 @@ public partial class CategoriesDiscount
     public virtual Category Category { get; set; } = null!;
 
     public virtual Discount Discount { get; set; } = null!;
- 
+  
 }

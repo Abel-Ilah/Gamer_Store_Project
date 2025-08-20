@@ -58,7 +58,7 @@ export function Login() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     const validationErrors = validate();
     setErrors(validationErrors);
@@ -168,7 +168,7 @@ export function Login() {
             <Button
               className="login-btn"
               variant="contained"
-              onClick={handleSubmit}
+              onClick={handleLogin}
             >
               Login
             </Button>

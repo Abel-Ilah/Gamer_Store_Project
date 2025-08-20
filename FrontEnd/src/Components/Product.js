@@ -1,17 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Product.css";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LoopIcon from "@mui/icons-material/Loop";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { useDispatch } from "react-redux";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
+import { useDispatch, useSelector } from "react-redux";
 import {
   AddNewItem,
   AddNewItemLocal,
   ADD_ITEM,
 } from "../features/cart/CartSlice";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   showMessage,
   SEVERITY_SUCCESS,
@@ -22,7 +23,9 @@ let last60Days = new Date(Date.now() - 60 * 86400000)
   .toISOString()
   .split("T")[0];
 
-export function Product({ Product }) {
+export function Product({ Product: product }) {
+  const { cart } = useSelector((state) => state.cart);
+
   const [status, setStatus] = useState({
     loading: false,
     error: null,
@@ -31,6 +34,12 @@ export function Product({ Product }) {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const isProductInCart = useMemo(() => {
+    if (!cart || cart.length === 0) return false;
+    return cart.some((item) => item.product.id === product.id);
+  }, [cart, product.id]);
 
   function calculatePrice(price, discountValue = 0) {
     if (typeof price !== "number") return 0;
@@ -60,7 +69,7 @@ export function Product({ Product }) {
       dispatch(
         AddNewItem({
           userId: currentUser.id,
-          productId: Product.id,
+          productId: product.id,
           quantity: 1,
         })
       )
@@ -71,7 +80,7 @@ export function Product({ Product }) {
             AddNewItemLocal({
               id: addedItem.id,
               userId: addedItem.userId,
-              product: Product,
+              product: product,
               quantity: addedItem.quantity,
             })
           );
@@ -100,7 +109,7 @@ export function Product({ Product }) {
   }
 
   return (
-    <div className="product" key={Product.id}>
+    <div className="product" key={product.id}>
       <div
         style={{
           display: "flex",
@@ -113,53 +122,49 @@ export function Product({ Product }) {
         }}
       >
         {" "}
-        {Product.discountValue > 0 && (
-          <span className="discount-value">-{Product.discountValue}%</span>
+        {product.discountValue > 0 && (
+          <span className="discount-value">-{product.discountValue}%</span>
         )}
-        {Product.date >= last60Days && <span className="new">New</span>}
+        {product.date >= last60Days && <span className="new">New</span>}
       </div>
-      <Link to={`/product/${Product.id}`}>
-        <div className="wraper">
-          <img
-            className="image"
-            src={addCloudinaryTransform(Product.imageUrl)}
-            alt="product"
-          />
+
+      <div className="wraper">
+        <img
+          className="image"
+          src={addCloudinaryTransform(product.imageUrl)}
+          alt="product"
+          onClick={() => {
+            navigate(`/product/${product.id}`);
+          }}
+        />
+        <div className="cta-btns">
+          <LoopIcon />
+          <VisibilityIcon />
+          <FavoriteIcon />
         </div>
-      </Link>
+      </div>
+
       <div className="details">
-        <Link to={`/product/${Product.id}`}>
-          <h5 className="product-name">{Product.name}</h5>
+        <Link to={`/product/${product.id}`}>
+          <h5 className="product-name">{product.name}</h5>
         </Link>
-        <div className="price">
-          {Product.discountValue > 0 && (
-            <span className="old-price">
-              {Product.price} {settings.currrency}
-            </span>
-          )}
-          <span className="new-price">
-            {calculatePrice(Product.price, Product.discountValue)}{" "}
-            {settings.currrency}
-          </span>
-        </div>
+
+        <span className="price">
+          {calculatePrice(product.price, product.discountValue)}{" "}
+          {settings.currrency}
+        </span>
+
         <h4
           style={{
-            fontSize: "1.2rem",
+            fontSize: "1rem",
             fontWeight: "bold",
-            textAlign: "center",
-            color: Product.quantityInStock >= 1 ? "green" : "orange",
+            textAlign: "start",
+            color: product.quantityInStock >= 1 ? "green" : "orange",
             margin: 0,
           }}
         >
-          {Product.quantityInStock >= 1 ? "IN STOCK" : "OUT OF STOCK"}
+          {product.quantityInStock >= 1 ? "IN STOCK" : "OUT OF STOCK"}
         </h4>
-        <ul>
-          <li style={{ textAlign: "center" }}>
-            {" "}
-            &rarr; 3 Months for new &larr;
-          </li>
-          <li style={{ textAlign: "center" }}> &rarr; Free delivery &larr;</li>
-        </ul>
       </div>
       <div className="add-to-cart-wraper">
         {status.loading && (
@@ -170,15 +175,36 @@ export function Product({ Product }) {
         <Button
           className="add-to-cart-btn"
           style={{
-            width: "fit-content",
-            display: "block",
-            pointerEvents: Product.quantityInStock === 0 ? "none" : "auto",
-            backgroundColor: Product.quantityInStock === 0 ? "gray" : "auto",
+            display: isProductInCart ? "none" : "block",
+            pointerEvents: product.quantityInStock === 0 ? "none" : "auto",
+            backgroundColor: product.quantityInStock === 0 ? "gray" : "auto",
           }}
           variant="contained"
           onClick={handleAddToCart}
         >
-          Add to Cart
+          <span> Add to Cart</span>
+          <span>
+            {" "}
+            <ShoppingCartIcon />
+          </span>
+        </Button>
+        <Button
+          className="view-cart-btn"
+          style={{
+            display: !isProductInCart ? "none" : "block",
+            pointerEvents: product.quantityInStock === 0 ? "none" : "auto",
+            backgroundColor: product.quantityInStock === 0 ? "gray" : "auto",
+          }}
+          variant="contained"
+          onClick={() => {
+            navigate("/cart");
+          }}
+        >
+          <span> View Cart</span>
+          <span>
+            {" "}
+            <TrendingFlatIcon style={{ fontSize: "2rem" }} />
+          </span>
         </Button>
       </div>
     </div>

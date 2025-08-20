@@ -15,7 +15,7 @@ import { Cart } from "./Components/Cart";
 import { Checkout } from "./Components/Checkout";
 import { OrderConfirmation } from "./Components/OrderConfirmation";
 import { ProtectedRoute } from "./Components/ProtectedRoute";
-
+import ScrollTop from "./ScrollToTop";
 import SnackBar from "./Components/SnackBar";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,7 +24,7 @@ import { GetUserCart, markCartAsReady } from "./features/cart/CartSlice";
 
 function App() {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const { user, ready: isUserReady } = useSelector((state) => state.user);
   useEffect(() => {
     const login = JSON.parse(localStorage.getItem("login"));
     if (login && login.autoLogin) {
@@ -33,24 +33,26 @@ function App() {
       );
     } else {
       dispatch(markUserAsReady());
-      dispatch(markCartAsReady());
     }
   }, []);
 
   useEffect(() => {
-    const hasCart = localStorage.getItem("hasCart");
-    if (user && hasCart === "true") {
-      dispatch(GetUserCart(user.id));
-    } else {
-      dispatch(markCartAsReady());
+    if (isUserReady) {
+      const hasCart = localStorage.getItem("hasCart");
+      if (hasCart === "true" && user) {
+        dispatch(GetUserCart(user.id));
+      } else {
+        dispatch(markCartAsReady());
+      }
     }
-  }, [user, dispatch]);
+  }, [isUserReady, user, dispatch]);
 
   const location = useLocation();
   return (
     <CategoriesProvider>
       <div className="App">
         <Header></Header>
+        <ScrollTop />
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/" element={<Home />} />

@@ -176,6 +176,7 @@ export const cartSlice = createSlice({
       state.error = null;
       state.success = false;
       state.operation = ADD_ITEM;
+      state.ready = false;
     });
 
     builder.addCase(AddNewItem.fulfilled, (state) => {
@@ -183,6 +184,7 @@ export const cartSlice = createSlice({
       state.success = true;
       state.error = null;
       state.operation = ADD_ITEM;
+      state.ready = true;
     });
 
     builder.addCase(AddNewItem.rejected, (state, action) => {
@@ -190,6 +192,7 @@ export const cartSlice = createSlice({
       state.error = action.payload;
       state.success = false;
       state.operation = ADD_ITEM;
+      state.ready = true;
     });
 
     // update item :
@@ -220,6 +223,7 @@ export const cartSlice = createSlice({
       state.error = null;
       state.success = false;
       state.operation = DELETE_ITEM;
+      state.ready = false;
     });
 
     builder.addCase(DeleteItem.fulfilled, (state) => {
@@ -227,6 +231,7 @@ export const cartSlice = createSlice({
       state.success = true;
       state.error = null;
       state.operation = DELETE_ITEM;
+      state.ready = true;
     });
 
     builder.addCase(DeleteItem.rejected, (state, action) => {
@@ -234,6 +239,7 @@ export const cartSlice = createSlice({
       state.error = action.payload;
       state.success = false;
       state.operation = DELETE_ITEM;
+      state.ready = true;
     });
 
     // delete Cart :

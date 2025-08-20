@@ -39,6 +39,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<ProductsDiscounts> ProductsDiscounts { get; set; }
 
+    public virtual DbSet<Review> Reviews { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UsersPermission> UsersPermissions { get; set; }

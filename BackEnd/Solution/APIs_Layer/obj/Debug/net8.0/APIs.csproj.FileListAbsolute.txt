@@ -186,3 +186,4 @@ C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\APIs.pdb
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\APIs.genruntimeconfig.cache
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\ref\APIs.dll
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\APIs.sourcelink.json

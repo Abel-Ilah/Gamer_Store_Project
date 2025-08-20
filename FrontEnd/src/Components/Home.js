@@ -6,7 +6,6 @@ import { NewProductsQuickLinks } from "./NewProductsQuickLinks";
 import { BestSellersQuickLinks } from "./BestSellersQuickLinks";
 
 export function Home() {
-  window.scrollTo(0, 0);
   return (
     <div>
       {" "}

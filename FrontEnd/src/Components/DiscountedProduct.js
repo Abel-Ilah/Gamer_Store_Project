@@ -1,4 +1,6 @@
 import "./DiscountedProduct.css";
+import { Link } from "react-router-dom";
+
 export function DiscountedProduct({ Product }) {
   function addCloudinaryTransform(
     url,
@@ -11,17 +13,21 @@ export function DiscountedProduct({ Product }) {
 
   return (
     <div className="discounted-product">
-      <img
-        className="discount-logo"
-        src="/assets/discountLogo.png"
-        alt="discount logo"
-      ></img>
-      <span className="discount-value">{`- ${Product.discountValue}%`}</span>
-      <img
-        className="product-image"
-        src={addCloudinaryTransform(Product.imageUrl)}
-        alt="product"
-      />
+      <Link to={`/product/${Product.id}`}>
+        <img
+          className="discount-logo"
+          src="/assets/discountLogo.png"
+          alt="discount logo"
+        ></img>
+
+        <span className="discount-value">{`- ${Product.discountValue}%`}</span>
+
+        <img
+          className="product-image"
+          src={addCloudinaryTransform(Product.imageUrl)}
+          alt="product"
+        />
+      </Link>
     </div>
   );
 }

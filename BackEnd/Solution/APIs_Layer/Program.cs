@@ -22,6 +22,7 @@ builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<ProductsDiscountsRepository>();
 builder.Services.AddScoped<UserPermissionsRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<ReviewRepository>();
 
 
 builder.Services.AddScoped<CartItemService>();
@@ -34,6 +35,7 @@ builder.Services.AddScoped<ProductImageService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<UserPermissionsService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ReviewService>();
 
 
 builder.Services.Configure<EmailSettings>(

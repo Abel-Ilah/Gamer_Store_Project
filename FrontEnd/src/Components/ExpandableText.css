@@ -1,0 +1,21 @@
+.expandable .clamp-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.expandable .full-text {
+  display: block;
+  margin: 0;
+}
+
+.expandable .read-more {
+  color: blue;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: inline-block;
+}

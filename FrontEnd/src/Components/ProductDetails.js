@@ -21,6 +21,10 @@ import {
   SEVERITY_SUCCESS,
   showMessage,
 } from "../features/snackbar/SnackbarSlice";
+import { LoadingPage } from "./LoadingPage";
+import Divider from "@mui/material/Divider";
+import { Review } from "./Review";
+
 export function ProductDetails() {
   const [status, setStatus] = useState({
     loading: false,
@@ -36,7 +40,9 @@ export function ProductDetails() {
     actionType: GET_PRODUCT,
     payload: Number(id),
   });
-
+  if (product) {
+    console.log(product);
+  }
   const realPrice = useMemo(() => {
     return calculatePrice(product.price, product.discountValue);
   }, [product.price, product.discountValue]);
@@ -169,9 +175,9 @@ export function ProductDetails() {
   }
   function generateProductAbout() {
     const about = product.about ? product.about.split("||") : null;
-    return about != null && about !== "" ? (
+    return about ? (
       <div className="about-product">
-        <h4 style={{ textAlign: "start" }}>About item :</h4>
+        <h5 className="sub-title">About item :</h5>
         <ul
           style={{
             listStyle: "outside",
@@ -213,7 +219,7 @@ export function ProductDetails() {
     const mainImage = product.images.find((img) => img.isMain);
     return mainImage ? mainImage.imageUrl : product.images[0].imageUrl;
   }
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingPage />;
   if (error) return <p>Error: {error}</p>;
   if (!product) return <p>No product found.</p>;
   else
@@ -381,6 +387,19 @@ export function ProductDetails() {
               </Grid>
             </Grid>
             {generateProductAbout()}
+            <Divider style={{ height: "2px", backgroundColor: "black" }} />
+            {product.description && (
+              <div className="product-description">
+                <h5 className="sub-title">Description :</h5>
+                <p style={{ textAlign: "start", lineHeight: "1.8" }}>
+                  {product.description}
+                </p>
+                <Divider style={{ height: "2px", backgroundColor: "black" }} />
+              </div>
+            )}
+            <Review />
+            <Review />
+            <Review />
           </div>
         </Container>
       </div>

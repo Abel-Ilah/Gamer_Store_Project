@@ -1,0 +1,31 @@
+.review {
+  text-align: start;
+  max-width: 600px;
+  border-bottom: 1px solid rgb(199, 198, 198);
+}
+.review .user {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+}
+.review .user .avatar {
+  font-size: 50px;
+  color: rgb(161, 161, 161);
+}
+
+.review .user .r-box .name {
+  margin-bottom: 2px;
+  margin-left: 2px;
+}
+.review .user .r-box .rate {
+  font-size: 24px;
+}
+.review .content {
+  margin-left: 60px;
+}
+.review .content .comment {
+  margin: 0;
+}
+.review .review-date {
+  text-align: end;
+}
