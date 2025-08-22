@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "pAilENsMdkg=",
+  "dgSpecHash": "pG8n/f8N1pE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\APIs_Layer\\APIs.csproj",
+  "projectFilePath": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\APIs_Layer\\APIs.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\abdel\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\abdel\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

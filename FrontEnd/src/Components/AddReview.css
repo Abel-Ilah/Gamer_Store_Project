@@ -1,0 +1,95 @@
+.new-review {
+  text-align: start;
+  margin-bottom: 20px;
+}
+
+.new-review .user {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  align-items: center;
+}
+.new-review .user .avatar {
+  font-size: 50px;
+  color: rgb(161, 161, 161);
+}
+.new-review .user .name {
+  margin: 0;
+  color: gray;
+}
+.new-review .content {
+  position: relative;
+  margin-left: 60px;
+  max-width: 600px;
+}
+.new-review .content::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 1px;
+  background-color: gray;
+  left: -36px;
+}
+
+.new-review .comment {
+  width: 100%;
+  resize: none;
+  display: block;
+  border-radius: 5px;
+  padding: 10px;
+  outline: none;
+  color: rgb(75, 74, 74);
+}
+.new-review .content .btn-wraper {
+  margin-top: 5px;
+  position: relative;
+  left: 100%;
+  transform: translateX(-100%);
+  position: relative;
+  width: fit-content;
+}
+
+.new-review .content .post-btn {
+  box-shadow: none;
+  background-color: teal;
+  font-weight: bold;
+  text-transform: capitalize;
+  transition: all 0.3s;
+}
+.new-review .content .post-btn:hover {
+  background-color: red !important;
+}
+
+.new-review .content .btn-wraper .loading {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: teal;
+  color: rgb(255, 251, 251);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  font-size: 2.5rem;
+  font-weight: bold;
+  border-radius: 5px;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.new-review .content .btn-wraper .loading .circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+  border-top: 3px solid transparent;
+  animation: spin 1s linear infinite;
+}

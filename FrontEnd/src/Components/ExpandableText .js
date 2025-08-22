@@ -29,7 +29,9 @@ const ExpandableText = ({ children }) => {
     <div className="expandable">
       <p
         ref={textRef}
-        className={isExpanded || !isClamped ? "full-text" : "clamp-text"}
+        className={
+          isExpanded || !isClamped ? "full-text text" : "clamp-text text"
+        }
       >
         {children}
       </p>

@@ -22,11 +22,11 @@ namespace DataSource.Data.Config
                 entity.Property(e => e.Comment)
                       .HasMaxLength(1000);
 
-                // CreatedAt default value
+              
                 entity.Property(e => e.CreatedAt)
                       .HasDefaultValueSql("GETDATE()");
 
-                // Relationships
+                
                 entity.HasOne(d => d.Product)
                       .WithMany(p => p.Reviews)
                       .HasForeignKey(d => d.ProductId)

@@ -26,8 +26,11 @@ namespace DataSource.DTOs
 
         public string? About { get; set; }
 
-        public float Rate { get; set; } = 5;
+        public double Rating { get; set; } = 5;
+
+        public int reviewsCount { get; set; }
 
         public List<ProductImageDTO> Images { get; set; } = new List<ProductImageDTO>();
+
     }
 }

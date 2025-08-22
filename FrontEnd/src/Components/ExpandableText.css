@@ -1,3 +1,9 @@
+.expandable .text {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  margin: 0;
+}
 .expandable .clamp-text {
   display: -webkit-box;
   -webkit-line-clamp: 4;
@@ -5,12 +11,10 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin: 0;
 }
 
 .expandable .full-text {
   display: block;
-  margin: 0;
 }
 
 .expandable .read-more {

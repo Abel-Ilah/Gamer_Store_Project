@@ -17,17 +17,28 @@
 .product-details .box .images img {
   max-width: 100%;
   max-height: 500px;
+  height: auto;
   object-fit: contain;
+  aspect-ratio: 1/1;
 }
 .product-details .box .info {
+  height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 10px;
 }
 .product-details .box .info .product-name {
   font-size: 20px;
   text-align: left;
   margin: 0;
+}
+.product-details .box .info .rating {
+  text-align: start;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: gray;
 }
 .product-details .box .info .price {
   display: flex;
@@ -50,7 +61,6 @@
 }
 .product-details .product-cta {
   border: 1px solid gray;
-  height: 100%;
   display: flex;
   gap: 10px;
   flex-direction: column;
@@ -177,9 +187,7 @@
 .product-details .box .sub-title {
   color: rgb(71, 71, 71);
   font-weight: bold;
-  text-decoration: underline;
   text-align: start;
-  background-color: #ffeb3b;
   color: #747373;
   width: fit-content;
 }

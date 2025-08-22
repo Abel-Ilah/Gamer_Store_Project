@@ -7,8 +7,24 @@
       "RelativeMoniker": "D:0:0:{542F4229-EC36-4DB8-A65F-CF4D88EBAC8E}|APIs_Layer\\APIs.csproj|solutionrelative:apis_layer\\controllers\\reviewcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\repositories\\reviewrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\repositories\\reviewrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\dtos\\readreviewdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\dtos\\readreviewdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\entities\\review.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\entities\\review.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\dtos\\reviewdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\dtos\\reviewdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\repositories\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\repositories\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\dtos\\productdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\dtos\\productdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -43,14 +59,40 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ReviewRepository.cs",
-              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Repositories\\ReviewRepository.cs",
-              "RelativeDocumentMoniker": "DataSource_Layer\\Repositories\\ReviewRepository.cs",
-              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Repositories\\ReviewRepository.cs",
-              "RelativeToolTip": "DataSource_Layer\\Repositories\\ReviewRepository.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAqwC0AAABRAAAAAAAAAA==",
+              "Title": "ReadReviewDTO.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\ReadReviewDTO.cs",
+              "RelativeDocumentMoniker": "DataSource_Layer\\DTOs\\ReadReviewDTO.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\ReadReviewDTO.cs",
+              "RelativeToolTip": "DataSource_Layer\\DTOs\\ReadReviewDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-20T17:13:48.272Z",
+              "WhenOpened": "2025-08-22T17:30:31.224Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Review.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Entities\\Review.cs",
+              "RelativeDocumentMoniker": "DataSource_Layer\\Entities\\Review.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Entities\\Review.cs",
+              "RelativeToolTip": "DataSource_Layer\\Entities\\Review.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwBQAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-22T16:46:59.112Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ReviewDTO.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\ReviewDTO.cs",
+              "RelativeDocumentMoniker": "DataSource_Layer\\DTOs\\ReviewDTO.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\ReviewDTO.cs",
+              "RelativeToolTip": "DataSource_Layer\\DTOs\\ReviewDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-22T12:54:00.604Z",
               "EditorCaption": ""
             },
             {
@@ -61,9 +103,35 @@
               "RelativeDocumentMoniker": "APIs_Layer\\Controllers\\ReviewController.cs",
               "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\APIs_Layer\\Controllers\\ReviewController.cs",
               "RelativeToolTip": "APIs_Layer\\Controllers\\ReviewController.cs",
-              "ViewState": "AgIAADgAAAAAAAAAAAAAAGoAAABNAAAAAAAAAA==",
+              "ViewState": "AgIAABcAAAAAAAAAAAAUwCEAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-20T16:37:57.678Z",
+              "WhenOpened": "2025-08-22T12:51:26.842Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ProductDetailsDTO.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\ProductDetailsDTO.cs",
+              "RelativeDocumentMoniker": "DataSource_Layer\\DTOs\\ProductDetailsDTO.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\ProductDetailsDTO.cs",
+              "RelativeToolTip": "DataSource_Layer\\DTOs\\ProductDetailsDTO.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-22T11:34:15.571Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ProductRepository.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Repositories\\ProductRepository.cs",
+              "RelativeDocumentMoniker": "DataSource_Layer\\Repositories\\ProductRepository.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Repositories\\ProductRepository.cs",
+              "RelativeToolTip": "DataSource_Layer\\Repositories\\ProductRepository.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAuwCsBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-22T10:38:39.505Z",
               "EditorCaption": ""
             }
           ]

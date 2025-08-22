@@ -23,7 +23,7 @@ namespace APIs.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ReviewDTO>> AddReviewAsync([FromBody] ReviewDTO reviewDto)
+        public async Task<ActionResult<ReviewDTO>> AddReviewAsync( ReviewDTO reviewDto)
         {
             if (reviewDto == null) return BadRequest("review object is null");
 
@@ -44,9 +44,9 @@ namespace APIs.Controllers
                 return CreatedAtAction(nameof(GetReviewById), new { id = reviewId }, reviewDto);
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return StatusCode(500,$"{ex.Message}");
+                return StatusCode(500, $"Error: {ex.Message} - Inner: {ex.InnerException?.Message}");
             }
         }
 
@@ -104,7 +104,7 @@ namespace APIs.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetReviewsByProductId(int productId)
+        public async Task<ActionResult<List<ReadReviewDTO>>> GetReviewsByProductId(int productId)
         {
             if (productId <= 0) return BadRequest("invalid productId");
 
@@ -130,9 +130,10 @@ namespace APIs.Controllers
                 }).ToList();
 
                 return Ok(reviewDtos);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                return StatusCode(500, $"{ex.Message}");
+                return StatusCode(500, $"Error: {ex.Message} - Inner: {ex.InnerException?.Message}");
             }
         }
     }

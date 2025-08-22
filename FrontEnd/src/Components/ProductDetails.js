@@ -9,8 +9,7 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useProduct, GET_PRODUCT } from "../reducers/ProductReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import settings from "../appsettings.json";
 import {
   AddNewItem,
@@ -24,9 +23,13 @@ import {
 import { LoadingPage } from "./LoadingPage";
 import Divider from "@mui/material/Divider";
 import { Review } from "./Review";
+import { AddReview } from "./AddReview";
+import { getProductById } from "../features/product/productSlice";
+import { getProductReviews } from "../features/review/reviewSlice";
+import MessageIcon from "@mui/icons-material/Message";
 
 export function ProductDetails() {
-  const [status, setStatus] = useState({
+  const [addToCartStatus, setAddToCartStatus] = useState({
     loading: false,
     error: null,
     success: false,
@@ -36,16 +39,41 @@ export function ProductDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { product, loading, error } = useProduct({
-    actionType: GET_PRODUCT,
-    payload: Number(id),
+  const [productState, setProductState] = useState({
+    product: null,
+    loading: false,
+    error: null,
   });
-  if (product) {
-    console.log(product);
-  }
+
+  const {
+    reviews: productReviews,
+    loading,
+    error,
+    success,
+  } = useSelector((state) => state.review);
+  if (productReviews) console.log("product reviews ;", productReviews);
+  useEffect(() => {
+    setProductState({ product: null, loading: true, error: null });
+    dispatch(getProductById(id))
+      .unwrap()
+      .then((product) => {
+        setProductState({ product: product, loading: false, error: null });
+
+        dispatch(getProductReviews(product.id));
+      })
+      .catch((err) =>
+        setProductState({ product: null, loading: false, error: err })
+      );
+  }, []);
+
   const realPrice = useMemo(() => {
-    return calculatePrice(product.price, product.discountValue);
-  }, [product.price, product.discountValue]);
+    return productState.product
+      ? calculatePrice(
+          productState.product.price,
+          productState.product.discountValue
+        )
+      : 0;
+  }, [productState.product]);
 
   const [quantity, setQuantity] = useState(1);
 
@@ -58,9 +86,11 @@ export function ProductDetails() {
   }, [realPrice, quantity]);
 
   function handleAddToCart() {
+    const product = productState.product;
+
     const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     if (currentUser) {
-      setStatus({
+      setAddToCartStatus({
         loading: true,
         error: null,
         success: false,
@@ -95,7 +125,7 @@ export function ProductDetails() {
               quantity: addedItem.quantity,
             })
           );
-          setStatus({
+          setAddToCartStatus({
             loading: false,
             error: null,
             success: true,
@@ -109,7 +139,7 @@ export function ProductDetails() {
           );
         })
         .catch((err) => {
-          setStatus({
+          setAddToCartStatus({
             loading: false,
             error: err,
             success: false,
@@ -120,6 +150,7 @@ export function ProductDetails() {
   }
 
   function handleBuyNow() {
+    const product = productState.product;
     navigate("/checkout", {
       state: {
         isDirectBuy: true,
@@ -138,7 +169,9 @@ export function ProductDetails() {
   }
 
   function generateProductDetails() {
-    const details = product.details ? product.details.split("||") : null;
+    const details = productState.product.details
+      ? productState.product.details.split("||")
+      : null;
     return details != null ? (
       <table style={{ marginTop: "20px" }}>
         <tbody>
@@ -174,10 +207,12 @@ export function ProductDetails() {
     ) : null;
   }
   function generateProductAbout() {
-    const about = product.about ? product.about.split("||") : null;
+    const about = productState.product.about
+      ? productState.product.about.split("||")
+      : null;
     return about ? (
       <div className="about-product">
-        <h5 className="sub-title">About item :</h5>
+        <h5 className="sub-title">About item</h5>
         <ul
           style={{
             listStyle: "outside",
@@ -209,19 +244,21 @@ export function ProductDetails() {
   }
   function getMainImageUrl() {
     if (
-      !product ||
-      !Array.isArray(product.images) ||
-      product.images.length === 0
+      !productState.product ||
+      !Array.isArray(productState.product.images) ||
+      productState.product.images.length === 0
     ) {
       return "";
     }
 
-    const mainImage = product.images.find((img) => img.isMain);
-    return mainImage ? mainImage.imageUrl : product.images[0].imageUrl;
+    const mainImage = productState.product.images.find((img) => img.isMain);
+    return mainImage
+      ? mainImage.imageUrl
+      : productState.product.images[0].imageUrl;
   }
-  if (loading) return <LoadingPage />;
-  if (error) return <p>Error: {error}</p>;
-  if (!product) return <p>No product found.</p>;
+  if (productState.loading) return <LoadingPage />;
+  if (productState.error) return <p>Error: {productState.error}</p>;
+  if (!productState.product) return <p>No product found.</p>;
   else
     return (
       <div className="product-details">
@@ -239,31 +276,60 @@ export function ProductDetails() {
               </Grid>
               <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
                 <div className="info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="rating" style={{ textAlign: "start" }}>
-                    <Rating name="read-only" value={product.rate} readOnly />
-                  </div>
-                  <div className="price" style={{ textAlign: "start" }}>
-                    {product.discountValue > 0 && (
-                      <span className="old-price">
-                        {product.price} {settings.currrency}
+                  <div>
+                    <h3 className="product-name">
+                      {productState.product.name}
+                    </h3>
+                    <div className="rating">
+                      <Rating
+                        name="read-only"
+                        value={
+                          productState.product.rating > 0
+                            ? productState.product.rating
+                            : 5
+                        }
+                        readOnly
+                        precision={0.5}
+                      />
+                      <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+                        {"("}
+                        {productState.product.reviewsCount}
+                        <MessageIcon
+                          style={{
+                            fontSize: "20px",
+                            color: "teal",
+                            marginLeft: "1px",
+                          }}
+                        />
+                        {")"}
                       </span>
-                    )}
-                    <span className="new-price">
-                      {realPrice} {settings.currrency}
-                    </span>
+                    </div>
+                    <div className="price" style={{ textAlign: "start" }}>
+                      {productState.product.discountValue > 0 && (
+                        <span className="old-price">
+                          {productState.product.price} {settings.currrency}
+                        </span>
+                      )}
+                      <span className="new-price">
+                        {realPrice} {settings.currrency}
+                      </span>
+                    </div>
+                    <h5
+                      style={{
+                        color:
+                          productState.product.quantityInStock > 0
+                            ? "green"
+                            : "orange",
+                        textAlign: "start",
+                        margin: 0,
+                      }}
+                    >
+                      {productState.product.quantityInStock > 0
+                        ? "IN STOCK"
+                        : "OUT OF STOCK"}
+                    </h5>
+                    <div className="details">{generateProductDetails()}</div>
                   </div>
-                  <h5
-                    style={{
-                      color: product.quantityInStock > 0 ? "green" : "orange",
-                      textAlign: "start",
-                      margin: 0,
-                    }}
-                  >
-                    {product.quantityInStock > 0 ? "IN STOCK" : "OUT OF STOCK"}
-                  </h5>
-                  <div className="details">{generateProductDetails()}</div>
-
                   <div className="product-cta">
                     <div className="total-price">
                       Total Price :{" "}
@@ -312,10 +378,12 @@ export function ProductDetails() {
                                 return newQuantity;
                               });
                             }}
-                            disabled={quantity === product.quantityInStock}
+                            disabled={
+                              quantity === productState.product.quantityInStock
+                            }
                             style={{
                               color:
-                                quantity < product.quantityInStock
+                                quantity < productState.product.quantityInStock
                                   ? "orange"
                                   : "gray",
                             }}
@@ -329,7 +397,7 @@ export function ProductDetails() {
                         order={{ xs: 2, sm: 2, md: 4, lg: 2 }}
                       >
                         <div className="add-to-cart-wraper">
-                          {status.loading && (
+                          {addToCartStatus.loading && (
                             <div className="loading">
                               <span className="circle"></span>
                             </div>
@@ -338,7 +406,9 @@ export function ProductDetails() {
                             variant="contained"
                             className="add-to-cart"
                             onClick={handleAddToCart}
-                            disabled={product.quantityInStock === 0}
+                            disabled={
+                              productState.product.quantityInStock === 0
+                            }
                           >
                             add to cart <ShoppingCartIcon />
                           </Button>
@@ -351,7 +421,7 @@ export function ProductDetails() {
                         <Button
                           variant="contained"
                           className="compare"
-                          disabled={product.quantityInStock === 0}
+                          disabled={productState.product.quantityInStock === 0}
                         >
                           <AutorenewIcon />
                         </Button>
@@ -363,7 +433,7 @@ export function ProductDetails() {
                         <Button
                           variant="contained"
                           className="wishlist"
-                          disabled={product.quantityInStock === 0}
+                          disabled={productState.product.quantityInStock === 0}
                         >
                           <FavoriteIcon />
                         </Button>
@@ -376,7 +446,7 @@ export function ProductDetails() {
                           variant="contained"
                           className="buy-now"
                           onClick={handleBuyNow}
-                          disabled={product.quantityInStock === 0}
+                          disabled={productState.product.quantityInStock === 0}
                         >
                           buy now <LocalMallIcon />
                         </Button>
@@ -387,19 +457,29 @@ export function ProductDetails() {
               </Grid>
             </Grid>
             {generateProductAbout()}
-            <Divider style={{ height: "2px", backgroundColor: "black" }} />
-            {product.description && (
+            <Divider style={{ height: "1px", backgroundColor: "black" }} />
+            {productState.product.description && (
               <div className="product-description">
-                <h5 className="sub-title">Description :</h5>
+                <h5 className="sub-title">Description</h5>
                 <p style={{ textAlign: "start", lineHeight: "1.8" }}>
-                  {product.description}
+                  {productState.product.description}
                 </p>
-                <Divider style={{ height: "2px", backgroundColor: "black" }} />
+                <Divider style={{ height: "1px", backgroundColor: "black" }} />
               </div>
             )}
-            <Review />
-            <Review />
-            <Review />
+            <div className="reviews">
+              <AddReview productId={productState.product.id} />
+              {productReviews && productReviews.length > 0 && (
+                <div>
+                  <h5 className="sub-title" style={{ marginBottom: "15px" }}>
+                    Last Reviews
+                  </h5>
+                  {productReviews.map((r, i) => (
+                    <Review review={r} key={i} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </Container>
       </div>

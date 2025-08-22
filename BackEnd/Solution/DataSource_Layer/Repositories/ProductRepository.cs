@@ -233,14 +233,14 @@ namespace DataSource.Repositories
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
 
-            var product =  await _context.Products.Where(p => p.Id == productId).Select(p => new ProductDetailsDTO
+            var productDTO = await _context.Products.Where(p => p.Id == productId).Select(p => new ProductDetailsDTO
             {
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
                 QuantityInStock = p.QuantityInStock,
-                Description =p.Description,
-                Details =p.Details,
+                Description = p.Description,
+                Details = p.Details,
                 About = p.About,
                 Date = p.Date,
                 Images = p.ProductImages.Select(pi => new ProductImageDTO { imageUrl = pi.ImageUrl, isMain = pi.IsMain }).ToList(),
@@ -255,11 +255,13 @@ namespace DataSource.Repositories
                             .Select(cd => cd.Discount.Value)
                             .FirstOrDefault()
                     ),
-                Rate = 4.5f
+                reviewsCount = p.Reviews.Count,
+                Rating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0
 
-            }).SingleOrDefaultAsync();
 
-            return product;
+            }).AsNoTracking().SingleOrDefaultAsync();
+
+            return productDTO;
         }
 
         public async Task<ProductDTO?> GetProductByIdAsync(int productId)

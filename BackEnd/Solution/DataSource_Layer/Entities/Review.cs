@@ -13,12 +13,9 @@ namespace DataSource.Entities
         public int ProductId { get; set; }
         public int UserId { get; set; }
         public int Rating { get; set; } = 5;
-
         public string? Comment { get; set; }
-
         public DateTime CreatedAt { get; set; }
 
-       
         public Product Product { get; set; }
         public User User { get; set; }
     }
