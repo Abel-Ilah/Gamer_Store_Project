@@ -8,14 +8,13 @@ import TuneIcon from "@mui/icons-material/Tune";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Link } from "react-router-dom";
 import { useCategories } from "../contexts/CategoriesProvider";
-import { GET_PRODUCTS_BY_CATEGORY } from "../reducers/ProductsReducer";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import settings from "../appsettings.json";
 import {
-  getFilter,
-  updateFilter,
-  updatePriceRange,
-} from "../features/filter/filterSlice";
+  GET_ALL_PRODUCTS,
+  GET_PRODUCTS_BY_CATEGORY,
+  getFilteredProducts,
+} from "../features/products/productsSlice";
 
 function valuetext(value) {
   return `${value}°C`;
@@ -24,18 +23,13 @@ const minDistance = 100;
 
 export function ProductsFilter({ activeCategory }) {
   const categories = useCategories();
-
   const [showFilterOnMediumScreens, setShowFilterOnMediumScreens] =
     useState(false);
 
-  const filter = useSelector(getFilter);
   const dispatch = useDispatch();
-  const { min, max } = { ...filter.priceRange };
 
-  const [range, setRange] = useState([min, max]);
-  useEffect(() => {
-    setRange([min, max]);
-  }, [min, max]);
+  const [range, setRange] = useState([1, 100000]);
+
   const handleRangeChange = (event, newValue, activeThumb) => {
     if (activeThumb === 0) {
       setRange([Math.min(newValue[0], range[1] - minDistance), range[1]]);
@@ -43,18 +37,61 @@ export function ProductsFilter({ activeCategory }) {
       setRange([range[0], Math.max(newValue[1], range[0] + minDistance)]);
     }
   };
+
   const handleCategoryClick = (categoryName) => {
-    dispatch(
-      updateFilter({
-        action: {
-          actionType: GET_PRODUCTS_BY_CATEGORY,
-          actionValue: categoryName,
+    const defaultRange = [1, 100000];
+    setRange(defaultRange);
+    const filter = {
+      tag: {
+        name: GET_PRODUCTS_BY_CATEGORY,
+        value: categoryName,
+      },
+      price: {
+        min: defaultRange[0],
+        max: defaultRange[1],
+      },
+      page: {
+        number: 1,
+        size: settings.productsPageSize,
+      },
+    };
+    dispatch(getFilteredProducts(filter));
+  };
+
+  const handleFilterByPrice = () => {
+    const filter = JSON.parse(sessionStorage.getItem("filter"));
+    if (!filter) {
+      filter = {
+        tag: {
+          name: GET_ALL_PRODUCTS,
+          value: GET_ALL_PRODUCTS,
         },
-      })
-    );
+        price: {
+          min: 1,
+          max: 10000000,
+        },
+        page: {
+          number: 1,
+          size: settings.productsPageSize,
+        },
+      };
+    }
+    filter.price = { min: range[0], max: range[1] };
+
+    dispatch(getFilteredProducts(filter));
   };
 
   const isMobile = useMediaQuery("(max-width:944px)");
+
+  useEffect(() => {
+    const filter = JSON.parse(sessionStorage.getItem("filter"));
+    if (filter) {
+      const { price } = filter;
+      setRange([price.min, price.max]);
+      console.log([price.min, price.max]);
+    }
+  }, []);
+
   return (
     <>
       {/* show filter btn  */}
@@ -77,7 +114,7 @@ export function ProductsFilter({ activeCategory }) {
 
         <KeyboardArrowDownIcon style={{ color: "teal", fontWeight: "bold" }} />
       </div>
-      {/*==== show filter btn  ====*/}
+      {/*===================*/}
 
       <div
         className="filter-container"
@@ -140,16 +177,7 @@ export function ProductsFilter({ activeCategory }) {
             <Button
               style={{ position: "relative", top: "-18px" }}
               variant="outlined"
-              onClick={() => {
-                dispatch(
-                  updatePriceRange({
-                    priceRange: {
-                      min: range[0],
-                      max: range[1],
-                    },
-                  })
-                );
-              }}
+              onClick={handleFilterByPrice}
             >
               Go
             </Button>

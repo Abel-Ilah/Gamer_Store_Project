@@ -173,7 +173,7 @@ export function Product({ Product: product }) {
           </div>
         )}
         <Button
-          className="add-to-cart-btn"
+          className="add-to-cart-btn btn-effect"
           style={{
             display: isProductInCart ? "none" : "block",
             pointerEvents: product.quantityInStock === 0 ? "none" : "auto",
@@ -189,7 +189,7 @@ export function Product({ Product: product }) {
           </span>
         </Button>
         <Button
-          className="view-cart-btn"
+          className="view-cart-btn btn-effect"
           style={{
             display: !isProductInCart ? "none" : "block",
             pointerEvents: product.quantityInStock === 0 ? "none" : "auto",

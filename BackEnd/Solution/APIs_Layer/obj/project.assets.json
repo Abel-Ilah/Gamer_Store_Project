@@ -3275,11 +3275,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\APIs_Layer\\APIs.csproj",
+      "projectUniqueName": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\APIs_Layer\\APIs.csproj",
       "projectName": "APIs",
-      "projectPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\APIs_Layer\\APIs.csproj",
+      "projectPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\APIs_Layer\\APIs.csproj",
       "packagesPath": "C:\\Users\\abdel\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\APIs_Layer\\obj\\",
+      "outputPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\APIs_Layer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -3300,11 +3300,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\Business_Layer\\Services.csproj": {
-              "projectPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\Business_Layer\\Services.csproj"
+            "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\Business_Layer\\Services.csproj": {
+              "projectPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\Business_Layer\\Services.csproj"
             },
-            "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DataSource.csproj": {
-              "projectPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DataSource.csproj"
+            "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\DataSource_Layer\\DataSource.csproj": {
+              "projectPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\DataSource_Layer\\DataSource.csproj"
             }
           }
         }

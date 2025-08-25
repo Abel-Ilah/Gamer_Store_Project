@@ -6,7 +6,6 @@ import { Footer } from "./Components/Footer";
 import { Home } from "./Components/Home";
 import { CategoriesProvider } from "./contexts/CategoriesProvider";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { ProductsCategory } from "./Components/ProductsCategory";
 import { ProductDetails } from "./Components/ProductDetails";
 import { SignUp } from "./Components/SignUp";
 import { EmailConfirmation } from "./Components/EmailConfirmation";
@@ -21,6 +20,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GetCurrentUser, markUserAsReady } from "./features/users/UserSlice";
 import { GetUserCart, markCartAsReady } from "./features/cart/CartSlice";
+import { FilteredProducts } from "./Components/FilteredProducts";
 
 function App() {
   const dispatch = useDispatch();
@@ -56,11 +56,11 @@ function App() {
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/" element={<Home />} />
-          <Route path="/products/" element={<ProductsCategory />}>
-            <Route path="new-products" element={<ProductsCategory />} />
-            <Route path="best-sellers" element={<ProductsCategory />} />
-            <Route path="discounted-products" element={<ProductsCategory />} />
-            <Route path=":categoryName" element={<ProductsCategory />} />
+          <Route path="/products/" element={<FilteredProducts />}>
+            <Route path="new-products" element={<FilteredProducts />} />
+            <Route path="best-sellers" element={<FilteredProducts />} />
+            <Route path="discounted-products" element={<FilteredProducts />} />
+            <Route path=":categoryName" element={<FilteredProducts />} />
           </Route>
           <Route path="/product/:id" element={<ProductDetails />} />
 

@@ -9,7 +9,7 @@ import { GET_CART } from "../features/cart/CartSlice";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Divider } from "@mui/material";
-import { GetRelatedProducts } from "../features/products/productsSlice";
+import { getRelatedProducts } from "../features/products/productsSlice";
 import { useMediaQuery, useTheme } from "@mui/material";
 import settings from "../appsettings.json";
 
@@ -35,7 +35,7 @@ export function Cart() {
 
   useEffect(() => {
     if (cart && cart.length > 0) {
-      getRelatedProducts();
+      relatedProducts();
     }
   }, [cart]);
 
@@ -77,11 +77,11 @@ export function Cart() {
       : 0;
   }
 
-  function getRelatedProducts() {
+  function relatedProducts() {
     setRelatedProducts(null);
     const productId = cart[cart.length - 1].product.id;
     const pageSize = 10;
-    dispatch(GetRelatedProducts({ productId, pageSize }))
+    dispatch(getRelatedProducts({ productId, pageSize }))
       .unwrap()
       .then((products) => {
         setRelatedProducts(products);
@@ -159,11 +159,12 @@ export function Cart() {
                     <Divider />
                   </ul>
                   <Button
-                    className="checkout-btn"
+                    className="checkout-btn btn-effect"
                     variant="contained"
                     onClick={checkoutBtnClick}
                   >
-                    checkout
+                    <span>checkout</span>
+                    <span>checkout</span>
                   </Button>
                 </div>
                 {relatedproducts && (

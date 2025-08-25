@@ -23,6 +23,11 @@ namespace Services.services
             return await _reviewRepository.AddNewAsync(review);
         }
 
+        public async Task<bool> UpdateReviewAsync(Review newReview)
+        {
+            return await _reviewRepository.UpdateReviewAsync(newReview);
+        }
+
         public async Task<bool> DeleteReviewByIdAsync(int id)
         {
             return await _reviewRepository.DeleteByIdAsync(id);
@@ -37,6 +42,8 @@ namespace Services.services
         {
             return await _reviewRepository.GetReviewsByProductIdAsync(productId);
         }
+    
+        
     }
 
 }

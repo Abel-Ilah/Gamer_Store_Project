@@ -2,11 +2,8 @@ import "./Nav.css";
 import { useState } from "react";
 import { useCategories } from "../contexts/CategoriesProvider";
 import { Link } from "react-router-dom";
-import { GET_PRODUCTS_BY_CATEGORY } from "../reducers/ProductsReducer";
-import { useSelector, useDispatch } from "react-redux";
-import { getFilter } from "../features/filter/filterSlice";
-import { updateFilter } from "../features/filter/filterSlice";
-//mui componenets:
+import { useDispatch } from "react-redux";
+//mui components:
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Box from "@mui/material/Box";
@@ -18,6 +15,11 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import {
+  GET_PRODUCTS_BY_CATEGORY,
+  getFilteredProducts,
+} from "../features/products/productsSlice";
+import settings from "../appsettings.json";
 
 export function Nav() {
   const categories = useCategories();
@@ -26,26 +28,32 @@ export function Nav() {
     useState(false);
   const [showCategoriesList_lg, setShowCategoriesList_lg] = useState(false);
 
-  const filter = useSelector(getFilter);
   const dispatch = useDispatch();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
   const handleCategoryClick = (categoryName) => {
-    dispatch(
-      updateFilter({
-        ...filter,
-        action: {
-          actionType: GET_PRODUCTS_BY_CATEGORY,
-          actionValue: categoryName,
-        },
-      })
-    );
-    handleCloseNavMenu();
+    const filter = {
+      tag: {
+        name: GET_PRODUCTS_BY_CATEGORY,
+        value: categoryName,
+      },
+      price: {
+        min: 1,
+        max: 10000000,
+      },
+      page: {
+        number: 1,
+        size: settings.productsPageSize,
+      },
+    };
+    dispatch(getFilteredProducts(filter));
   };
 
   return (

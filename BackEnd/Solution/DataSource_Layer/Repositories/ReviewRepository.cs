@@ -26,6 +26,16 @@ namespace DataSource.Repositories
             return review.Id;
         }
 
+        public async Task<bool>UpdateReviewAsync(Review newReview)
+        {
+            var review = await _context.Reviews.FindAsync(newReview.Id);
+            if (review == null) return false;
+            review.Comment = newReview.Comment;
+            review.Rating = newReview.Rating>= 1 && newReview.Rating <= 5 ? newReview.Rating:5;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> DeleteByIdAsync(int id)
         {
             var review = await _context.Reviews.FindAsync(id);

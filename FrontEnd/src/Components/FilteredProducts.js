@@ -1,4 +1,4 @@
-import "./ProductsCategory.css";
+import "./FilteredProducts.css";
 import { ProductsGrid } from "./ProductsGrid";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -9,21 +9,21 @@ import StarIcon from "@mui/icons-material/Star";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { ProductsFilter } from "./ProductsFilter";
-import {
-  useProducts,
-  GET_NEW_PRODUCTS,
-  GET_DISCOUNTED_PRODUCTS,
-  GET_BEST_SELLERS,
-} from "../reducers/ProductsReducer";
+import { LoadingPage } from "./LoadingPage";
 import { useParams } from "react-router-dom";
 import appsettings from "../appsettings.json";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import settings from "../appsettings.json";
+
 import {
-  getFilter,
-  updatePageNumber,
-  updateFilter,
-} from "../features/filter/filterSlice";
+  GET_ALL_PRODUCTS,
+  GET_BEST_SELLERS,
+  GET_DISCOUNTED_PRODUCTS,
+  GET_NEW_PRODUCTS,
+  getFilteredProducts,
+} from "../features/products/productsSlice";
+import { useEffect } from "react";
 
 let pageSize = appsettings.productsPageSize;
 
@@ -35,8 +35,8 @@ function FastFilter({ handlBtnClick }) {
           variant="outlined"
           onClick={() =>
             handlBtnClick({
-              actionType: GET_NEW_PRODUCTS,
-              actionValue: GET_NEW_PRODUCTS,
+              name: GET_NEW_PRODUCTS,
+              value: GET_NEW_PRODUCTS,
             })
           }
         >
@@ -49,8 +49,8 @@ function FastFilter({ handlBtnClick }) {
           variant="outlined"
           onClick={() =>
             handlBtnClick({
-              actionType: GET_DISCOUNTED_PRODUCTS,
-              actionValue: GET_DISCOUNTED_PRODUCTS,
+              name: GET_DISCOUNTED_PRODUCTS,
+              value: GET_DISCOUNTED_PRODUCTS,
             })
           }
         >
@@ -63,8 +63,8 @@ function FastFilter({ handlBtnClick }) {
           variant="outlined"
           onClick={() =>
             handlBtnClick({
-              actionType: GET_BEST_SELLERS,
-              actionValue: GET_BEST_SELLERS,
+              name: GET_BEST_SELLERS,
+              value: GET_BEST_SELLERS,
             })
           }
         >
@@ -72,10 +72,6 @@ function FastFilter({ handlBtnClick }) {
           Best Sellers
         </Button>
       </Link>
-      {/* <Button variant="outlined">
-        <ShoppingCartIcon style={{ color: "teal" }} />
-        Popular Products
-      </Button> */}
       <Button variant="outlined">
         <StarIcon style={{ color: "orange" }} />
         Top Rated
@@ -84,59 +80,69 @@ function FastFilter({ handlBtnClick }) {
   );
 }
 
-export function ProductsCategory() {
-  const { data: products, loading, error } = useProducts();
+export function FilteredProducts() {
   const { categoryName: selectedCategory } = useParams();
-
-  const filter = useSelector(getFilter);
   const dispatch = useDispatch();
 
-  function handlBtnClick(action) {
-    dispatch(
-      updateFilter({
-        ...filter,
-        action: {
-          actionType: action.actionType,
-          actionValue: action.actionValue,
-        },
-      })
-    );
+  const { products, loading, error } = useSelector((state) => state.products);
+
+  function handleFastFilterBtnsClick(tag) {
+    const filter = {
+      tag,
+      price: {
+        min: 1,
+        max: 10000000,
+      },
+      page: {
+        number: 1,
+        size: settings.productsPageSize,
+      },
+    };
+    dispatch(getFilteredProducts(filter));
   }
 
-  function resetScroll() {
-    window.scrollTo(0, 0);
-  }
+  useEffect(() => {
+    let filter = JSON.parse(sessionStorage.getItem("filter"));
+    if (!filter) {
+      filter = {
+        tag: {
+          name: GET_ALL_PRODUCTS,
+          value: GET_ALL_PRODUCTS,
+        },
+        price: {
+          min: 1,
+          max: 100000,
+        },
+        page: {
+          number: 1,
+          size: settings.productsPageSize,
+        },
+      };
+    }
+    dispatch(getFilteredProducts(filter));
+  }, []);
+
   return (
     <Container maxWidth="xl">
       <div className="products-category">
         <ProductsFilter activeCategory={selectedCategory} />
         <div style={{ flexGrow: 1 }}>
-          <FastFilter handlBtnClick={handlBtnClick} />
-          {loading ? (
-            <h3>loading...</h3>
-          ) : error ? (
-            <h3>{error}</h3>
-          ) : (
+          <FastFilter handlBtnClick={handleFastFilterBtnsClick} />
+          {loading && <LoadingPage />}
+          {products && products.length > 0 && (
             <div>
               <ProductsGrid products={products} />
               <div className="next-prev-page-wraper">
                 <Button
                   style={{
                     margin: "15px 0",
-                    pointerEvents:
-                      filter.page.pageNumber === 1 ? "none" : "auto",
-                    opacity: filter.page.pageNumber === 1 ? 0.5 : 1,
                   }}
                   variant="contained"
-                  onClick={() => {
-                    dispatch(updatePageNumber(filter.page.pageNumber - 1));
-                    resetScroll();
-                  }}
                 >
                   {" "}
                   <ArrowBackIosIcon className="arrow" /> Prev
                 </Button>
-                <span id="page-number">{filter.page.pageNumber}</span>
+                <span id="page-number"></span>
                 <Button
                   style={{
                     margin: "15px 0",
@@ -144,10 +150,6 @@ export function ProductsCategory() {
                     opacity: pageSize > products.length ? 0.5 : 1,
                   }}
                   variant="contained"
-                  onClick={() => {
-                    dispatch(updatePageNumber(filter.page.pageNumber + 1));
-                    resetScroll();
-                  }}
                 >
                   {" "}
                   Next <ArrowForwardIosIcon className="arrow" />

@@ -3,7 +3,6 @@ ul {
   padding: 0 !important;
 }
 .product {
-  border-radius: 10px;
   width: 100%;
   transition: all 0.09s;
   display: flex;
@@ -25,7 +24,7 @@ ul {
   position: relative;
   background-color: #f3f3f6;
   border: 1px solid white;
-  border-radius: 10px;
+  border-radius: 5px;
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -100,43 +99,18 @@ ul {
   background-color: rgb(12, 131, 201);
   text-transform: uppercase;
   font-weight: bold;
-  border-radius: 6px;
+  border-radius: 2px;
   width: 100%;
 }
 .product .add-to-cart-wraper .view-cart-btn {
   font-weight: bold;
-  border-radius: 6px;
+  border-radius: 2px;
   width: 100%;
   background-color: green;
 }
 
-.product .add-to-cart-wraper button {
-  overflow: hidden;
-  position: relative;
-}
-
-.product .add-to-cart-wraper button span {
-  display: block;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s;
-}
-.product .add-to-cart-wraper button span:first-of-type {
-  position: relative;
-}
-.product .add-to-cart-wraper button span:nth-of-type(2) {
-  position: absolute;
-  top: 100%;
-  left: 0;
-}
 .product .add-to-cart-wraper button:hover {
   background-color: red;
-}
-.product .add-to-cart-wraper button:hover span {
-  transform: translateY(-100%);
 }
 
 .product .add-to-cart-wraper .loading {

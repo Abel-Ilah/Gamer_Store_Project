@@ -1,0 +1,35 @@
+.discounted-products {
+  position: relative;
+}
+
+.discounted-products .arrow {
+  position: absolute;
+  background-color: teal;
+  color: white;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 1;
+  width: 40px;
+  height: 50px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.discounted-products .arrow svg {
+  font-size: 30px;
+}
+.discounted-products .next {
+  right: 10px;
+}
+.discounted-products .prev {
+  left: 10px;
+}
+.discounted-products .arrow:hover {
+  background-color: red;
+}
+.discounted-products .prev svg {
+  margin-left: 10px;
+}

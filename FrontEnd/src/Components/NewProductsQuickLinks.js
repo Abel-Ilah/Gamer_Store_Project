@@ -3,49 +3,70 @@ import { HorizontalScroll } from "./HorizontalScroll";
 import { Product } from "./Product";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { Link } from "react-router-dom";
-import { use10Products, GET_NEW_PRODUCTS } from "../reducers/ProductsReducer";
-import { updateFilter } from "../features/filter/filterSlice";
 import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import {
+  get10NewProducts,
+  GET_NEW_PRODUCTS,
+  getFilteredProducts,
+} from "../features/products/productsSlice";
+import settings from "../appsettings.json";
 
 export function NewProductsQuickLinks() {
-  const { data: products, loading, error } = use10Products(GET_NEW_PRODUCTS);
+  const [productsState, setProductsState] = useState({
+    loading: false,
+    products: null,
+    error: null,
+  });
 
   const dispatch = useDispatch();
 
-  function handleAllDiscountsBtnClick() {
-    dispatch(
-      updateFilter({
-        action: {
-          actionType: GET_NEW_PRODUCTS,
-          actionValue: GET_NEW_PRODUCTS,
-        },
-      })
-    );
+  useEffect(() => {
+    setProductsState({ loading: true, products: null, error: null });
+    dispatch(get10NewProducts())
+      .unwrap()
+      .then((res) =>
+        setProductsState({ loading: false, products: res, error: null })
+      )
+      .catch((err) =>
+        setProductsState({ loading: false, products: null, error: err })
+      );
+  }, []);
+
+  function handleSeeAllClick() {
+    const filter = {
+      tag: {
+        name: GET_NEW_PRODUCTS,
+        value: GET_NEW_PRODUCTS,
+      },
+      price: {
+        min: 1,
+        max: 10000000,
+      },
+      page: {
+        number: 1,
+        size: settings.productsPageSize,
+      },
+    };
+    dispatch(getFilteredProducts(filter));
   }
 
-  return loading ? (
-    <h3>Loading...</h3>
-  ) : error ? (
-    <h3>{error}</h3>
-  ) : (
+  return productsState.products ? (
     <>
       <Title title="New products" />
       <div className="see-all-btn-wraper">
-        <Link
-          to={"/products/new-products"}
-          onClick={handleAllDiscountsBtnClick}
-        >
+        <Link to={"/products/new-products"} onClick={handleSeeAllClick}>
           <button className="see-all-btn" variant="text">
             {" "}
-            all new products <ArrowRightAltIcon />
+            See All <ArrowRightAltIcon />
           </button>
         </Link>
       </div>
       <HorizontalScroll>
-        {products.map((p) => {
+        {productsState.products.map((p) => {
           return <Product Product={p} key={p.id} />;
         })}
       </HorizontalScroll>
     </>
-  );
+  ) : null;
 }

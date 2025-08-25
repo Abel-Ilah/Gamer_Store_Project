@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DataSource.csproj": {}
+    "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\DataSource_Layer\\DataSource.csproj": {}
   },
   "projects": {
-    "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DataSource.csproj": {
+    "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\DataSource_Layer\\DataSource.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DataSource.csproj",
+        "projectUniqueName": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\DataSource_Layer\\DataSource.csproj",
         "projectName": "DataSource",
-        "projectPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DataSource.csproj",
+        "projectPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\DataSource_Layer\\DataSource.csproj",
         "packagesPath": "C:\\Users\\abdel\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\DataSource_Layer\\obj\\",
         "projectStyle": "PackageReference",

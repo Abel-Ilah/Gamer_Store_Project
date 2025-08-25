@@ -1,4 +1,5 @@
-﻿using DataSource.Data;
+﻿using System.Linq.Expressions;
+using DataSource.Data;
 using DataSource.DTOs;
 using DataSource.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace DataSource.Repositories
         {
             _context = context;
         }
+
 
         public async Task<IEnumerable<ProductDTO>> GetAllAsync(int pageNumber,int pageSize,int minPrice,int maxPrice)
         {
@@ -229,6 +231,7 @@ namespace DataSource.Repositories
             return productsDTOs;
         }
 
+      
         public async Task<ProductDetailsDTO?> GetProductDetailsByIdAsync(int productId)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);

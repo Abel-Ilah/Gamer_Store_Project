@@ -45,13 +45,8 @@ export function ProductDetails() {
     error: null,
   });
 
-  const {
-    reviews: productReviews,
-    loading,
-    error,
-    success,
-  } = useSelector((state) => state.review);
-  if (productReviews) console.log("product reviews ;", productReviews);
+  const { reviews: productReviews } = useSelector((state) => state.review);
+
   useEffect(() => {
     setProductState({ product: null, loading: true, error: null });
     dispatch(getProductById(id))

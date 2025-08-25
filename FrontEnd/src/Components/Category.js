@@ -1,21 +1,31 @@
 import "./Category.css";
 import { Link } from "react-router-dom";
-import { GET_PRODUCTS_BY_CATEGORY } from "../reducers/ProductsReducer";
 import { useDispatch } from "react-redux";
-
-import { updateFilter } from "../features/filter/filterSlice";
+import {
+  GET_PRODUCTS_BY_CATEGORY,
+  getFilteredProducts,
+} from "../features/products/productsSlice";
+import settings from "../appsettings.json";
 
 export function Category({ category }) {
   const dispatch = useDispatch();
+
   const handleCategoryClick = (categoryName) => {
-    dispatch(
-      updateFilter({
-        action: {
-          actionType: GET_PRODUCTS_BY_CATEGORY,
-          actionValue: categoryName,
-        },
-      })
-    );
+    const filter = {
+      tag: {
+        name: GET_PRODUCTS_BY_CATEGORY,
+        value: categoryName,
+      },
+      price: {
+        min: 1,
+        max: 10000000,
+      },
+      page: {
+        number: 1,
+        size: settings.productsPageSize,
+      },
+    };
+    dispatch(getFilteredProducts(filter));
   };
 
   function addCloudinaryTransform(
@@ -32,7 +42,6 @@ export function Category({ category }) {
       to={`/products/${category.name}`}
       onClick={() => {
         handleCategoryClick(category.name);
-        window.scrollTo(0, 0);
       }}
     >
       <div className="category">

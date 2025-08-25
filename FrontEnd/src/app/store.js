@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import filterReducer from "../features/filter/filterSlice";
 import userReducer from "../features/users/UserSlice";
 import sendEmailVerificationReducer from "../features/emailVerification/sendVerificationCodeSlice";
 import verifyEmailReducer from "../features/emailVerification/verifyEmailSlice";
@@ -10,7 +9,6 @@ import orderReducer from "../features/order/OrderSlice";
 import reviewReducer from "../features/review/reviewSlice";
 export const store = configureStore({
   reducer: {
-    filter: filterReducer,
     user: userReducer,
     sendVerificationCode: sendEmailVerificationReducer,
     verifyEmail: verifyEmailReducer,

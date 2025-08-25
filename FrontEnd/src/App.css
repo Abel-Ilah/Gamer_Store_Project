@@ -71,3 +71,33 @@
   }
 }
 /*===== see all btn  =====*/
+
+/* btn effect  */
+
+.btn-effect {
+  overflow: hidden;
+  position: relative;
+}
+.btn-effect span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s;
+}
+.btn-effect span:first-of-type {
+  position: relative;
+}
+.btn-effect span:nth-of-type(2) {
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+
+.btn-effect:hover span {
+  transform: translateY(-100%);
+}
+
+/* =========== */

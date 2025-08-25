@@ -242,7 +242,7 @@
   transition: all 0.3s;
 }
 .cart .content .checkout .checkout-btn:hover {
-  background-color: rgb(235, 38, 80);
+  background-color: red;
 }
 .cart .content .checkout ul li.total {
   font-weight: bold;

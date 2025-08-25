@@ -4,7 +4,7 @@ import { Select, MenuItem, TextField, Button, colors } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useCategories } from "../contexts/CategoriesProvider";
 import { useDispatch } from "react-redux";
-import { SearchForProducts } from "../features/products/productsSlice";
+import { searchForProducts } from "../features/products/productsSlice";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { Link } from "react-router-dom";
 
@@ -13,7 +13,8 @@ export function Search() {
   const [selectedcategory, setSelectedCategory] = useState("all");
   const [searchText, setSearchText] = useState("");
   const [isNewSearch, setIsNewSearch] = useState(true);
-  const [status, setStatus] = useState({
+
+  const [productsState, setProductsState] = useState({
     products: null,
     loading: false,
     error: null,
@@ -35,10 +36,10 @@ export function Search() {
   }, [selectedcategory, searchText, dispatch]);
 
   useEffect(() => {
-    if (isNewSearch && (status.success || status.error)) {
+    if (isNewSearch && (productsState.success || productsState.error)) {
       cachLastSearch(selectedcategory, searchText);
     }
-  }, [status, isNewSearch]);
+  }, [productsState, isNewSearch]);
 
   const lastSearchRef = useRef({ categoryName: "", searchText: "" });
 
@@ -67,19 +68,28 @@ export function Search() {
       if (lastCachedResults.length >= 50) {
         lastCachedResults.pop();
       }
-      lastCachedResults.unshift({ categoryName, searchText, status });
+      lastCachedResults.unshift({
+        categoryName,
+        searchText,
+        status: productsState,
+      });
       sessionStorage.setItem("search", JSON.stringify(lastCachedResults));
     } else
       sessionStorage.setItem(
         "search",
-        JSON.stringify([{ categoryName, searchText, status }])
+        JSON.stringify([{ categoryName, searchText, status: productsState }])
       );
   };
 
   const handleSearch = (categoryName, searchText) => {
     searchText = searchText.trim();
     if (searchText.length >= 3) {
-      setStatus({ loading: true, error: null, success: false, products: null });
+      setProductsState({
+        loading: true,
+        error: null,
+        success: false,
+        products: null,
+      });
 
       const cachedResults = JSON.parse(sessionStorage.getItem("search"));
 
@@ -91,7 +101,7 @@ export function Search() {
             result.searchText.toLowerCase().trim() ===
               searchText.toLowerCase().trim()
           ) {
-            setStatus(result.status);
+            setProductsState(result.status);
             setIsNewSearch(false);
             lastSearchRef.current = { categoryName, searchText };
             console.log("old search found : ", result);
@@ -102,13 +112,13 @@ export function Search() {
 
       setIsNewSearch(true);
       const categoryId = getCategoryIdByName(categoryName);
-      dispatch(SearchForProducts({ name: searchText, categoryId: categoryId }))
+      dispatch(searchForProducts({ name: searchText, categoryId: categoryId }))
         .unwrap()
         .then((products) => {
           console.log("neww dispatch called ");
           console.log(`category : ${categoryName} | text : ${searchText}`);
           console.log(`result : `, products);
-          setStatus({
+          setProductsState({
             loading: false,
             error: null,
             success: true,
@@ -117,7 +127,7 @@ export function Search() {
           lastSearchRef.current = { categoryName, searchText };
         })
         .catch((err) => {
-          setStatus({
+          setProductsState({
             loading: false,
             error: err,
             success: false,
@@ -130,8 +140,8 @@ export function Search() {
 
   const handleSearchBtnClick = (e) => {
     const isSameSearch = () =>
-      status &&
-      (status.success || status.error) &&
+      productsState &&
+      (productsState.success || productsState.error) &&
       searchText.trim().length >= 3 &&
       searchText === lastSearchRef.current.searchText &&
       selectedcategory === lastSearchRef.current.categoryName;
@@ -241,38 +251,44 @@ export function Search() {
           <SearchIcon />
         </Button>
 
-        {open && (status.loading || status.success || status.error) && (
-          <div className="results-menu">
-            {status.loading && (
-              <div className="loading">
-                <span className="circle"></span>
-              </div>
-            )}
-            {status.error && (
-              <h5 style={{ textAlign: "start" }}>⚠️ {status.error}</h5>
-            )}
-            {status.success && status.products.length > 0 && (
-              <div>
-                {status.products.map((p) => {
-                  return (
-                    <Link
-                      key={p.id}
-                      to={`/product/${p.id}`}
-                      onClick={handleClose}
-                    >
-                      <div className="item">
-                        <img src={getProductImage(p.imageUrl)} alt="product" />
-                        <div className="content">
-                          <h4 className="product-name">{p.name}</h4>
+        {open &&
+          (productsState.loading ||
+            productsState.success ||
+            productsState.error) && (
+            <div className="results-menu">
+              {productsState.loading && (
+                <div className="loading">
+                  <span className="circle"></span>
+                </div>
+              )}
+              {productsState.error && (
+                <h5 style={{ textAlign: "start" }}>⚠️ {productsState.error}</h5>
+              )}
+              {productsState.success && productsState.products.length > 0 && (
+                <div>
+                  {productsState.products.map((p) => {
+                    return (
+                      <Link
+                        key={p.id}
+                        to={`/product/${p.id}`}
+                        onClick={handleClose}
+                      >
+                        <div className="item">
+                          <img
+                            src={getProductImage(p.imageUrl)}
+                            alt="product"
+                          />
+                          <div className="content">
+                            <h4 className="product-name">{p.name}</h4>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
       </div>
     </ClickAwayListener>
   );
