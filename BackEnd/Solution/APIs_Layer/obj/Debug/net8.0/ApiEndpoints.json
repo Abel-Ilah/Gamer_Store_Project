@@ -453,7 +453,7 @@
         "StatusCode": 500
       },
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "DataSource.DTOs.ProductsListDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -465,7 +465,7 @@
   },
   {
     "ContainingType": "APIs.Controllers.ProductsController",
-    "Method": "getProductsByCategoryName",
+    "Method": "GetProductsByCategoryName",
     "RelativePath": "api/products/{category}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -477,23 +477,8 @@
         "IsRequired": true
       },
       {
-        "Name": "pageNumber",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
         "Name": "pageSize",
         "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "MinPrice",
-        "Type": "System.Decimal",
-        "IsRequired": false
-      },
-      {
-        "Name": "MaxPrice",
-        "Type": "System.Decimal",
         "IsRequired": false
       }
     ],
@@ -504,7 +489,7 @@
         "StatusCode": 500
       },
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -547,29 +532,14 @@
   },
   {
     "ContainingType": "APIs.Controllers.ProductsController",
-    "Method": "getBestSellers",
-    "RelativePath": "api/products/best-sellers",
+    "Method": "GetAllProducts",
+    "RelativePath": "api/products/All",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "pageNumber",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
         "Name": "pageSize",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "minPrice",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "maxPrice",
         "Type": "System.Int32",
         "IsRequired": false
       }
@@ -581,7 +551,38 @@
         "StatusCode": 500
       },
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.ProductsController",
+    "Method": "GetBestSellers",
+    "RelativePath": "api/products/best-sellers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      },
+      {
+        "Type": "System.Collections.Generic.List\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -600,22 +601,7 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "pageNumber",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
         "Name": "pageSize",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "minPrice",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "maxPrice",
         "Type": "System.Int32",
         "IsRequired": false
       }
@@ -627,7 +613,7 @@
         "StatusCode": 500
       },
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -639,8 +625,59 @@
   },
   {
     "ContainingType": "APIs.Controllers.ProductsController",
-    "Method": "GetNewProducts",
-    "RelativePath": "api/products/new-products",
+    "Method": "GetProductsByCategoryName",
+    "RelativePath": "api/products/filtered-{category}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "category",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "MinPrice",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "MaxPrice",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      },
+      {
+        "Type": "DataSource.DTOs.ProductsListDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.ProductsController",
+    "Method": "GetBestSellers",
+    "RelativePath": "api/products/filtered-best-sellers",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -673,7 +710,130 @@
         "StatusCode": 500
       },
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "DataSource.DTOs.ProductsListDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.ProductsController",
+    "Method": "GetDiscountedProducts",
+    "RelativePath": "api/products/filtered-discounts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "minPrice",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "maxPrice",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      },
+      {
+        "Type": "DataSource.DTOs.ProductsListDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.ProductsController",
+    "Method": "GetNewProducts",
+    "RelativePath": "api/products/filtered-new-products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "minPrice",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "maxPrice",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      },
+      {
+        "Type": "DataSource.DTOs.ProductsListDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.ProductsController",
+    "Method": "GetNewProducts",
+    "RelativePath": "api/products/new-products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      },
+      {
+        "Type": "System.Collections.Generic.List\u00601[[DataSource.DTOs.ProductDTO, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -948,6 +1108,46 @@
           "text/json"
         ],
         "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.ReviewController",
+    "Method": "GetTopReviewsAsync",
+    "RelativePath": "api/reviews/top-reviews",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[DataSource.DTOs.ReadReviewDTO2, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
       },
       {
         "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",

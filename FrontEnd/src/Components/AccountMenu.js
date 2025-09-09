@@ -15,21 +15,18 @@ import LoopIcon from "@mui/icons-material/Loop";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link, useNavigate } from "react-router-dom";
 
-import { clearUserState } from "../features/users/UserSlice";
+import { logout } from "../features/users/UserSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCartState } from "../features/cart/CartSlice";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 export function AccountMenu() {
-  const {
-    user: currentUser,
-    loading,
-    error,
-    success,
-  } = useSelector((state) => state.user);
+  const { user: currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.only("xs"));
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -39,13 +36,13 @@ export function AccountMenu() {
     setAnchorEl(null);
   };
   const handleLogout = () => {
-    dispatch(clearUserState());
+    dispatch(logout());
     var login = JSON.parse(localStorage.getItem("login"));
     login.autoLogin = false;
     localStorage.setItem("login", JSON.stringify(login));
     dispatch(clearCartState());
     sessionStorage.removeItem("currentUser");
-    navigate("/home");
+    navigate("/login");
   };
 
   return (
@@ -55,17 +52,17 @@ export function AccountMenu() {
           <IconButton
             onClick={handleClick}
             size="small"
-            sx={{ ml: 2 }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
             <Avatar
               sx={{
-                width: 40,
-                height: 40,
-                color: "gray",
-                background: "white",
+                width: "32px",
+                height: "32px",
+                fontSize: "10px",
+                color: "white",
+                background: "gray",
               }}
             ></Avatar>
           </IconButton>
@@ -116,7 +113,7 @@ export function AccountMenu() {
                 <ListItemIcon>
                   <PersonAdd fontSize="medium" />
                 </ListItemIcon>
-                Create Account
+                Sign up{" "}
               </MenuItem>
             </Link>
             <Link to={"/login/"}>
@@ -139,7 +136,7 @@ export function AccountMenu() {
                 Account
               </MenuItem>
             </Link>
-            <Link to={"/profile/"}>
+            <Link to={"/profile/"} style={{ display: isXs ? "unset" : "none" }}>
               <MenuItem className="menu-item" onClick={handleClose}>
                 <ListItemIcon>
                   <FavoriteIcon className="wish-list" fontSize="medium" />
@@ -147,7 +144,7 @@ export function AccountMenu() {
                 Wish List
               </MenuItem>
             </Link>
-            <Link to={"/compare/"}>
+            <Link to={"/compare/"} style={{ display: isXs ? "unset" : "none" }}>
               <MenuItem className="menu-item" onClick={handleClose}>
                 <ListItemIcon>
                   <LoopIcon fontSize="medium" />

@@ -1,3 +1,24 @@
+.header {
+  /* background-color: #1e1e1e; */
+  /* background: linear-gradient(to left, #0a151a, #203a43, #2c5364); */
+  /* background: linear-gradient(to left, #2c3e50, #242323); */
+  background-color: white;
+}
+.header .content {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 5px;
+  min-height: 70px;
+  height: fit-content;
+  padding: 5px 0;
+}
+.header .content #logo {
+  height: 65px;
+}
+
 @media (min-width: 900px) {
   .header::after {
     position: absolute;
@@ -6,8 +27,9 @@
     height: 40px;
     bottom: calc(0% - 40px);
     left: 0;
-    background-color: #464545;
+    /* background-color: #464545; */
     z-index: -1;
+    border-top: 0.5px solid rgb(201, 197, 197);
   }
   .header {
     margin-bottom: 40px;

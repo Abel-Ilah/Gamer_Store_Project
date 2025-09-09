@@ -58,6 +58,7 @@ export function Nav() {
 
   return (
     <div className="nav">
+      {/* in small screens  (screen <= md)*/}
       <Box
         sx={{
           flexGrow: 1,
@@ -70,10 +71,9 @@ export function Nav() {
           aria-controls="menu-appbar"
           aria-haspopup="true"
           onClick={handleOpenNavMenu}
-          color="white"
           sx={{ padding: "0px" }}
         >
-          <MenuIcon sx={{ color: "white", fontSize: "40px" }} />
+          <MenuIcon sx={{ color: "gray", fontSize: "40px" }} />
         </IconButton>
         <Menu
           id="menu-appbar"
@@ -94,10 +94,10 @@ export function Nav() {
           }}
           PaperProps={{
             sx: {
-              minWidth: "80vw",
+              // minWidth: "80vw",
+              width: "100vw",
               borderRadius: 0,
               borderBottom: "2px solid teal",
-
               boxShadow: "none",
             },
           }}
@@ -191,7 +191,10 @@ export function Nav() {
           </Button>
         </Menu>
       </Box>
+      {/* ================ */}
+      {/* in large screens (screen >= lg) */}
       <Box
+        className="content-lg"
         sx={{
           flexGrow: 1,
           display: {
@@ -211,16 +214,8 @@ export function Nav() {
             setShowCategoriesList_lg(false);
           }}
         >
-          <Button
-            className="list-btn"
-            sx={{
-              color: "white",
-              display: "flex",
-              padding: "0px",
-              alignItems: "center",
-            }}
-          >
-            Categories{" "}
+          <Button className="show-categories-btn">
+            Categories
             {showCategoriesList_lg ? (
               <KeyboardArrowUpIcon />
             ) : (
@@ -254,19 +249,21 @@ export function Nav() {
               })}
           </ul>
         </div>
-        <Button sx={{ color: "white", display: "block", padding: "0px" }}>
-          New Products
-        </Button>
-        <Button sx={{ color: "white", display: "block", padding: "0px" }}>
-          % Promotions
-        </Button>
-        <Button sx={{ color: "white", display: "block", padding: "0px" }}>
-          Contact Us
-        </Button>
-        <Button sx={{ color: "white", display: "block", padding: "0px" }}>
-          Location
-        </Button>
+        <Link>
+          <Button className="link">New Products</Button>
+        </Link>
+        <Link>
+          <Button className="link">% Promotions</Button>
+        </Link>
+        <Link>
+          <Button className="link">Contact Us</Button>
+        </Link>
+
+        <Link>
+          <Button className="link">Location</Button>
+        </Link>
       </Box>
+      {/* ================ */}
     </div>
   );
 }

@@ -9,90 +9,88 @@ import { Search } from "./Search";
 import { Nav } from "./Nav";
 import { AccountMenu } from "./AccountMenu";
 import { CartBadge } from "./CartBadge";
+import { WishListBadge } from "./WishListBadge";
+import { CompareBadge } from "./CompareBadge";
 
 export function Header() {
   const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <div
       className="header"
       style={{
-        background: "#1e1e1e",
-        position: isLargeScreen ? "relative" : "unset",
-        marginBottom: isLargeScreen ? "40px" : "0px",
+        position: isMdScreen ? "relative" : "unset",
+        marginBottom: isMdScreen ? "40px" : "0px",
       }}
     >
-      <Container
-        maxWidth="xl"
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "space-between",
-          minHeight: "70px",
-          padding: isLargeScreen ? "10px 24px" : "10px 5px",
-        }}
-      >
-        {" "}
-        <Link style={{ order: isLargeScreen ? 1 : 2 }} to="/">
-          <img
-            src="/assets/store-logo.png"
-            alt="logo"
+      <Container maxWidth="xl">
+        <div className="content">
+          {/* logo */}
+          <Link style={{ order: isMdScreen ? 1 : 2 }} to="/">
+            <img id="logo" src="assets/store-logo.png" alt="logo" />
+          </Link>
+          {/* ======= */}
+          {/* search  */}
+          <div
+            id="search"
             style={{
-              height: "40px",
+              order: isMdScreen ? 2 : 4,
+              flexBasis: isMdScreen ? "unset" : "100%",
+              marginTop: isMdScreen ? "0px" : "20px",
+              maxWidth: isMdScreen ? "500px" : "unset",
+              flexGrow: "1",
             }}
-          />{" "}
-        </Link>
-        <div
-          style={{
-            order: isLargeScreen ? 2 : 4,
-            flexBasis: isLargeScreen ? "unset" : "100%",
-            marginTop: isLargeScreen ? "0px" : "20px",
-            width: isLargeScreen ? "600px" : "unset",
-          }}
-        >
-          <Search />
-        </div>
-        <div
-          style={{
-            order: 3,
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "nowrap",
-            gap: isLargeScreen ? "20px" : "10px",
-          }}
-        >
-          <CartBadge />
-          <div className="profile">
-            <AccountMenu />
-            <div className="list-items"></div>
+          >
+            <Search />
           </div>
-        </div>
-        <div
-          style={
-            isLargeScreen
-              ? {
-                  order: 4,
-                  flexBasis: "100%",
-                  marginTop: "20px",
-                  position: "absolute",
-                  left: "0",
-                  bottom: "-30px",
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                }
-              : {
-                  order: 1,
-                  flexBasis: "unset",
-                  marginTop: "0px",
-                  position: "unset",
-                }
-          }
-        >
-          <Nav></Nav>
+          {/* ===== */}
+          {/* cart / compare /wishlist / account badges */}
+          <div
+            style={{
+              order: 3,
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "nowrap",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <CompareBadge />
+            <WishListBadge />
+            <CartBadge />
+            <div className="profile">
+              <AccountMenu />
+              <div className="list-items"></div>
+            </div>
+          </div>
+          {/* =========== */}
+          {/* nav */}
+          <div
+            style={
+              isMdScreen
+                ? {
+                    order: 4,
+                    flexBasis: "100%",
+                    marginTop: "20px",
+                    position: "absolute",
+                    left: "0",
+                    bottom: "-30px",
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                  }
+                : {
+                    order: 1,
+                    flexBasis: "unset",
+                    marginTop: "0px",
+                    position: "unset",
+                  }
+            }
+          >
+            <Nav />
+          </div>
+          {/* ======== */}
         </div>
       </Container>
     </div>

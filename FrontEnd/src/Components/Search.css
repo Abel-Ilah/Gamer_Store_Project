@@ -4,15 +4,19 @@
   align-items: center;
   border-radius: 5px;
   width: 100%;
+  height: fit-content;
+  border: 1px solid #afadad;
+  /* overflow: hidden; */
 }
 
 .search-cmp .select {
-  background-color: #d3d7db;
+  background-color: #afadad;
+  color: white;
   border-radius: 0;
   padding: 5px;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
   width: 100px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .search-cmp .search-text {
@@ -28,8 +32,6 @@
   background-color: red;
   padding: 8px;
   border-radius: 0;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
   width: 50px;
   min-width: 50px;
   max-width: 50px;
@@ -48,7 +50,8 @@
   top: 100%;
   left: 0;
   background-color: white;
-  z-index: 3;
+  color: red;
+  z-index: 30000;
   box-shadow: 0px 0px 4px gray;
 }
 

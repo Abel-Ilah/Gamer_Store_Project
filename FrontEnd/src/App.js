@@ -19,7 +19,11 @@ import SnackBar from "./Components/SnackBar";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GetCurrentUser, markUserAsReady } from "./features/users/UserSlice";
-import { GetUserCart, markCartAsReady } from "./features/cart/CartSlice";
+import {
+  getGuestCart,
+  GetUserCart,
+  markCartAsReady,
+} from "./features/cart/CartSlice";
 import { FilteredProducts } from "./Components/FilteredProducts";
 
 function App() {
@@ -38,11 +42,15 @@ function App() {
 
   useEffect(() => {
     if (isUserReady) {
-      const hasCart = localStorage.getItem("hasCart");
-      if (hasCart === "true" && user) {
-        dispatch(GetUserCart(user.id));
+      if (user) {
+        const hasCart = localStorage.getItem("hasCart");
+        if (hasCart && hasCart === "true") {
+          dispatch(GetUserCart(user.id));
+        } else {
+          dispatch(markCartAsReady());
+        }
       } else {
-        dispatch(markCartAsReady());
+        dispatch(getGuestCart());
       }
     }
   }, [isUserReady, user, dispatch]);

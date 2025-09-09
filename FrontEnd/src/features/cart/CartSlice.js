@@ -111,15 +111,34 @@ export const cartSlice = createSlice({
       state.ready = false;
     },
 
+    getGuestCart: (state) => {
+      const storedCart = JSON.parse(sessionStorage.getItem("cart"));
+      state.cart = storedCart && storedCart.length > 0 ? storedCart : null;
+      state.error = null;
+      state.loading = false;
+      state.success = true;
+      state.ready = true;
+      state.operation = GET_CART;
+    },
+    // update local cart state to be async with database cart :
     AddNewItemLocal: (state, action) => {
       const newItem = action.payload;
-      state.cart =
-        state.cart && state.cart.length > 0
-          ? [...state.cart, newItem]
-          : [newItem];
+      if (
+        !state.cart ||
+        state.cart.length === 0 ||
+        !state.cart.some((item) => item.product.id === newItem.product.id)
+      ) {
+        state.cart =
+          state.cart && state.cart.length > 0
+            ? [...state.cart, newItem]
+            : [newItem];
 
-      if (state.cart.length === 1) {
-        localStorage.setItem("hasCart", true);
+        if (newItem.userId) {
+          if (state.cart.length === 1) localStorage.setItem("hasCart", true);
+        } else {
+          //add cart to session storage as guest cart
+          sessionStorage.setItem("cart", JSON.stringify(state.cart));
+        }
       }
     },
     updateItemQuantityLocal: (state, action) => {
@@ -128,18 +147,33 @@ export const cartSlice = createSlice({
         const index = state.cart.findIndex((item) => item.id === itemId);
         if (index !== -1) {
           state.cart[index].quantity = quantity;
+          // update guest cart :
+          const userId = state.cart[index].userId;
+          if (!userId) {
+            sessionStorage.setItem("cart", JSON.stringify(state.cart));
+          }
         }
       }
     },
     deleteItemLocal: (state, action) => {
       const itemId = action.payload;
-      if (state.cart) {
+      if (state.cart && state.cart.length > 0) {
         state.cart = state.cart.filter((item) => item.id !== itemId);
-        if (state.cart.length === 0) {
-          localStorage.setItem("hasCart", false);
+        const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+        if (currentUser) {
+          if (state.cart.length === 0) {
+            localStorage.setItem("hasCart", false);
+          }
+        } else {
+          if (!state.cart || state.cart.length === 0) {
+            sessionStorage.removeItem("cart");
+          } else {
+            sessionStorage.setItem("cart", JSON.stringify(state.cart));
+          }
         }
       }
     },
+    // ========================================================
   },
   extraReducers: (builder) => {
     // get cart items :
@@ -278,4 +312,5 @@ export const {
   AddNewItemLocal,
   updateItemQuantityLocal,
   deleteItemLocal,
+  getGuestCart,
 } = cartSlice.actions;

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import {
-  get10NewProducts,
+  getNewProducts,
   GET_NEW_PRODUCTS,
   getFilteredProducts,
 } from "../features/products/productsSlice";
@@ -23,11 +23,34 @@ export function NewProductsQuickLinks() {
 
   useEffect(() => {
     setProductsState({ loading: true, products: null, error: null });
-    dispatch(get10NewProducts())
+    let cachedProducts = JSON.parse(sessionStorage.getItem("10Products"));
+    if (cachedProducts && cachedProducts.length > 0) {
+      const cachedSearch = cachedProducts.find(
+        (storedSearch) => storedSearch.tag === GET_NEW_PRODUCTS
+      );
+
+      if (cachedSearch) {
+        setProductsState({
+          loading: false,
+          products: cachedSearch.products,
+          error: null,
+        });
+        return;
+      }
+    }
+    dispatch(getNewProducts(10))
       .unwrap()
-      .then((res) =>
-        setProductsState({ loading: false, products: res, error: null })
-      )
+      .then((res) => {
+        const newSearch = {
+          products: res,
+          tag: GET_NEW_PRODUCTS,
+        };
+        cachedProducts = cachedProducts
+          ? [newSearch, ...cachedProducts]
+          : [newSearch];
+        sessionStorage.setItem("10Products", JSON.stringify(cachedProducts));
+        setProductsState({ loading: false, products: res, error: null });
+      })
       .catch((err) =>
         setProductsState({ loading: false, products: null, error: err })
       );

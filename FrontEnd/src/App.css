@@ -1,3 +1,9 @@
+:root {
+  --primary-color: #585858;
+  --secondary-color: #2196f3;
+  --main-tr: all 0.3s;
+  --tr-2: all 0.4s;
+}
 .App {
   text-align: center;
 }
@@ -25,6 +31,10 @@
 
 .App-link {
   color: #61dafb;
+}
+a {
+  text-decoration: none !important  ;
+  color: var(--primary-color) !important;
 }
 
 @keyframes App-logo-spin {
@@ -92,12 +102,17 @@
 }
 .btn-effect span:nth-of-type(2) {
   position: absolute;
-  top: 100%;
+  top: 50%;
   left: 0;
+  opacity: 0;
 }
 
-.btn-effect:hover span {
-  transform: translateY(-100%);
+.btn-effect:hover span:first-of-type {
+  transform: translateY(-50%);
+  opacity: 0;
 }
-
+.btn-effect:hover span:nth-of-type(2) {
+  transform: translateY(-50%);
+  opacity: 1;
+}
 /* =========== */

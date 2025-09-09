@@ -19,7 +19,7 @@ namespace APIs.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts(int pageNumber, int pageSize,int minPrice,int maxPrice)
+        public async Task<ActionResult<ProductsListDTO?>> GetAllProducts(int pageNumber, int pageSize,int minPrice,int maxPrice)
         {
             try
             {
@@ -31,6 +31,24 @@ namespace APIs.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("All")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ProductDTO>>> GetAllProducts(int pageSize)
+        {
+            try
+            {
+                var Products = await _ProductService.GetAllProductsAsync(pageSize);
+                return Ok(Products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
 
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -49,10 +67,10 @@ namespace APIs.Controllers
         }
 
 
-        [HttpGet("new-products")]
+        [HttpGet("filtered-new-products")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetNewProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ActionResult<ProductsListDTO?>> GetNewProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             try
             {
@@ -65,11 +83,28 @@ namespace APIs.Controllers
             }
         }
 
-
-        [HttpGet("best-sellers")]
+        [HttpGet("new-products")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> getBestSellers(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ActionResult<List<ProductDTO>>> GetNewProducts(int pageSize)
+        {
+            try
+            {
+                var Products = await _ProductService.GetNewProductsAsync(pageSize);
+                return Ok(Products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+        [HttpGet("filtered-best-sellers")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ProductsListDTO?>> GetBestSellers(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             try
             {
@@ -83,11 +118,27 @@ namespace APIs.Controllers
         }
 
 
-
-        [HttpGet("{category}")]
+        [HttpGet("best-sellers")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> getProductsByCategoryName(string category, int pageNumber, int pageSize, decimal MinPrice, decimal MaxPrice)
+        public async Task<ActionResult<List<ProductDTO>>> GetBestSellers(int pageSize)
+        {
+            try
+            {
+                var Products = await _ProductService.GetBestSellersAsync(pageSize);
+                return Ok(Products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("filtered-{category}")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ProductsListDTO?>> GetProductsByCategoryName(string category, int pageNumber, int pageSize, decimal MinPrice, decimal MaxPrice)
         {
             try
             {
@@ -100,15 +151,46 @@ namespace APIs.Controllers
             }
         }
 
+        [HttpGet("{category}")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ProductDTO>>> GetProductsByCategoryName(string category,int pageSize)
+        {
+            try
+            {
+                var Products = await _ProductService.GetProductsByCategoryNameAsync(category, pageSize);
+                return Ok(Products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("filtered-discounts")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ProductsListDTO?>> GetDiscountedProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        {   
+            try
+            {
+                var Products = await _ProductService.GetDiscountedProductsAsync(pageNumber, pageSize, minPrice, maxPrice);
+                return Ok(Products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet("discounts")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetDiscountedProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ActionResult<List<ProductDTO>>> GetDiscountedProducts(int pageSize)
         {
             try
             {
-                var Products = await _ProductService.GetDiscountedProductsAsync(pageNumber, pageSize, minPrice, maxPrice);
+                var Products = await _ProductService.GetDiscountedProductsAsync(pageSize);
                 return Ok(Products);
             }
             catch (Exception ex)

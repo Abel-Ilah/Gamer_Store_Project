@@ -12,10 +12,7 @@ export const CategoriesProvider = ({ children }) => {
       .then((response) => {
         setCategories(response.data);
       })
-      .catch((error) => {
-        // setCategories([]);
-        console.log("error : ", error);
-      });
+      .catch((error) => {});
   }, []);
 
   return (

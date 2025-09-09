@@ -12,14 +12,15 @@ import {
   AddNewItemLocal,
   ADD_ITEM,
 } from "../features/cart/CartSlice";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   showMessage,
   SEVERITY_SUCCESS,
+  SEVERITY_ERROR,
 } from "../features/snackbar/SnackbarSlice";
 import settings from "../appsettings.json";
 
-let last60Days = new Date(Date.now() - 60 * 86400000)
+let last60Days = new Date(Date.now() - 30 * 86400000)
   .toISOString()
   .split("T")[0];
 
@@ -68,7 +69,7 @@ export function Product({ Product: product }) {
       });
       dispatch(
         AddNewItem({
-          userId: currentUser.id,
+          userId: currentUser ? currentUser.id : null,
           productId: product.id,
           quantity: 1,
         })
@@ -76,14 +77,22 @@ export function Product({ Product: product }) {
         .unwrap()
         .then((res) => {
           const addedItem = res;
-          dispatch(
-            AddNewItemLocal({
-              id: addedItem.id,
-              userId: addedItem.userId,
-              product: product,
-              quantity: addedItem.quantity,
-            })
-          );
+          const localItem = {
+            id: addedItem.id,
+            userId: addedItem.userId,
+            product: product,
+            quantity: addedItem.quantity,
+          };
+          dispatch(AddNewItemLocal(localItem));
+          // add item locally to temp cart in guest mode (logout)
+          if (addedItem.userId === null) {
+            let guestCart = JSON.parse(sessionStorage.getItem("cart"));
+            guestCart =
+              guestCart && guestCart.length > 0
+                ? [localItem, ...guestCart]
+                : [localItem];
+            sessionStorage.setItem("cart", JSON.stringify(guestCart));
+          }
           setStatus({
             loading: false,
             error: null,
@@ -104,7 +113,21 @@ export function Product({ Product: product }) {
             success: false,
             operation: ADD_ITEM,
           });
+          dispatch(
+            showMessage({
+              message: err,
+              severity: SEVERITY_ERROR,
+            })
+          );
         });
+    } else {
+      const newItem = {
+        id: crypto.randomUUID(),
+        userId: null,
+        product: product,
+        quantity: 1,
+      };
+      dispatch(AddNewItemLocal(newItem));
     }
   }
 
@@ -180,7 +203,9 @@ export function Product({ Product: product }) {
             backgroundColor: product.quantityInStock === 0 ? "gray" : "auto",
           }}
           variant="contained"
-          onClick={handleAddToCart}
+          onClick={() => {
+            handleAddToCart();
+          }}
         >
           <span> Add to Cart</span>
           <span>

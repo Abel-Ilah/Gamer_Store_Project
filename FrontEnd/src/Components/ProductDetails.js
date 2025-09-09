@@ -82,7 +82,15 @@ export function ProductDetails() {
 
   function handleAddToCart() {
     const product = productState.product;
-
+    const cartItemProduct = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      date: product.date,
+      quantityInStock: product.quantityInStock,
+      discountValue: product.discountValue,
+      imageUrl: getMainImageUrl(),
+    };
     const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     if (currentUser) {
       setAddToCartStatus({
@@ -95,22 +103,12 @@ export function ProductDetails() {
         AddNewItem({
           userId: currentUser.id,
           productId: product.id,
-          quantity: Number(quantity),
+          quantity: quantity,
         })
       )
         .unwrap()
         .then((res) => {
           const addedItem = res;
-
-          const cartItemProduct = {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            date: product.date,
-            quantityInStock: product.quantityInStock,
-            discountValue: product.discountValue,
-            imageUrl: getMainImageUrl(),
-          };
 
           dispatch(
             AddNewItemLocal({
@@ -141,6 +139,14 @@ export function ProductDetails() {
             operation: ADD_ITEM,
           });
         });
+    } else {
+      const newItem = {
+        id: crypto.randomUUID(),
+        userId: null,
+        product: cartItemProduct,
+        quantity: quantity,
+      };
+      dispatch(AddNewItemLocal(newItem));
     }
   }
 

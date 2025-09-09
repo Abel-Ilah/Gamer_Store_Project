@@ -5,7 +5,7 @@ import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
-  get10MixedProducts,
+  getMixedProducts,
   GET_ALL_PRODUCTS,
   getFilteredProducts,
 } from "../features/products/productsSlice";
@@ -23,7 +23,7 @@ export function MixedProductsQuickLinks() {
 
   useEffect(() => {
     setProductsState({ loading: true, products: null, error: null });
-    dispatch(get10MixedProducts())
+    dispatch(getMixedProducts(10))
       .unwrap()
       .then((res) =>
         setProductsState({ loading: false, products: res, error: null })

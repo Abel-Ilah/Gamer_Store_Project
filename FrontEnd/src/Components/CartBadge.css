@@ -1,0 +1,9 @@
+#cart-badge:hover {
+  background: none !important;
+}
+#cart-badge .icon {
+  transition: all 0.3s;
+}
+#cart-badge:hover .icon {
+  color: red !important;
+}

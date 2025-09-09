@@ -7,9 +7,11 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useEffect, useState } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
-import { get10DiscountedProducts } from "../features/products/productsSlice";
+import {
+  getDiscountedProducts,
+  GET_DISCOUNTED_PRODUCTS,
+} from "../features/products/productsSlice";
 import { useDispatch } from "react-redux";
-import { LoadingPage } from "./LoadingPage";
 
 export function DiscountedProductsQuickLinks() {
   const [productsState, setProductsState] = useState({
@@ -24,7 +26,6 @@ export function DiscountedProductsQuickLinks() {
   const theme = useTheme();
   const isLgOrUp = useMediaQuery(theme.breakpoints.up("lg"));
   const dispatch = useDispatch();
-
   useEffect(() => {
     setSlides(
       isLgOrUp
@@ -35,16 +36,38 @@ export function DiscountedProductsQuickLinks() {
 
   useEffect(() => {
     setProductsState({ loading: true, products: null, error: null });
-    dispatch(get10DiscountedProducts())
-      .unwrap()
-      .then((res) =>
-        setProductsState({ loading: false, products: res, error: null })
-      )
-      .catch((err) =>
-        setProductsState({ loading: false, products: null, error: err })
+    let cachedProducts = JSON.parse(sessionStorage.getItem("10Products"));
+    if (cachedProducts && cachedProducts.length > 0) {
+      const cachedSearch = cachedProducts.find(
+        (storedSearch) => storedSearch.tag === GET_DISCOUNTED_PRODUCTS
       );
-  }, []);
 
+      if (cachedSearch) {
+        setProductsState({
+          loading: false,
+          products: cachedSearch.products,
+          error: null,
+        });
+        return;
+      }
+    }
+    dispatch(getDiscountedProducts(10))
+      .unwrap()
+      .then((res) => {
+        const newSearch = {
+          products: res,
+          tag: GET_DISCOUNTED_PRODUCTS,
+        };
+        cachedProducts = cachedProducts
+          ? [newSearch, ...cachedProducts]
+          : [newSearch];
+        sessionStorage.setItem("10Products", JSON.stringify(cachedProducts));
+        setProductsState({ loading: false, products: res, error: null });
+      })
+      .catch((err) => {
+        setProductsState({ loading: false, products: null, error: err });
+      });
+  }, [dispatch]);
   const settings = {
     dots: false,
     infinite: true,
@@ -77,22 +100,24 @@ export function DiscountedProductsQuickLinks() {
       </div>
     );
   }
-  if (productsState.loading) return <LoadingPage />;
-  return productsState.products && productsState.products.length > 0 ? (
-    <div
-      className="discounted-products"
-      onMouseEnter={() => setShowArrows(true)}
-      onMouseLeave={() => setShowArrows(false)}
-    >
-      <Slider {...settings}>
-        {productsState.products.map((p) => (
-          <div key={p.id}>
-            <div style={{ margin: "0 5px" }}>
-              <DiscountedProduct product={p} />
+  return (
+    productsState.products &&
+    productsState.products.length > 0 && (
+      <div
+        className="discounted-products"
+        onMouseEnter={() => setShowArrows(true)}
+        onMouseLeave={() => setShowArrows(false)}
+      >
+        <Slider {...settings}>
+          {productsState.products.map((p) => (
+            <div key={p.id}>
+              <div style={{ margin: "0 5px" }}>
+                <DiscountedProduct product={p} />
+              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
-    </div>
-  ) : null;
+          ))}
+        </Slider>
+      </div>
+    )
+  );
 }

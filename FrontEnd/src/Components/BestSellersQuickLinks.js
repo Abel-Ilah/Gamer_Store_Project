@@ -5,7 +5,7 @@ import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
-  get10BestSellers,
+  getBestSellers,
   GET_BEST_SELLERS,
   getFilteredProducts,
 } from "../features/products/productsSlice";
@@ -23,14 +23,37 @@ export function BestSellersQuickLinks() {
 
   useEffect(() => {
     setProductsState({ loading: true, products: null, error: null });
-    dispatch(get10BestSellers())
+    let cachedProducts = JSON.parse(sessionStorage.getItem("10Products"));
+    if (cachedProducts && cachedProducts.length > 0) {
+      const cachedSearch = cachedProducts.find(
+        (storedSearch) =>
+          storedSearch.tag && storedSearch.tag === GET_BEST_SELLERS
+      );
+
+      if (cachedSearch) {
+        setProductsState({
+          loading: false,
+          products: cachedSearch.products,
+          error: null,
+        });
+        return;
+      }
+    }
+    dispatch(getBestSellers(10))
       .unwrap()
-      .then((res) =>
-        setProductsState({ loading: false, products: res, error: null })
-      )
+      .then((res) => {
+        const newSearch = {
+          products: res,
+          tag: GET_BEST_SELLERS,
+        };
+        cachedProducts = cachedProducts
+          ? [newSearch, ...cachedProducts]
+          : [newSearch];
+        sessionStorage.setItem("10Products", JSON.stringify(cachedProducts));
+        setProductsState({ loading: false, products: res, error: null });
+      })
       .catch((err) => {
         setProductsState({ loading: false, products: null, error: err });
-        console.log("the erro is : ", err);
       });
   }, []);
 

@@ -1,5 +1,5 @@
 .cart {
-  background-color: rgb(241, 240, 240);
+  /* background-color: rgb(241, 240, 240); */
   padding: 20px 0;
   min-height: 100vh;
   position: relative;
@@ -13,11 +13,11 @@
 }
 .cart .cart-item {
   position: relative;
-  border-radius: 10px;
+  border-radius: 0;
   margin-bottom: 10px;
   padding: 8px;
-  border-bottom: 1px solid rgb(212, 209, 209);
-  border-left: 1px solid rgb(212, 209, 209);
+  box-shadow: 0px 0px 27px 6px rgba(0, 0, 0, 0.16);
+
   box-sizing: border-box;
   background-color: white;
 }
@@ -220,8 +220,8 @@
 .cart .content .checkout {
   padding: 15px;
   background-color: white;
-  border-radius: 10px;
   margin-bottom: 10px;
+  box-shadow: 0px 0px 27px 6px rgba(0, 0, 0, 0.16);
 }
 .cart .content .checkout ul li {
   padding: 5px 0;

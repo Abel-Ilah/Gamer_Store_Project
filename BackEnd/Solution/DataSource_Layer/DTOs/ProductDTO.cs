@@ -1,5 +1,8 @@
-﻿namespace DataSource.DTOs
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace DataSource.DTOs
 {
+    [Keyless]
     public class ProductDTO
     {
         public int Id { get; set; }

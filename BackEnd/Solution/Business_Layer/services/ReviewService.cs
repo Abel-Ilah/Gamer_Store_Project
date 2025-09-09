@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataSource.DTOs;
 using DataSource.Entities;
 using DataSource.Repositories;
+using Microsoft.VisualBasic;
 
 namespace Services.services
 {
@@ -42,8 +44,11 @@ namespace Services.services
         {
             return await _reviewRepository.GetReviewsByProductIdAsync(productId);
         }
-    
-        
+
+        public async Task<List<ReadReviewDTO2>> GetTopReviews(int pageSize)
+        {
+            return await _reviewRepository.GetTopReviews(pageSize);
+        }
     }
 
 }

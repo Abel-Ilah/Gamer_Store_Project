@@ -186,6 +186,28 @@ namespace APIs.Controllers
                 return StatusCode(500, $"Error: {ex.Message} - Inner: {ex.InnerException?.Message}");
             }
         }
+
+
+        [HttpGet("top-reviews")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ReadReviewDTO2>>> GetTopReviewsAsync(int pageSize)
+        {
+            if (pageSize <= 0) pageSize = 10;
+
+            try
+            {
+                var reviews = await _reviewService.GetTopReviews(pageSize);
+                return reviews != null && reviews.Count > 0 ? Ok(reviews) : NotFound("no review found");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"internal server error : {ex.Message}");
+            }
+
+        }
     }
+
 
 }

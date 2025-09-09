@@ -1,0 +1,113 @@
+/* ReviewCard.css */
+
+.review-card * {
+  margin: 0;
+  text-align: start;
+}
+.review-card > * {
+  padding: 0 15px;
+}
+.review-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 15px 0;
+  transition: transform 0.2s ease;
+  height: 350px;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+  border-color: gray;
+}
+.review-card:hover .linked-product {
+  border-top-color: gray;
+}
+.review-card .info {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.review-card .info .avatar {
+  font-size: 50px;
+  color: gray;
+}
+.review-card .firstName {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 0;
+}
+.review-card .content {
+  margin-bottom: 10px;
+  flex-grow: 1;
+}
+.review-card .content > * {
+  margin-bottom: 5px;
+}
+.review-card .content .rate {
+  font-size: 1.7rem;
+}
+.review-card .content .comment {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.review-card .linked-product {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid #e0e0e0;
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 1rem;
+  color: #555;
+}
+.review-card .linked-product img {
+  aspect-ratio: 1/1;
+  width: 50px;
+  object-fit: contain;
+}
+.review-card .linked-product .name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  margin: 0;
+  color: var(--primary-color);
+}
+.review-card .linked-product .name:hover {
+  color: red;
+}
+.review-comment {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+/* Responsive
+@media (max-width: 600px) {
+  .review-card {
+    padding: 12px;
+  }
+
+  .review-username {
+    font-size: 0.95rem;
+  }
+
+  .review-comment {
+    font-size: 0.9rem;
+  }
+} */

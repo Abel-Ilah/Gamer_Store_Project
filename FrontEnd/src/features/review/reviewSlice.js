@@ -17,7 +17,20 @@ export const getProductReviews = createAsyncThunk(
     }
   }
 );
-
+export const getTopReviews = createAsyncThunk(
+  "reviews/topReviews",
+  async (pageSize, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5268/api/reviews/top-reviews?pageSize=${pageSize}`,
+        { signal: controller.signal }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 export const addReview = createAsyncThunk(
   "reviews/addReview",
   async (review, { rejectWithValue }) => {
@@ -48,7 +61,6 @@ export const editReview = createAsyncThunk(
     }
   }
 );
-
 export const deleteReview = createAsyncThunk(
   "reviews/deleteReview",
   async (reviewId, { rejectWithValue }) => {

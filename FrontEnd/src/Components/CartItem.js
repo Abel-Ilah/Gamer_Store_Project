@@ -67,137 +67,168 @@ export function CartItem({ item }) {
   }
 
   function increaseQunatityByOne() {
-    setStatus({
-      loading: true,
-      success: false,
-      error: null,
-      operation: UPDATE_ITEM,
-    });
-    dispatch(
-      UpdateItemQuantity({
-        itemId: item.id,
-        quantity: item.quantity + 1,
-      })
-    )
-      .unwrap()
-      .then((res) => {
-        if (res) {
-          dispatch(
-            updateItemQuantityLocal({
-              itemId: item.id,
-              quantity: item.quantity + 1,
-            })
-          );
-          dispatch(
-            showMessage({
-              message: `Item Quantity Updated !`,
-              severity: SEVERITY_SUCCESS,
-            })
-          );
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+    if (currentUser) {
+      setStatus({
+        loading: true,
+        success: false,
+        error: null,
+        operation: UPDATE_ITEM,
+      });
+      dispatch(
+        UpdateItemQuantity({
+          itemId: item.id,
+          quantity: item.quantity + 1,
+        })
+      )
+        .unwrap()
+        .then((res) => {
+          if (res) {
+            dispatch(
+              updateItemQuantityLocal({
+                itemId: item.id,
+                quantity: item.quantity + 1,
+              })
+            );
+            dispatch(
+              showMessage({
+                message: `Item Quantity Updated !`,
+                severity: SEVERITY_SUCCESS,
+              })
+            );
+            setStatus({
+              loading: false,
+              success: true,
+              error: null,
+              operation: UPDATE_ITEM,
+            });
+          } else {
+            throw new Error("operation failed, quantity not updated");
+          }
+        })
+        .catch((err) => {
           setStatus({
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error: err,
             operation: UPDATE_ITEM,
           });
-        } else {
-          throw new Error("operation failed, quantity not updated");
-        }
-      })
-      .catch((err) => {
-        setStatus({
-          loading: false,
-          success: false,
-          error: err,
-          operation: UPDATE_ITEM,
         });
-      });
+    } else {
+      dispatch(
+        updateItemQuantityLocal({
+          itemId: item.id,
+          quantity: item.quantity + 1,
+        })
+      );
+    }
   }
 
   function decreaseQunatityByOne() {
-    setStatus({
-      loading: true,
-      success: false,
-      error: null,
-      operation: UPDATE_ITEM,
-    });
-    dispatch(
-      UpdateItemQuantity({
-        itemId: item.id,
-        quantity: item.quantity - 1,
-      })
-    )
-      .unwrap()
-      .then((res) => {
-        if (res) {
-          dispatch(
-            updateItemQuantityLocal({
-              itemId: item.id,
-              quantity: item.quantity - 1,
-            })
-          );
-          dispatch(
-            showMessage({
-              message: `Item Quantity Updated !`,
-              severity: SEVERITY_SUCCESS,
-            })
-          );
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+    if (currentUser) {
+      setStatus({
+        loading: true,
+        success: false,
+        error: null,
+        operation: UPDATE_ITEM,
+      });
+      dispatch(
+        UpdateItemQuantity({
+          itemId: item.id,
+          quantity: item.quantity - 1,
+        })
+      )
+        .unwrap()
+        .then((res) => {
+          if (res) {
+            dispatch(
+              updateItemQuantityLocal({
+                itemId: item.id,
+                quantity: item.quantity - 1,
+              })
+            );
+            dispatch(
+              showMessage({
+                message: `Item Quantity Updated !`,
+                severity: SEVERITY_SUCCESS,
+              })
+            );
+            setStatus({
+              loading: false,
+              success: true,
+              error: null,
+              operation: UPDATE_ITEM,
+            });
+          } else {
+            throw new Error("operation failed, quntity not updated");
+          }
+        })
+        .catch((err) => {
           setStatus({
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error: err,
             operation: UPDATE_ITEM,
           });
-        } else {
-          throw new Error("operation failed, quntity not updated");
-        }
-      })
-      .catch((err) => {
-        setStatus({
-          loading: false,
-          success: false,
-          error: err,
-          operation: UPDATE_ITEM,
         });
-      });
+    } else {
+      dispatch(
+        updateItemQuantityLocal({
+          itemId: item.id,
+          quantity: item.quantity - 1,
+        })
+      );
+    }
   }
 
   function deleteItem() {
-    setStatus({
-      loading: true,
-      success: false,
-      error: null,
-      operation: DELETE_ITEM,
-    });
-    dispatch(DeleteItem(item.id))
-      .unwrap()
-      .then((res) => {
-        if (res) {
-          dispatch(deleteItemLocal(item.id));
-          dispatch(
-            showMessage({
-              message: `Item has been deleted from your cart.`,
-              severity: SEVERITY_SUCCESS,
-            })
-          );
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+    if (currentUser) {
+      setStatus({
+        loading: true,
+        success: false,
+        error: null,
+        operation: DELETE_ITEM,
+      });
+      dispatch(DeleteItem(item.id))
+        .unwrap()
+        .then((res) => {
+          if (res) {
+            dispatch(deleteItemLocal(item.id));
+            dispatch(
+              showMessage({
+                message: `Item has been deleted from your cart.`,
+                severity: SEVERITY_SUCCESS,
+              })
+            );
+            setStatus({
+              loading: false,
+              success: true,
+              error: null,
+              operation: DELETE_ITEM,
+            });
+          } else {
+            throw new Error("operation failed, the item not deleted");
+          }
+        })
+        .catch((err) => {
           setStatus({
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error: err,
             operation: DELETE_ITEM,
           });
-        } else {
-          throw new Error("operation failed, the item not deleted");
-        }
-      })
-      .catch((err) => {
-        setStatus({
-          loading: false,
-          success: false,
-          error: err,
-          operation: DELETE_ITEM,
         });
-      });
+    } else {
+      dispatch(deleteItemLocal(item.id));
+      dispatch(
+        showMessage({
+          message: `Item has been deleted from your cart.`,
+          severity: SEVERITY_SUCCESS,
+        })
+      );
+    }
   }
 
   const totalPrice = useMemo(() => {

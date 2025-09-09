@@ -84,7 +84,7 @@ export function FilteredProducts() {
   const { categoryName: selectedCategory } = useParams();
   const dispatch = useDispatch();
 
-  const { products, loading, error } = useSelector((state) => state.products);
+  const { data, loading, error } = useSelector((state) => state.products);
 
   function handleFastFilterBtnsClick(tag) {
     const filter = {
@@ -129,9 +129,9 @@ export function FilteredProducts() {
         <div style={{ flexGrow: 1 }}>
           <FastFilter handlBtnClick={handleFastFilterBtnsClick} />
           {loading && <LoadingPage />}
-          {products && products.length > 0 && (
+          {data && data.products && data.products.length > 0 && (
             <div>
-              <ProductsGrid products={products} />
+              <ProductsGrid products={data.products} />
               <div className="next-prev-page-wraper">
                 <Button
                   style={{
@@ -146,8 +146,9 @@ export function FilteredProducts() {
                 <Button
                   style={{
                     margin: "15px 0",
-                    pointerEvents: pageSize > products.length ? "none" : "auto",
-                    opacity: pageSize > products.length ? 0.5 : 1,
+                    pointerEvents:
+                      pageSize > data.products.length ? "none" : "auto",
+                    opacity: pageSize > data.products.length ? 0.5 : 1,
                   }}
                   variant="contained"
                 >

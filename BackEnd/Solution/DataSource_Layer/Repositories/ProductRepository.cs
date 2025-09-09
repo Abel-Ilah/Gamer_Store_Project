@@ -1,8 +1,10 @@
 ﻿using System.Linq.Expressions;
+using System.Security.Cryptography;
 using DataSource.Data;
 using DataSource.DTOs;
 using DataSource.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace DataSource.Repositories
 {
@@ -15,18 +17,23 @@ namespace DataSource.Repositories
             _context = context;
         }
 
-
-        public async Task<IEnumerable<ProductDTO>> GetAllAsync(int pageNumber,int pageSize,int minPrice,int maxPrice)
+         
+        public async Task<ProductsListDTO?> GetAllProductsAsync(int pageNumber,int pageSize,int minPrice,int maxPrice)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
-
-            var productsDTOs = await _context.Products
+            var dto = new ProductsListDTO();
+            if (pageNumber == 1)
+            {
+                dto.TotalProducts = await _context.Products.Where(p=>p.Price>=minPrice && p.Price <=maxPrice).CountAsync();
+                if (dto.TotalProducts == 0) return null;
+            }
+            
+            dto.Products = await _context.Products
                 .Where(p => p.Price >= minPrice && p.Price <= maxPrice).OrderBy(p=>p.Name)
                 .Select(p => new ProductDTO
                 {
                     Id = p.Id,
                     Name = p.Name,
-                   
                     Price = p.Price,
                     QuantityInStock = p.QuantityInStock,
                     Date = p.Date,
@@ -46,18 +53,57 @@ namespace DataSource.Repositories
                 }).AsNoTracking().Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync();
 
-            return productsDTOs;
+            return dto.Products.Count > 0 ? dto : null;
+
+
+        }
+        public async Task<List<ProductDTO>> GetAllProductsAsync(int pageSize)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var Products = await _context.Products
+                .OrderBy(p => p.Name)
+                .Select(p => new ProductDTO
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    QuantityInStock = p.QuantityInStock,
+                    Date = p.Date,
+                    ImageUrl = p.ProductImages.Where(pi => pi.IsMain).Select(pi => pi.ImageUrl).SingleOrDefault(),
+                    DiscountValue = Math.Max(
+                        p.ProductDiscounts
+                            .Where(pd => pd.Discount.StartDate <= today && pd.Discount.EndDate >= today && pd.Discount.IsActive)
+                            .Select(pd => pd.Discount.Value)
+                            .FirstOrDefault(),
+
+                        p.Category.CategoriesDiscounts
+                            .Where(cd => cd.Discount.StartDate <= today && cd.Discount.EndDate >= today && cd.Discount.IsActive)
+                            .Select(cd => cd.Discount.Value)
+                            .FirstOrDefault()
+                    )
+
+                }).AsNoTracking().Take(pageSize)
+                .ToListAsync();
+
+            return Products;
 
 
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetNewProductsAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ProductsListDTO?> GetNewProductsAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
-            DateOnly _60DaysAgo = today.AddDays(-60);
+            DateOnly _30DaysAgo = today.AddDays(-30);
 
-            var productsDTOs = await _context.Products
-                .Where(p => p.Date >= _60DaysAgo && p.Price >= minPrice && p.Price <= maxPrice)
+            var dto = new ProductsListDTO();
+            if (pageNumber == 1)
+            {
+                dto.TotalProducts = await _context.Products.Where( p => p.Date >= _30DaysAgo && p.Price >= minPrice && p.Price <= maxPrice).CountAsync();
+                if (dto.TotalProducts == 0) return null;
+            }
+
+             dto.Products = await _context.Products
+                .Where(p => p.Date >= _30DaysAgo && p.Price >= minPrice && p.Price <= maxPrice)
                 .Select(p => new ProductDTO
                 {
                     Id = p.Id,
@@ -80,16 +126,54 @@ namespace DataSource.Repositories
                 }).OrderByDescending(p=>p.Date).Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync();
 
-            return productsDTOs;
+            return dto.Products.Count > 0 ? dto : null;
+
+        }
+        public async Task<List<ProductDTO>> GetNewProductsAsync(int pageSize)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly _30DaysAgo = today.AddDays(-30);
+
+         
+           var Products = await _context.Products
+               .Where(p => p.Date >= _30DaysAgo).OrderByDescending(p=>p.Date)
+               .Select(p => new ProductDTO
+               {
+                   Id = p.Id,
+                   Name = p.Name,
+                   Price = p.Price,
+                   QuantityInStock = p.QuantityInStock,
+                   Date = p.Date,
+                   ImageUrl = p.ProductImages.Where(pi => pi.IsMain).Select(pi => pi.ImageUrl).SingleOrDefault(),
+                   DiscountValue = Math.Max(
+                       p.ProductDiscounts
+                           .Where(pd => pd.Discount.StartDate <= today && pd.Discount.EndDate >= today && pd.Discount.IsActive)
+                           .Select(pd => pd.Discount.Value)
+                           .FirstOrDefault(),
+
+                       p.Category.CategoriesDiscounts
+                           .Where(cd => cd.Discount.StartDate <= today && cd.Discount.EndDate >= today && cd.Discount.IsActive)
+                           .Select(cd => cd.Discount.Value)
+                           .FirstOrDefault()
+                   )
+               }).OrderByDescending(p => p.Date).Take(pageSize)
+               .ToListAsync();
+
+            return Products;
 
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetProductsByCategoryNameAsync(string categoryName, int pageNumber, int pageSize, decimal minPrice, decimal maxPrice)
+        public async Task<ProductsListDTO?> GetProductsByCategoryNameAsync(string categoryName, int pageNumber, int pageSize, decimal minPrice, decimal maxPrice)
         {
             
             var today = DateOnly.FromDateTime(DateTime.Today);
-           
-            var productsDTOs = await _context.Products
+            var dto = new ProductsListDTO();
+            if (pageNumber == 1)
+            {
+                dto.TotalProducts = await _context.Products.Where(p => p.Category.Name==categoryName && p.Price >= minPrice && p.Price <= maxPrice).CountAsync();
+                if (dto.TotalProducts == 0) return null;
+            }
+            dto.Products = await _context.Products
                 .Where(p => p.Category.Name ==categoryName && p.Price >= minPrice && p.Price <= maxPrice)
                 .Select(p => new ProductDTO
                 {
@@ -113,31 +197,16 @@ namespace DataSource.Repositories
                 }).Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync();
 
-            return productsDTOs;
+            return dto.Products.Count > 0? dto : null;
 
         }
-     
-        public async Task<IEnumerable<ProductDTO>>GetDiscountedProducts(int pageNumber,int pageSize,int minPrice,int maxPrice)
+        public async Task<List<ProductDTO>> GetProductsByCategoryNameAsync(string categoryName, int pageSize)
         {
-            var today = DateOnly.FromDateTime(DateTime.Today);
 
-            var productsDTOs = await _context.Products
-                .Where(p =>
-                  (
-                    p.ProductDiscounts.Any(pd =>
-                    
-                        pd.Discount.StartDate <= today &&
-                        pd.Discount.EndDate >= today &&
-                        pd.Discount.IsActive)
-                    ||
-                    p.Category.CategoriesDiscounts.Any(cd =>
-                        cd.Discount.StartDate <= today &&
-                        cd.Discount.EndDate >= today &&
-                        cd.Discount.IsActive
-                  )
-                    &&
-                    p.Price >= minPrice && p.Price <= maxPrice
-                  ))
+            var today = DateOnly.FromDateTime(DateTime.Today);
+         
+            var Products = await _context.Products
+                .Where(p => p.Category.Name == categoryName)
                 .Select(p => new ProductDTO
                 {
                     Id = p.Id,
@@ -157,17 +226,68 @@ namespace DataSource.Repositories
                             .Select(cd => cd.Discount.Value)
                             .FirstOrDefault()
                     )
-                }).Skip((pageNumber - 1)* pageSize).Take(pageSize)
+                }).Take(pageSize)
                 .ToListAsync();
 
-            return productsDTOs;
+            return Products;
 
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetBestSellers(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ProductsListDTO?> GetDiscountedProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        {
+           
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var dto = new ProductsListDTO();
+
+          if(pageNumber == 1)
+            {
+              dto.TotalProducts = await _context.Products
+              .Where(p =>
+                (
+                  p.ProductDiscounts.Any(pd =>
+
+                      pd.Discount.StartDate <= today &&
+                      pd.Discount.EndDate >= today &&
+                      pd.Discount.IsActive)
+                  ||
+                  p.Category.CategoriesDiscounts.Any(cd =>
+                      cd.Discount.StartDate <= today &&
+                      cd.Discount.EndDate >= today &&
+                      cd.Discount.IsActive
+                )
+                  &&
+                  p.Price >= minPrice && p.Price <= maxPrice
+                )).CountAsync();
+                if (dto.TotalProducts == 0) return null;
+            }
+
+            dto.Products = await _context.Set<ProductDTO>().FromSqlRaw("EXEC dbo.GetDiscountedProducts @PageNumber = {0}, @PageSize = {1}, @MinPrice = {2}, @MaxPrice = {3}",pageNumber,pageSize,minPrice,maxPrice).ToListAsync();
+            return dto.Products.Count > 0? dto:null;
+
+        }
+        public async Task<List<ProductDTO>> GetDiscountedProducts(int pageSize)
+        {
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var Products = await _context.Set<ProductDTO>().FromSqlRaw("EXEC dbo.GetDiscountedProducts @PageNumber = {0}, @PageSize = {1}, @MinPrice = {2}, @MaxPrice = {3}", 1, pageSize, 1, 10000000).ToListAsync();
+
+            return Products;
+        }
+
+
+        public async Task<ProductsListDTO?> GetBestSellers(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
-            var productsDTOs = await _context.Products.Where(p => p.Price >= minPrice && p.Price <= maxPrice && p.OrderItems.Any())
+            var dto = new ProductsListDTO();
+
+             if (pageNumber == 1)
+             {
+                dto.TotalProducts = await _context.Products.Where(p => p.OrderItems.Any() && p.Price >= minPrice && p.Price <= maxPrice).CountAsync();
+                if (dto.TotalProducts == 0) return null;
+             }
+
+            dto.Products = await _context.Products.Where(p => p.Price >= minPrice && p.Price <= maxPrice && p.OrderItems.Any())
                 .Select(p => new { product = p, totalSold = p.OrderItems.Sum(oi => oi.Quantity) }
                ).OrderByDescending(obj => obj.totalSold).Select(obj => new ProductDTO
                {
@@ -191,11 +311,43 @@ namespace DataSource.Repositories
 
                }).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
-                   
-            return productsDTOs;
+
+            return dto.Products.Count > 0 ? dto : null;
+        }
+        public async Task<List<ProductDTO>> GetBestSellers( int pageSize)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+           
+            var Products = await _context.Products.Where(p => p.OrderItems.Any())
+                .Select(p => new { product = p, totalSold = p.OrderItems.Sum(oi => oi.Quantity) }
+               ).OrderByDescending(obj => obj.totalSold).Select(obj => new ProductDTO
+               {
+                   Id = obj.product.Id,
+                   Name = obj.product.Name,
+                   Price = obj.product.Price,
+                   QuantityInStock = obj.product.QuantityInStock,
+                   Date = obj.product.Date,
+                   ImageUrl = obj.product.ProductImages.Where(pi => pi.IsMain).Select(pi => pi.ImageUrl).SingleOrDefault(),
+                   DiscountValue = Math.Max(
+                     obj.product.ProductDiscounts
+                         .Where(pd => pd.Discount.StartDate <= today && pd.Discount.EndDate >= today && pd.Discount.IsActive)
+                         .Select(pd => pd.Discount.Value)
+                         .FirstOrDefault(),
+
+                     obj.product.Category.CategoriesDiscounts
+                         .Where(cd => cd.Discount.StartDate <= today && cd.Discount.EndDate >= today && cd.Discount.IsActive)
+                         .Select(cd => cd.Discount.Value)
+                         .FirstOrDefault()
+                 )
+
+               }).AsNoTracking().Take(pageSize).ToListAsync();
+
+
+            return Products;
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetRelatedProductsAsync(int productId,int pageSize)
+
+        public async Task<List<ProductDTO>> GetRelatedProductsAsync(int productId,int pageSize)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -231,7 +383,6 @@ namespace DataSource.Repositories
             return productsDTOs;
         }
 
-      
         public async Task<ProductDetailsDTO?> GetProductDetailsByIdAsync(int productId)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);

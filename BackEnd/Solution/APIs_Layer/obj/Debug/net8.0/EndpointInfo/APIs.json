@@ -737,6 +737,48 @@
             "content": {
               "text/plain": {
                 "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/All": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/ProductDTO"
@@ -807,7 +849,7 @@
         }
       }
     },
-    "/api/products/new-products": {
+    "/api/products/filtered-new-products": {
       "get": {
         "tags": [
           "Products"
@@ -855,6 +897,48 @@
             "content": {
               "text/plain": {
                 "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/new-products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/ProductDTO"
@@ -875,6 +959,72 @@
                   "items": {
                     "$ref": "#/components/schemas/ProductDTO"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/filtered-best-sellers": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "minPrice",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
                 }
               }
             }
@@ -889,31 +1039,7 @@
         ],
         "parameters": [
           {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
             "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "minPrice",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "maxPrice",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -957,7 +1083,7 @@
         }
       }
     },
-    "/api/products/{category}": {
+    "/api/products/filtered-{category}": {
       "get": {
         "tags": [
           "Products"
@@ -1013,6 +1139,56 @@
             "content": {
               "text/plain": {
                 "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{category}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/ProductDTO"
@@ -1040,7 +1216,7 @@
         }
       }
     },
-    "/api/products/discounts": {
+    "/api/products/filtered-discounts": {
       "get": {
         "tags": [
           "Products"
@@ -1072,6 +1248,48 @@
           },
           {
             "name": "maxPrice",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/discounts": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "pageSize",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -1663,6 +1881,77 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/reviews/top-reviews": {
+      "get": {
+        "tags": [
+          "Review"
+        ],
+        "parameters": [
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReadReviewDTO2"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReadReviewDTO2"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReadReviewDTO2"
+                  }
                 }
               }
             }
@@ -2666,6 +2955,23 @@
         },
         "additionalProperties": false
       },
+      "ProductsListDTO": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDTO"
+            },
+            "nullable": true
+          },
+          "totalProducts": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "ReadOrderDTO": {
         "type": "object",
         "properties": {
@@ -2775,6 +3081,35 @@
           },
           "user": {
             "$ref": "#/components/schemas/ShortUserDTO"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReadReviewDTO2": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "product": {
+            "$ref": "#/components/schemas/ShortProductDTO"
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

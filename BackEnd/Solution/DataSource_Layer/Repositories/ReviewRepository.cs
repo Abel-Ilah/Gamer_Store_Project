@@ -7,6 +7,7 @@ using DataSource.Data;
 
 namespace DataSource.Repositories
 {
+    using DataSource.DTOs;
     using DataSource.Entities;
     using Microsoft.EntityFrameworkCore;
 
@@ -58,9 +59,43 @@ namespace DataSource.Repositories
             return await _context.Reviews
                 .Where(r => r.ProductId == productId)
                 .Include(r => r.User)
-                .OrderByDescending(r => r.CreatedAt)
+                .OrderByDescending(r => r.CreatedAt).AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<List<ReadReviewDTO2>> GetTopReviews(int pageSize)
+        {
+            var TopReviews =await (from r in _context.Reviews
+                              join p in _context.Products
+                              on r.ProductId equals p.Id
+                              join u in _context.Users
+                              on r.UserId equals u.Id
+                              join pi in _context.ProductImages
+                              on p.Id equals pi.ProductId
+                              where pi.IsMain == true
+
+                              orderby r.Rating descending
+
+                              select new ReadReviewDTO2
+                              {
+                                  Id = r.Id,
+                                  Rating = r.Rating,
+                                  Comment = r.Comment,
+                                  CreatedAt = r.CreatedAt,
+                                  Product = new ShortProductDTO
+                                  {
+                                      id = p.Id,
+                                      name = p.Name,
+                                      imageUrl = pi.ImageUrl,
+                                  },
+                                  UserName = u.FirstName,
+                              }).ToListAsync();
+            return TopReviews;
+        }
+
+
     }
+
+
 
 }

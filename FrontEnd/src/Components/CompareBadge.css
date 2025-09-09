@@ -1,0 +1,13 @@
+.compare-badge .compare-icon {
+  font-size: 30px;
+  color: #2196f3;
+  transition: all 0.6s;
+  font-weight: bold;
+}
+.compare-badge:hover {
+  background: none !important;
+}
+.compare-badge:hover .compare-icon {
+  transform: rotate(-360deg);
+  color: red;
+}

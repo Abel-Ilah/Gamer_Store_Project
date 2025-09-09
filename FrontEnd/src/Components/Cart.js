@@ -86,7 +86,7 @@ export function Cart() {
       .then((products) => {
         setRelatedProducts(products);
       })
-      .catch((err) => console.log(`error : ${err}`));
+      .catch();
   }
 
   function checkoutBtnClick() {
