@@ -1,10 +1,12 @@
-.discounted-products {
+/* slider arrows (horizontal scroll arrows in slick component) */
+
+.slider {
   position: relative;
 }
 
-.discounted-products .arrow {
+.slider .arrow {
   position: absolute;
-  background-color: teal;
+  background-color: rgb(54, 54, 54);
   color: white;
   top: 50%;
   transform: translateY(-50%);
@@ -18,18 +20,20 @@
   justify-content: center;
   align-items: center;
 }
-.discounted-products .arrow svg {
+.slider .arrow svg {
   font-size: 30px;
 }
-.discounted-products .next {
+.slider .next {
   right: 10px;
 }
-.discounted-products .prev {
+.slider .prev {
   left: 10px;
 }
-.discounted-products .arrow:hover {
+.slider .arrow:hover {
   background-color: red;
 }
-.discounted-products .prev svg {
+.slider .prev svg {
   margin-left: 10px;
 }
+
+/* ====================== */

@@ -1,4 +1,5 @@
 import "./Cart.css";
+import "./Shared.css";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,6 +10,7 @@ import { GET_CART } from "../features/cart/CartSlice";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Divider } from "@mui/material";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { getRelatedProducts } from "../features/products/productsSlice";
 import { useMediaQuery, useTheme } from "@mui/material";
 import settings from "../appsettings.json";
@@ -19,6 +21,7 @@ export function Cart() {
     cart,
     loading: cartLoading,
     operation,
+    error,
   } = useSelector((state) => state.cart);
 
   const [slidesToShow, setSlidesToShow] = useState(6);
@@ -113,12 +116,20 @@ export function Cart() {
     }
   }
   return (
-    <div className="cart">
+    <div className="cart shared">
       <Container maxWidth="xl">
+        <div className="head">
+          <ShoppingCartOutlinedIcon className="icon" />
+          <h2 className="s-title">Shopping cart</h2>
+        </div>
+
         {cartLoading && operation === GET_CART && <CartSkeleton />}
-        {(!cart || cart.length === 0) && (
-          <div className="empty">Your cart is empty</div>
+
+        {cart && cart.length === 0 && (
+          <h4 className="empty">Your cart is empty</h4>
         )}
+        {error && <h4 className="error">{error}</h4>}
+
         {cart && cart.length > 0 && (
           <div className="content">
             {quantityError && (

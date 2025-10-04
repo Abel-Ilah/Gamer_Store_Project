@@ -53,7 +53,7 @@ export function MixedProductsQuickLinks() {
   }
 
   return productsState.products ? (
-    <>
+    <div className="py-3">
       <Title title="Mixed Products" />
       <div className="see-all-btn-wraper">
         <Link to={"/products/best-sellers"} onClick={handleSeeAllClick}>
@@ -68,6 +68,6 @@ export function MixedProductsQuickLinks() {
           return <Product Product={p} key={p.id} />;
         })}
       </HorizontalScroll>
-    </>
+    </div>
   ) : null;
 }

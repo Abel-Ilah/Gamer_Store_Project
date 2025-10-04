@@ -4,20 +4,13 @@
   min-height: 100vh;
   position: relative;
 }
-.cart .empty {
-  padding: 15px 10px;
-  font-weight: bold;
-  font-size: 1.5rem;
-  border-left: 15px solid rgba(221, 30, 30, 0.712);
-  background-color: rgb(248, 222, 222);
-}
+
 .cart .cart-item {
   position: relative;
   border-radius: 0;
   margin-bottom: 10px;
   padding: 8px;
-  box-shadow: 0px 0px 27px 6px rgba(0, 0, 0, 0.16);
-
+  box-shadow: 0px 0px 8px -1px rgba(0, 0, 0, 0.16);
   box-sizing: border-box;
   background-color: white;
 }
@@ -115,39 +108,12 @@
   font-weight: bold;
 }
 
-.cart .content .cart-item .loading {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: rgba(141, 140, 140, 0.493);
-  color: rgb(255, 251, 251);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2;
-  font-size: 2.5rem;
-  font-weight: bold;
-  border-radius: 5px;
+.cart .content .cart-item .delete-btn svg {
+  font-size: 2rem;
+  color: red;
 }
-
-.cart .content .cart-item .loading .circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid white;
-  border-top: 3px solid transparent;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+.cart .content .cart-item .delete-btn {
+  background-color: transparent;
 }
 
 /* error message:  */
@@ -221,7 +187,7 @@
   padding: 15px;
   background-color: white;
   margin-bottom: 10px;
-  box-shadow: 0px 0px 27px 6px rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 0px 8px -1px rgba(0, 0, 0, 0.16);
 }
 .cart .content .checkout ul li {
   padding: 5px 0;

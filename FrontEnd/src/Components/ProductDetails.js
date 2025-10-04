@@ -7,6 +7,8 @@ import LocalMallIcon from "@mui/icons-material/LocalMall";
 import Button from "@mui/material/Button";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +19,7 @@ import {
   ADD_ITEM,
 } from "../features/cart/CartSlice";
 import {
+  SEVERITY_ERROR,
   SEVERITY_SUCCESS,
   showMessage,
 } from "../features/snackbar/SnackbarSlice";
@@ -27,25 +30,41 @@ import { AddReview } from "./AddReview";
 import { getProductById } from "../features/product/productSlice";
 import { getProductReviews } from "../features/review/reviewSlice";
 import MessageIcon from "@mui/icons-material/Message";
+import {
+  addNewWishlistItem,
+  AddNewWishlistItemLocal,
+} from "../features/wishlist/WishlistSlice";
+import { styled } from "@mui/material/styles";
 
 export function ProductDetails() {
+  const [productState, setProductState] = useState({
+    product: null,
+    loading: false,
+    error: null,
+  });
   const [addToCartStatus, setAddToCartStatus] = useState({
     loading: false,
     error: null,
     success: false,
     operation: null,
   });
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { id } = useParams();
-
-  const [productState, setProductState] = useState({
-    product: null,
+  const [wishlistItemStatus, setWishlistItemStatus] = useState({
     loading: false,
     error: null,
+    success: false,
+    operation: null,
   });
 
+  const { user } = useSelector((state) => state.user);
+  const { cart } = useSelector((state) => state.cart);
+  const { wishlist } = useSelector((state) => state.wishlist);
+
   const { reviews: productReviews } = useSelector((state) => state.review);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // product-id:
+  const { id } = useParams();
 
   useEffect(() => {
     setProductState({ product: null, loading: true, error: null });
@@ -59,7 +78,7 @@ export function ProductDetails() {
       .catch((err) =>
         setProductState({ product: null, loading: false, error: err })
       );
-  }, []);
+  }, [id, dispatch]);
 
   const realPrice = useMemo(() => {
     return productState.product
@@ -69,6 +88,16 @@ export function ProductDetails() {
         )
       : 0;
   }, [productState.product]);
+
+  const isProductInCart = useMemo(() => {
+    if (!cart || cart.length === 0) return false;
+    return cart.some((item) => item.product.id === +id);
+  }, [cart, id]);
+
+  const isProductInWishlist = useMemo(() => {
+    if (!wishlist || wishlist.length === 0) return false;
+    return wishlist.some((item) => item.product.id === +id);
+  }, [wishlist, id]);
 
   const [quantity, setQuantity] = useState(1);
 
@@ -91,8 +120,8 @@ export function ProductDetails() {
       discountValue: product.discountValue,
       imageUrl: getMainImageUrl(),
     };
-    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    if (currentUser) {
+
+    if (user) {
       setAddToCartStatus({
         loading: true,
         error: null,
@@ -101,7 +130,7 @@ export function ProductDetails() {
       });
       dispatch(
         AddNewItem({
-          userId: currentUser.id,
+          userId: user.id,
           productId: product.id,
           quantity: quantity,
         })
@@ -150,6 +179,75 @@ export function ProductDetails() {
     }
   }
 
+  function handleAddToWishlist() {
+    const product = productState.product;
+    const wishlistItemProduct = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      date: product.date,
+      quantityInStock: product.quantityInStock,
+      discountValue: product.discountValue,
+      imageUrl: getMainImageUrl(),
+    };
+    if (user) {
+      setWishlistItemStatus({
+        loading: true,
+        error: null,
+        success: false,
+        operation: ADD_ITEM,
+      });
+      dispatch(
+        addNewWishlistItem({
+          userId: user.id,
+          productId: product.id,
+        })
+      )
+        .unwrap()
+        .then((res) => {
+          const addedItem = res;
+          const localItem = {
+            id: addedItem.id,
+            userId: addedItem.userId,
+            product: wishlistItemProduct,
+          };
+          dispatch(AddNewWishlistItemLocal(localItem));
+          setWishlistItemStatus({
+            loading: false,
+            error: null,
+            success: true,
+            operation: ADD_ITEM,
+          });
+          dispatch(
+            showMessage({
+              message: "Done! The product has been added to your wishlist.",
+              severity: SEVERITY_SUCCESS,
+            })
+          );
+        })
+        .catch((err) => {
+          setWishlistItemStatus({
+            loading: false,
+            error: err,
+            success: false,
+            operation: ADD_ITEM,
+          });
+          dispatch(
+            showMessage({
+              message: err,
+              severity: SEVERITY_ERROR,
+            })
+          );
+        });
+    } else {
+      const newItem = {
+        id: crypto.randomUUID(),
+        userId: null,
+        product: wishlistItemProduct,
+      };
+      dispatch(AddNewWishlistItemLocal(newItem));
+    }
+  }
   function handleBuyNow() {
     const product = productState.product;
     navigate("/checkout", {
@@ -397,23 +495,29 @@ export function ProductDetails() {
                         size={{ xs: 9, sm: 9, md: 12, lg: 9 }}
                         order={{ xs: 2, sm: 2, md: 4, lg: 2 }}
                       >
-                        <div className="add-to-cart-wraper">
-                          {addToCartStatus.loading && (
-                            <div className="loading">
-                              <span className="circle"></span>
-                            </div>
-                          )}
-                          <Button
-                            variant="contained"
-                            className="add-to-cart"
-                            onClick={handleAddToCart}
-                            disabled={
-                              productState.product.quantityInStock === 0
-                            }
-                          >
-                            add to cart <ShoppingCartIcon />
-                          </Button>
-                        </div>
+                        <Button
+                          loading={addToCartStatus.loading}
+                          loadingIndicator={
+                            <CircularProgress
+                              size={25}
+                              style={{ color: "white" }}
+                            />
+                          }
+                          variant="contained"
+                          className="add-to-cart"
+                          onClick={handleAddToCart}
+                          disabled={
+                            productState.product.quantityInStock === 0 ||
+                            isProductInCart
+                          }
+                          style={
+                            isProductInCart
+                              ? { backgroundColor: "#cccccc" }
+                              : null
+                          }
+                        >
+                          add to cart <ShoppingCartIcon />
+                        </Button>
                       </Grid>
                       <Grid
                         size={{ xs: 3, sm: 1.5, md: 2.5, lg: 1.5 }}
@@ -432,9 +536,25 @@ export function ProductDetails() {
                         order={{ xs: 5, sm: 2, md: 2, lg: 4 }}
                       >
                         <Button
+                          loading={wishlistItemStatus.loading}
+                          loadingIndicator={
+                            <CircularProgress
+                              size={25}
+                              style={{ color: "white" }}
+                            />
+                          }
                           variant="contained"
                           className="wishlist"
-                          disabled={productState.product.quantityInStock === 0}
+                          onClick={handleAddToWishlist}
+                          disabled={
+                            productState.product.quantityInStock === 0 ||
+                            isProductInWishlist
+                          }
+                          style={
+                            isProductInWishlist
+                              ? { backgroundColor: "#cccccc" }
+                              : null
+                          }
                         >
                           <FavoriteIcon />
                         </Button>

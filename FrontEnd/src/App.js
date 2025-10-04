@@ -25,6 +25,16 @@ import {
   markCartAsReady,
 } from "./features/cart/CartSlice";
 import { FilteredProducts } from "./Components/FilteredProducts";
+import { Wishlist } from "./Components/Wishlist";
+import {
+  getGuestWishlist,
+  getUserWishlist,
+} from "./features/wishlist/WishlistSlice";
+import {
+  getGuestCompareList,
+  getUserCompareList,
+} from "./features/Compare/CompareSlice";
+import { Comparelist } from "./Components/Comparelist";
 
 function App() {
   const dispatch = useDispatch();
@@ -43,19 +53,19 @@ function App() {
   useEffect(() => {
     if (isUserReady) {
       if (user) {
-        const hasCart = localStorage.getItem("hasCart");
-        if (hasCart && hasCart === "true") {
-          dispatch(GetUserCart(user.id));
-        } else {
-          dispatch(markCartAsReady());
-        }
+        dispatch(GetUserCart(user.id));
+        dispatch(getUserWishlist(user.id));
+        dispatch(getUserCompareList(user.id));
       } else {
         dispatch(getGuestCart());
+        dispatch(getGuestWishlist());
+        dispatch(getGuestCompareList());
       }
     }
   }, [isUserReady, user, dispatch]);
 
   const location = useLocation();
+
   return (
     <CategoriesProvider>
       <div className="App">
@@ -89,12 +99,15 @@ function App() {
 
           <Route element={<ProtectedRoute requireLogin requireCart />}>
             <Route path="/cart" element={<Cart />} />
+            <Route path="/compare" element={<Comparelist />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/wishlist" element={<Wishlist />} />
           </Route>
 
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
         </Routes>
         <SnackBar />
+
         <Footer />
       </div>
     </CategoriesProvider>

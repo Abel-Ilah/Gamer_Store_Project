@@ -8,6 +8,5 @@ namespace DataSource.DTOs
        public string Name { get; set; } = null!;
        public string imagePath { get; set; } = "";
 
-
     }
 }

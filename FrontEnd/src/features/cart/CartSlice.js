@@ -10,14 +10,35 @@ export const DELETE_CART = "DELETE_CART";
 
 export const GetUserCart = createAsyncThunk(
   "cart/getCart",
-  async (userId, { rejectWithValue }) => {
+  async (userId, thunkAPI) => {
+    const guestCart = JSON.parse(sessionStorage.getItem("cart")) || [];
+
+    if (guestCart && guestCart.length > 0) {
+      const itemsToAddToCart = guestCart.map((item) => ({
+        userId,
+        productId: item.product.id,
+        quantity: item.quantity,
+      }));
+
+      const action = await thunkAPI.dispatch(
+        addColllectionOfCartItems(itemsToAddToCart)
+      );
+      if (action.meta.requestStatus === "fulfilled") {
+        localStorage.setItem("hasCart", "true");
+      }
+      sessionStorage.removeItem("cart");
+    }
+    const userHasCart = localStorage.getItem("hasCart");
+
+    if (userHasCart && userHasCart === "false") return [];
+
     try {
       const res = await axios.get(
         `http://localhost:5268/api/cart?userId=${userId}`
       );
       return res.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -30,6 +51,22 @@ export const AddNewItem = createAsyncThunk(
         "http://localhost:5268/api/cart/addCartItem",
         item
       );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const addColllectionOfCartItems = createAsyncThunk(
+  "cart/addRange",
+  async (items, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5268/api/cart/AddRange",
+        items
+      );
+
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -113,7 +150,7 @@ export const cartSlice = createSlice({
 
     getGuestCart: (state) => {
       const storedCart = JSON.parse(sessionStorage.getItem("cart"));
-      state.cart = storedCart && storedCart.length > 0 ? storedCart : null;
+      state.cart = storedCart || [];
       state.error = null;
       state.loading = false;
       state.success = true;

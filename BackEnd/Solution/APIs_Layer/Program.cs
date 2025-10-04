@@ -13,6 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(buil
 builder.Services.AddScoped<CartItemRepository>();
 builder.Services.AddScoped<CategoriesDiscountsRepository>();
 builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<CompareRepository>();
 builder.Services.AddScoped<DiscountRepository>();
 builder.Services.AddScoped<EmailConfirmationRepository>();
 builder.Services.AddScoped<OrderItemRepository>();
@@ -23,10 +24,14 @@ builder.Services.AddScoped<ProductsDiscountsRepository>();
 builder.Services.AddScoped<UserPermissionsRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<ReviewRepository>();
+builder.Services.AddScoped<WishlistRepository>();
+
 
 
 builder.Services.AddScoped<CartItemService>();
+builder.Services.AddScoped<CategoriesDiscountsService>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<CompareService>();
 builder.Services.AddScoped<EmailConfirmationCodeService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<OrderItemService>();
@@ -36,6 +41,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<UserPermissionsService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ReviewService>();
+builder.Services.AddScoped<WishlistService>();
 
 
 builder.Services.Configure<EmailSettings>(

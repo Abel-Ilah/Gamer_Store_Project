@@ -3,12 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{542F4229-EC36-4DB8-A65F-CF4D88EBAC8E}|APIs_Layer\\APIs.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\apis_layer\\controllers\\reviewcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{542F4229-EC36-4DB8-A65F-CF4D88EBAC8E}|APIs_Layer\\APIs.csproj|solutionrelative:apis_layer\\controllers\\reviewcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{542F4229-EC36-4DB8-A65F-CF4D88EBAC8E}|APIs_Layer\\APIs.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\apis_layer\\controllers\\categoriesdiscountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{542F4229-EC36-4DB8-A65F-CF4D88EBAC8E}|APIs_Layer\\APIs.csproj|solutionrelative:apis_layer\\controllers\\categoriesdiscountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\repositories\\reviewrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\repositories\\reviewrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{45D71DCE-ED63-4E2B-AC98-F40DA8BEEF21}|Business_Layer\\Services.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\business_layer\\services\\categoriesdiscountsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45D71DCE-ED63-4E2B-AC98-F40DA8BEEF21}|Business_Layer\\Services.csproj|solutionrelative:business_layer\\services\\categoriesdiscountsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\repositories\\categoriesdiscountsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\repositories\\categoriesdiscountsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\dtos\\discountedcategorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\dtos\\discountedcategorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|c:\\users\\abdel\\desktop\\gamingstore\\backend\\solution\\datasource_layer\\dtos\\productdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00DC5841-0232-4D7B-9B0F-9AE408C82D70}|DataSource_Layer\\DataSource.csproj|solutionrelative:datasource_layer\\dtos\\productdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,8 +30,47 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 9,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CategoriesDiscountsService.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\Business_Layer\\services\\CategoriesDiscountsService.cs",
+              "RelativeDocumentMoniker": "Business_Layer\\services\\CategoriesDiscountsService.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\Business_Layer\\services\\CategoriesDiscountsService.cs*",
+              "RelativeToolTip": "Business_Layer\\services\\CategoriesDiscountsService.cs*",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAcwBIAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-04T14:33:42.608Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ProductDetailsDTO.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\ProductDetailsDTO.cs",
+              "RelativeDocumentMoniker": "DataSource_Layer\\DTOs\\ProductDetailsDTO.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\ProductDetailsDTO.cs",
+              "RelativeToolTip": "DataSource_Layer\\DTOs\\ProductDetailsDTO.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwBAAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-04T14:31:19.197Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CategoriesDiscountsRepository.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Repositories\\CategoriesDiscountsRepository.cs",
+              "RelativeDocumentMoniker": "DataSource_Layer\\Repositories\\CategoriesDiscountsRepository.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Repositories\\CategoriesDiscountsRepository.cs",
+              "RelativeToolTip": "DataSource_Layer\\Repositories\\CategoriesDiscountsRepository.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAA3wCQAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-04T14:27:44.542Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
@@ -42,28 +93,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ReviewController.cs",
-              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\APIs_Layer\\Controllers\\ReviewController.cs",
-              "RelativeDocumentMoniker": "APIs_Layer\\Controllers\\ReviewController.cs",
-              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\APIs_Layer\\Controllers\\ReviewController.cs",
-              "RelativeToolTip": "APIs_Layer\\Controllers\\ReviewController.cs",
-              "ViewState": "AgIAAIcAAAAAAAAAAAAkwMIAAAA6AAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "DiscountedCategoryDTO.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\DiscountedCategoryDTO.cs",
+              "RelativeDocumentMoniker": "DataSource_Layer\\DTOs\\DiscountedCategoryDTO.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\DTOs\\DiscountedCategoryDTO.cs",
+              "RelativeToolTip": "DataSource_Layer\\DTOs\\DiscountedCategoryDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-08T09:34:14.905Z",
+              "WhenOpened": "2025-10-04T14:25:01.995Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ReviewRepository.cs",
-              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Repositories\\ReviewRepository.cs",
-              "RelativeDocumentMoniker": "DataSource_Layer\\Repositories\\ReviewRepository.cs",
-              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\DataSource_Layer\\Repositories\\ReviewRepository.cs",
-              "RelativeToolTip": "DataSource_Layer\\Repositories\\ReviewRepository.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAcwF8AAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "CategoriesDIscountsController.cs",
+              "DocumentMoniker": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\APIs_Layer\\Controllers\\CategoriesDIscountsController.cs",
+              "RelativeDocumentMoniker": "APIs_Layer\\Controllers\\CategoriesDIscountsController.cs",
+              "ToolTip": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\APIs_Layer\\Controllers\\CategoriesDIscountsController.cs",
+              "RelativeToolTip": "APIs_Layer\\Controllers\\CategoriesDIscountsController.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAwwCMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-08T09:16:58.423Z",
+              "WhenOpened": "2025-10-04T13:34:33.622Z",
               "EditorCaption": ""
             }
           ]

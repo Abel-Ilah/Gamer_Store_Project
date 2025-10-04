@@ -23,6 +23,11 @@ namespace Services.services
             return await _cartItemRepository.AddAsync(cartItem);
         }
 
+        public async Task<bool> AddCollectionOfItemsAsync(List<CartItem> items)
+        {
+            return await _cartItemRepository.AddCollectionOfItemsAsync(items);
+        }
+
         public async Task<bool> UpdateItemQuantityAsync(int itemId, int quantity)
         {
          return await _cartItemRepository.UpdateItemQuantityAsync(itemId, quantity);

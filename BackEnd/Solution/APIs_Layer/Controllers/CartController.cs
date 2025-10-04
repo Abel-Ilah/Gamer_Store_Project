@@ -51,6 +51,34 @@ namespace APIs.Controllers
 
         }
 
+
+        [HttpPost("AddRange")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> AddCollectionOfItemsAsync(List<CartItemWriteDTO> items)
+        {
+            if (items == null || items.Count == 0) return BadRequest("collection of items is empty");
+
+            var newItems = items.Select(item => new CartItem
+            {
+                UserId = item.userId,
+                ProductId = item.productId,
+                Quantity = item.Quantity,
+            }).ToList();
+
+            try
+            {
+                var isAdded = await _cartItemService.AddCollectionOfItemsAsync(newItems);
+                return isAdded ? Ok("items added successfully") : StatusCode(500, "Something went wrong !");
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "iternal server error");
+            }
+        }
+
+
         [HttpPut("updateCartItem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -90,12 +118,13 @@ namespace APIs.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<CartItemDTO>>>GetCartByUserIdAsync(int userId)
         {
+            
            if(userId<= 0) return BadRequest("invalid userId");
 
             try
             {
                 var cartItems = await _cartItemService.GetCartByUserIdAsync(userId);
-                return cartItems == null || cartItems.Count==0? NotFound("no cart item found for this user"):Ok(cartItems);
+                return cartItems;
 
             }
             catch(Exception ex)

@@ -7,6 +7,8 @@ import productsReducer from "../features/products/productsSlice";
 import snackbarReducer from "../features/snackbar/SnackbarSlice";
 import orderReducer from "../features/order/OrderSlice";
 import reviewReducer from "../features/review/reviewSlice";
+import wishlistReducer from "../features/wishlist/WishlistSlice";
+import compareReducer from "../features/Compare/CompareSlice";
 export const store = configureStore({
   reducer: {
     user: userReducer,
@@ -17,5 +19,7 @@ export const store = configureStore({
     snackbar: snackbarReducer,
     order: orderReducer,
     review: reviewReducer,
+    wishlist: wishlistReducer,
+    compare: compareReducer,
   },
 });

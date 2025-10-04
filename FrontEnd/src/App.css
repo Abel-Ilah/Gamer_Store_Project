@@ -1,6 +1,7 @@
 :root {
   --primary-color: #585858;
   --secondary-color: #2196f3;
+  --dark-color: rgb(27, 27, 27);
   --main-tr: all 0.3s;
   --tr-2: all 0.4s;
 }

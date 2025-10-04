@@ -126,8 +126,9 @@ export function AccountMenu() {
             </Link>
           </div>
         )}
-        {currentUser && (
-          <div>
+
+        <div>
+          {currentUser && (
             <Link to={"/accont/"}>
               <MenuItem className="menu-item" onClick={handleClose}>
                 <ListItemIcon>
@@ -136,22 +137,26 @@ export function AccountMenu() {
                 Account
               </MenuItem>
             </Link>
-            <Link to={"/profile/"} style={{ display: isXs ? "unset" : "none" }}>
-              <MenuItem className="menu-item" onClick={handleClose}>
-                <ListItemIcon>
-                  <FavoriteIcon className="wish-list" fontSize="medium" />
-                </ListItemIcon>
-                Wish List
-              </MenuItem>
-            </Link>
-            <Link to={"/compare/"} style={{ display: isXs ? "unset" : "none" }}>
-              <MenuItem className="menu-item" onClick={handleClose}>
-                <ListItemIcon>
-                  <LoopIcon fontSize="medium" />
-                </ListItemIcon>
-                Compare
-              </MenuItem>
-            </Link>
+          )}
+
+          <Link to={"/wishlist/"} style={{ display: isXs ? "unset" : "none" }}>
+            <MenuItem className="menu-item" onClick={handleClose}>
+              <ListItemIcon>
+                <FavoriteIcon className="wish-list" fontSize="medium" />
+              </ListItemIcon>
+              Wish List
+            </MenuItem>
+          </Link>
+          <Link to={"/compare/"} style={{ display: isXs ? "unset" : "none" }}>
+            <MenuItem className="menu-item" onClick={handleClose}>
+              <ListItemIcon>
+                <LoopIcon fontSize="medium" />
+              </ListItemIcon>
+              Compare
+            </MenuItem>
+          </Link>
+
+          {currentUser && (
             <MenuItem
               className="menu-item"
               onClick={() => {
@@ -164,8 +169,8 @@ export function AccountMenu() {
               </ListItemIcon>
               Logout
             </MenuItem>
-          </div>
-        )}
+          )}
+        </div>
       </Menu>
     </Box>
   );

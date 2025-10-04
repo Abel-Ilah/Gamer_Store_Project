@@ -19,15 +19,42 @@ import {
   SEVERITY_ERROR,
 } from "../features/snackbar/SnackbarSlice";
 import settings from "../appsettings.json";
+import {
+  addNewWishlistItem,
+  AddNewWishlistItemLocal,
+} from "../features/wishlist/WishlistSlice";
+import IconButton from "@mui/material/IconButton";
+import {
+  addNewComparelistItem,
+  AddNewCompareListItemLocal,
+} from "../features/Compare/CompareSlice";
+import { CircularProgress, colors } from "@mui/material";
 
 let last60Days = new Date(Date.now() - 30 * 86400000)
   .toISOString()
   .split("T")[0];
 
 export function Product({ Product: product }) {
+  const { user } = useSelector((state) => state.user);
   const { cart } = useSelector((state) => state.cart);
+  const { wishlist } = useSelector((state) => state.wishlist);
+  const { compare } = useSelector((state) => state.compare);
 
   const [status, setStatus] = useState({
+    loading: false,
+    error: null,
+    success: false,
+    operation: null,
+  });
+
+  const [wishlistItemStatus, setWishlistItemStatus] = useState({
+    loading: false,
+    error: null,
+    success: false,
+    operation: null,
+  });
+
+  const [comparelistItemStatus, setComparelistItemStatus] = useState({
     loading: false,
     error: null,
     success: false,
@@ -41,6 +68,16 @@ export function Product({ Product: product }) {
     if (!cart || cart.length === 0) return false;
     return cart.some((item) => item.product.id === product.id);
   }, [cart, product.id]);
+
+  const isProductInWishlist = useMemo(() => {
+    if (!wishlist || wishlist.length === 0) return false;
+    return wishlist.some((item) => item.product.id === product.id);
+  }, [wishlist, product.id]);
+
+  const isProductInComparelist = useMemo(() => {
+    if (!compare || compare.length === 0) return false;
+    return compare.some((item) => item.product.id === product.id);
+  }, [compare, product.id]);
 
   function calculatePrice(price, discountValue = 0) {
     if (typeof price !== "number") return 0;
@@ -59,8 +96,7 @@ export function Product({ Product: product }) {
   }
 
   function handleAddToCart() {
-    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    if (currentUser) {
+    if (user) {
       setStatus({
         loading: true,
         error: null,
@@ -69,7 +105,7 @@ export function Product({ Product: product }) {
       });
       dispatch(
         AddNewItem({
-          userId: currentUser ? currentUser.id : null,
+          userId: user ? user.id : null,
           productId: product.id,
           quantity: 1,
         })
@@ -131,6 +167,126 @@ export function Product({ Product: product }) {
     }
   }
 
+  function handleAddToWishlist() {
+    if (user) {
+      setWishlistItemStatus({
+        loading: true,
+        error: null,
+        success: false,
+        operation: ADD_ITEM,
+      });
+      dispatch(
+        addNewWishlistItem({
+          userId: user.id,
+          productId: product.id,
+        })
+      )
+        .unwrap()
+        .then((res) => {
+          const addedItem = res;
+          const localItem = {
+            id: addedItem.id,
+            userId: addedItem.userId,
+            product: product,
+          };
+          dispatch(AddNewWishlistItemLocal(localItem));
+          setWishlistItemStatus({
+            loading: false,
+            error: null,
+            success: true,
+            operation: ADD_ITEM,
+          });
+          dispatch(
+            showMessage({
+              message: "Done! The product has been added to your wishlist.",
+              severity: SEVERITY_SUCCESS,
+            })
+          );
+        })
+        .catch((err) => {
+          setWishlistItemStatus({
+            loading: false,
+            error: err,
+            success: false,
+            operation: ADD_ITEM,
+          });
+          dispatch(
+            showMessage({
+              message: err,
+              severity: SEVERITY_ERROR,
+            })
+          );
+        });
+    } else {
+      const newItem = {
+        id: crypto.randomUUID(),
+        userId: null,
+        product: product,
+      };
+      dispatch(AddNewWishlistItemLocal(newItem));
+    }
+  }
+
+  function handleAddToComparelist() {
+    if (user) {
+      setComparelistItemStatus({
+        loading: true,
+        error: null,
+        success: false,
+        operation: ADD_ITEM,
+      });
+      dispatch(
+        addNewComparelistItem({
+          userId: user.id,
+          productId: product.id,
+        })
+      )
+        .unwrap()
+        .then((res) => {
+          const addedItem = res;
+          const localItem = {
+            id: addedItem.id,
+            userId: addedItem.userId,
+            product: product,
+          };
+          dispatch(AddNewCompareListItemLocal(localItem));
+          setComparelistItemStatus({
+            loading: false,
+            error: null,
+            success: true,
+            operation: ADD_ITEM,
+          });
+          dispatch(
+            showMessage({
+              message: "Done! The product has been added to your compare list.",
+              severity: SEVERITY_SUCCESS,
+            })
+          );
+        })
+        .catch((err) => {
+          setComparelistItemStatus({
+            loading: false,
+            error: err,
+            success: false,
+            operation: ADD_ITEM,
+          });
+          dispatch(
+            showMessage({
+              message: err,
+              severity: SEVERITY_ERROR,
+            })
+          );
+        });
+    } else {
+      const newItem = {
+        id: crypto.randomUUID(),
+        userId: null,
+        product: product,
+      };
+      dispatch(AddNewCompareListItemLocal(newItem));
+    }
+  }
+
   return (
     <div className="product" key={product.id}>
       <div
@@ -144,13 +300,11 @@ export function Product({ Product: product }) {
           left: "2px",
         }}
       >
-        {" "}
         {product.discountValue > 0 && (
           <span className="discount-value">-{product.discountValue}%</span>
         )}
         {product.date >= last60Days && <span className="new">New</span>}
       </div>
-
       <div className="wraper">
         <img
           className="image"
@@ -161,9 +315,46 @@ export function Product({ Product: product }) {
           }}
         />
         <div className="cta-btns">
-          <LoopIcon />
-          <VisibilityIcon />
-          <FavoriteIcon />
+          <IconButton
+            style={{
+              pointerEvents: isProductInComparelist ? "none" : "unset",
+              color: isProductInComparelist ? "#ff000e" : "white",
+            }}
+            onClick={handleAddToComparelist}
+            loading={comparelistItemStatus.loading}
+            loadingIndicator={
+              <CircularProgress size={25} sx={{ color: "white" }} />
+            }
+            disabled={comparelistItemStatus.loading}
+          >
+            <LoopIcon
+              style={{
+                display: comparelistItemStatus.loading ? "none" : "inline-flex",
+              }}
+            />
+          </IconButton>
+
+          <IconButton>
+            <VisibilityIcon />
+          </IconButton>
+
+          <IconButton
+            style={{
+              pointerEvents: isProductInWishlist ? "none" : "unset",
+              color: isProductInWishlist ? "#ff000e" : "white",
+            }}
+            onClick={handleAddToWishlist}
+            loading={wishlistItemStatus.loading}
+            loadingIndicator={
+              <CircularProgress size={25} sx={{ color: "white" }} />
+            }
+          >
+            <FavoriteIcon
+              style={{
+                display: wishlistItemStatus.loading ? "none" : "inline-flex",
+              }}
+            />
+          </IconButton>
         </div>
       </div>
 

@@ -20,6 +20,7 @@ import {
   SEVERITY_SUCCESS,
   showMessage,
 } from "../features/snackbar/SnackbarSlice";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export function CartItem({ item }) {
   const [status, setStatus] = useState({
@@ -339,6 +340,7 @@ export function CartItem({ item }) {
             >
               -
             </button>
+
             <TextField
               className="input-quantity"
               variant="outlined"
@@ -423,23 +425,27 @@ export function CartItem({ item }) {
         </Grid>
         <Grid
           className={reduceOpacity ? "reduce-opacity" : ""}
-          size={{ xs: 11, sm: 6, md: 2.5 }}
+          size={{ xs: 10, sm: 6, md: 2.5 }}
         >
           <div className="total-price" style={{ fontWeight: "bold" }}>
             {totalPrice.toFixed(2)} {settings.currrency}
           </div>
         </Grid>
-        <Grid size={{ xs: 1, sm: 1 }} justifyContent={"flex-end"}>
-          <div className="delete">
-            {status.operation === DELETE_ITEM && status.loading && (
-              <div className="loading">
-                <div className="circle"></div>
-              </div>
-            )}
-            <IconButton style={{ background: "none" }} onClick={deleteItem}>
-              <DeleteIcon style={{ color: "red", fontSize: "2rem" }} />
-            </IconButton>
-          </div>
+        <Grid
+          size={{ xs: 2, sm: 1 }}
+          display={"flex"}
+          justifyContent={"flex-end"}
+        >
+          <IconButton
+            className="delete-btn p-0"
+            onClick={deleteItem}
+            loading={status.operation === DELETE_ITEM && status.loading}
+            loadingIndicator={<CircularProgress size={25} />}
+          >
+            <DeleteIcon
+              style={{ visibility: status.loading ? "hidden" : "visible" }}
+            />
+          </IconButton>
         </Grid>
       </Grid>
     </div>

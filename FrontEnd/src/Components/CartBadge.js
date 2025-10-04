@@ -30,7 +30,7 @@ export function CartBadge() {
   }, [user, dispatch]);
 
   useEffect(() => {
-    if (cart) {
+    if (cart && cart.length > 0) {
       var numberOfItems = cart.reduce((acc, item) => acc + item.quantity, 0);
       setItemsCount(numberOfItems);
     } else {

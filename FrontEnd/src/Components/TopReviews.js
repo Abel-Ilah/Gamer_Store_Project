@@ -1,7 +1,7 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./DiscountedProductsQuickLinks.css";
+import "./Arrows.css";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import { useMediaQuery, useTheme } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { getTopReviews } from "../features/review/reviewSlice";
 import { ReviewCard } from "./ReviewCard";
+import Title from "./Title";
 
 export function TopReviews() {
   const [reviewsState, setReviewsState] = useState({
@@ -16,12 +17,11 @@ export function TopReviews() {
     reviews: null,
     error: null,
   });
-
   const [showArrows, setShowArrows] = useState(false);
-  const [slides, setSlides] = useState({ slidesToShow: 5, slidesToScroll: 2 });
+  const [slides, setSlides] = useState({ slidesToShow: 5, slidesToScroll: 5 });
 
   const theme = useTheme();
-  //   const isLgOrUp = useMediaQuery(theme.breakpoints.up("lg"));
+  const isLgOrUp = useMediaQuery(theme.breakpoints.up("lg"));
   const isMd = useMediaQuery(theme.breakpoints.only("md"));
   const isSm = useMediaQuery(theme.breakpoints.only("sm"));
   const isXs = useMediaQuery(theme.breakpoints.only("xs"));
@@ -36,7 +36,7 @@ export function TopReviews() {
           setSlides({ slidesToScroll: 2, slidesToShow: 2 });
         } else {
           setSlides({
-            slidesToScroll: reviewsState.reviews.length,
+            slidesToScroll: 0,
             slidesToShow: reviewsState.reviews.length,
           });
         }
@@ -47,24 +47,24 @@ export function TopReviews() {
           setSlides({ slidesToScroll: 3, slidesToShow: 3 });
         } else {
           setSlides({
-            slidesToScroll: reviewsState.reviews.length,
+            slidesToScroll: 0,
             slidesToShow: reviewsState.reviews.length,
           });
         }
       }
-    } else {
+    } else if (isLgOrUp) {
       if (reviewsState.reviews && reviewsState.reviews.length > 0) {
         if (reviewsState.reviews.length > 5) {
           setSlides({ slidesToScroll: 2, slidesToShow: 5 });
         } else {
           setSlides({
-            slidesToScroll: reviewsState.reviews.length,
+            slidesToScroll: 0,
             slidesToShow: reviewsState.reviews.length,
           });
         }
       }
     }
-  }, [isMd, isSm, isXs]);
+  }, [isMd, isSm, isXs, isLgOrUp, reviewsState.reviews]);
 
   useEffect(() => {
     setReviewsState({ loading: true, reviews: null, error: null });
@@ -94,11 +94,9 @@ export function TopReviews() {
 
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: reviewsState.reviews && reviewsState.reviews.length > 1,
     speed: 500,
-    slidesToShow: reviewsState.reviews
-      ? Math.min(reviewsState.reviews.length, slides.slidesToShow)
-      : slides.slidesToShow,
+    slidesToShow: slides.slidesToShow,
     slidesToScroll: slides.slidesToScroll,
     autoplay: true,
     arrows: showArrows,
@@ -127,22 +125,31 @@ export function TopReviews() {
   return (
     reviewsState.reviews &&
     reviewsState.reviews.length > 0 && (
-      <div
-        className="top-reviews"
-        onMouseEnter={() =>
-          setShowArrows(reviewsState.reviews && reviewsState.reviews.length > 5)
-        }
-        onMouseLeave={() => setShowArrows(false)}
-      >
-        <Slider {...settings}>
-          {reviewsState.reviews.map((r) => (
-            <div key={r.id} style={{ height: "100%" }}>
-              <div style={{ margin: "0 5px", height: "100%" }}>
-                <ReviewCard review={r} />
+      <div className="py-3">
+        <Title title={"Top Reviews"} />
+        <div
+          className="slider mt-4"
+          onMouseEnter={() =>
+            setShowArrows(
+              reviewsState.reviews &&
+                ((isXs && reviewsState.reviews.length > 1) ||
+                  (isSm && reviewsState.reviews.length > 2) ||
+                  (isMd && reviewsState.reviews.length > 3) ||
+                  (isLgOrUp && reviewsState.reviews.length > 5))
+            )
+          }
+          onMouseLeave={() => setShowArrows(false)}
+        >
+          <Slider {...settings}>
+            {reviewsState.reviews.map((r) => (
+              <div key={r.id} style={{ height: "100%" }}>
+                <div style={{ margin: "0 5px", height: "100%" }}>
+                  <ReviewCard review={r} />
+                </div>
               </div>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </Slider>
+        </div>
       </div>
     )
   );

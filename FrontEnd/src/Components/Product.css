@@ -163,15 +163,20 @@ ul {
   cursor: auto;
   transition: all 0.3s;
 }
-.product .wraper .cta-btns svg {
-  font-size: 1.8rem;
-  cursor: pointer;
+.product .wraper .cta-btns button {
+  width: 30px;
+  height: 30px;
+  padding: 4px;
 }
-.product .wraper .cta-btns svg:hover {
-  box-shadow: 0px 0px 7px white;
+.product .wraper .cta-btns button:hover {
+  box-shadow: 0px 0px 5px white;
   border-radius: 5px;
-  padding: 1px;
 }
+.product .wraper .cta-btns button svg {
+  font-size: 1.8rem;
+  color: white;
+}
+
 .product:hover .wraper .cta-btns {
   bottom: 0;
 }

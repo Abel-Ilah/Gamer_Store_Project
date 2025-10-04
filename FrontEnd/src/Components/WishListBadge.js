@@ -21,7 +21,7 @@ export function WishListBadge() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [itemsCount, setItemsCount] = useState(0);
   const dispatch = useDispatch();
-  const { cart } = useSelector((state) => state.cart);
+  const { wishlist } = useSelector((state) => state.wishlist);
   const { user } = useSelector((state) => state.user);
 
   const location = useLocation();
@@ -33,19 +33,22 @@ export function WishListBadge() {
   }, [user, dispatch]);
 
   useEffect(() => {
-    if (cart) {
-      var numberOfItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+    if (wishlist && wishlist.length > 0) {
+      var numberOfItems = wishlist.length;
       setItemsCount(numberOfItems);
-    } else setItemsCount(100);
-  }, [cart, dispatch]);
+    } else {
+      setItemsCount(0);
+      setIsDisabled(true);
+    }
+  }, [wishlist, dispatch]);
 
   useEffect(() => {
-    setIsDisabled(location.pathname === "/wishlist");
-  }, [location]);
+    setIsDisabled(itemsCount === 0 || location.pathname === "/wishlist");
+  }, [location, itemsCount]);
   return (
     <IconButton
       className="wishlist-badge"
-      aria-label="cart"
+      aria-label="wishlist"
       disabled={isDisabled}
       onClick={() => {
         if (itemsCount > 0 && location.pathname !== "/wishlist") {
@@ -55,8 +58,14 @@ export function WishListBadge() {
       sx={{ display: { xs: "none", sm: "inline-flex" } }}
     >
       <StyledBadge badgeContent={itemsCount} color="primary">
-        <FavoriteBorderIcon className="icon1" fontSize="medium" />
-        <FavoriteIcon className="icon2" fontSize="medium" />
+        <FavoriteBorderIcon
+          className={isDisabled ? "icon1 disabled" : "icon1"}
+          fontSize="medium"
+        />
+        <FavoriteIcon
+          className={isDisabled ? "icon2 disabled" : "icon2"}
+          fontSize="medium"
+        />
       </StyledBadge>
     </IconButton>
   );

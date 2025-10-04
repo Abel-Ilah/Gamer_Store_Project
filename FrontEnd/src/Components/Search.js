@@ -6,7 +6,7 @@ import { useCategories } from "../contexts/CategoriesProvider";
 import { useDispatch } from "react-redux";
 import { searchForProducts } from "../features/products/productsSlice";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Search() {
   const Categories = useCategories();
@@ -42,7 +42,7 @@ export function Search() {
   }, [productsState, isNewSearch]);
 
   const lastSearchRef = useRef({ categoryName: "", searchText: "" });
-
+  const navigate = useNavigate();
   //handlers :
   const handleCategoryChange = (event) => {
     if (event.target.value !== selectedcategory) {
@@ -271,7 +271,9 @@ export function Search() {
                       <Link
                         key={p.id}
                         to={`/product/${p.id}`}
-                        onClick={handleClose}
+                        onClick={() => {
+                          handleClose();
+                        }}
                       >
                         <div className="item">
                           <img

@@ -20,7 +20,7 @@ export function CompareBadge() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [itemsCount, setItemsCount] = useState(0);
   const dispatch = useDispatch();
-  const { cart } = useSelector((state) => state.cart);
+  const { compare } = useSelector((state) => state.compare);
   const { user } = useSelector((state) => state.user);
 
   const location = useLocation();
@@ -30,19 +30,22 @@ export function CompareBadge() {
   }, [user, dispatch]);
 
   useEffect(() => {
-    if (cart) {
-      var numberOfItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+    if (compare) {
+      var numberOfItems = compare.length;
       setItemsCount(numberOfItems);
-    } else setItemsCount(0);
-  }, [cart, dispatch]);
+    } else {
+      setItemsCount(0);
+      setIsDisabled(true);
+    }
+  }, [compare, dispatch]);
 
   useEffect(() => {
-    setIsDisabled(location.pathname === "/compare");
-  }, [location]);
+    setIsDisabled(itemsCount === 0 || location.pathname === "/compare");
+  }, [location, itemsCount]);
   return (
     <IconButton
       className="compare-badge"
-      aria-label="cart"
+      aria-label="comparelist"
       disabled={isDisabled}
       onClick={() => {
         if (itemsCount > 0 && location.pathname !== "/compare") {
@@ -52,7 +55,10 @@ export function CompareBadge() {
       sx={{ display: { xs: "none", sm: "inline-flex" } }}
     >
       <StyledBadge badgeContent={itemsCount} color="primary">
-        <CachedIcon className="compare-icon" fontSize="medium" />
+        <CachedIcon
+          className={isDisabled ? "compare-icon disabled" : "compare-icon"}
+          fontSize="medium"
+        />
       </StyledBadge>
     </IconButton>
   );

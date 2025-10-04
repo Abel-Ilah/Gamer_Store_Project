@@ -1,0 +1,94 @@
+.banner-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fdd3d3;
+  padding: 1rem 2rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+  border-radius: 4px;
+}
+.banner-container * {
+  margin: 0;
+}
+/* Left: Discount */
+.banner-left {
+  display: flex;
+  align-items: center; /* align top of number and % */
+  color: #da3f3f;
+}
+
+.banner-left .discount-value {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.banner-left .discount-percent-off {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.banner-left .discount-percent-off .percent {
+  display: block;
+  font-size: 2rem;
+}
+
+.banner-left .discount-percent-off .off {
+  display: block;
+  font-size: 1rem;
+}
+
+/* Middle: text */
+.banner-middle {
+  flex: 1;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 0 1rem;
+  color: rgb(68, 68, 68);
+}
+.banner-middle p strong {
+  color: var(--dark-color);
+}
+/* Right: button */
+.banner-right {
+  display: flex;
+  justify-content: center;
+  min-width: 150px;
+}
+
+.banner-right .banner-btn {
+  padding: 0.7rem 1.5rem;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.banner-right .banner-btn:hover {
+  background-color: var(--dark-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .banner-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .banner-left {
+    margin-bottom: 1rem;
+    justify-content: center;
+  }
+
+  .banner-middle {
+    margin-bottom: 1rem;
+  }
+}

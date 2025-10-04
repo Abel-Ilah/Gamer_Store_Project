@@ -8,7 +8,7 @@ export function LoadingPage() {
       sx={{
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "start",
         height: "100vh",
         width: "100%",
       }}

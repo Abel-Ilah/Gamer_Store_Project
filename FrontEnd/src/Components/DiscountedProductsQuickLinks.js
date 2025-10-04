@@ -1,7 +1,7 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./DiscountedProductsQuickLinks.css";
+import "./Arrows.css";
 import { DiscountedProduct } from "./DiscountedProduct";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -104,7 +104,7 @@ export function DiscountedProductsQuickLinks() {
     productsState.products &&
     productsState.products.length > 0 && (
       <div
-        className="discounted-products"
+        className="slider"
         onMouseEnter={() => setShowArrows(true)}
         onMouseLeave={() => setShowArrows(false)}
       >

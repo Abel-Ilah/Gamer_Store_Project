@@ -32,6 +32,26 @@ namespace DataSource.Repositories
             return cartItem.Id;
         }
 
+        public async Task<bool> AddCollectionOfItemsAsync(List<CartItem> items)
+        {
+            var userId = items[0].UserId;
+
+            var existingProductIds = await _context.CartItems.Where(item=>item.UserId == userId)
+                .Select(w => w.ProductId)
+                .ToListAsync();
+
+            var newItems = items
+                .Where(item => !existingProductIds.Contains(item.ProductId))
+                .ToList();
+
+            if (newItems.Count == 0)
+                return false;
+
+            _context.CartItems.AddRange(newItems);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> UpdateItemQuantityAsync(int itemId,int quantity)
         {
             var item = await _context.CartItems.Include(i=>i.Product).SingleOrDefaultAsync(i => i.Id == itemId);

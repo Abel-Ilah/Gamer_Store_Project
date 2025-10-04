@@ -74,13 +74,12 @@ export function NewProductsQuickLinks() {
     dispatch(getFilteredProducts(filter));
   }
 
-  return productsState.products ? (
+  return productsState.products && productsState.products.length > 0 ? (
     <>
       <Title title="New products" />
       <div className="see-all-btn-wraper">
         <Link to={"/products/new-products"} onClick={handleSeeAllClick}>
           <button className="see-all-btn" variant="text">
-            {" "}
             See All <ArrowRightAltIcon />
           </button>
         </Link>

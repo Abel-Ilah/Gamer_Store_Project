@@ -87,7 +87,7 @@
 
 .btn {
   visibility: visible;
-  background-color: teal !important;
+  background-color: rgb(54, 54, 54) !important;
   transition: all 0.3s !important;
   position: absolute !important;
   z-index: 3;

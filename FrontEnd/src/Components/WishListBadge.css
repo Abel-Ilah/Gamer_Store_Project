@@ -26,3 +26,6 @@
 .wishlist-badge:hover .icon2 {
   opacity: 1;
 }
+.wishlist-badge .disabled {
+  color: gray;
+}

@@ -76,7 +76,7 @@ export function BestSellersQuickLinks() {
   }
 
   return productsState.products ? (
-    <>
+    <div className="py-4">
       <Title title="Best Sellers" />
       <div className="see-all-btn-wraper">
         <Link to={"/products/best-sellers"} onClick={handleSeeAllClick}>
@@ -91,6 +91,6 @@ export function BestSellersQuickLinks() {
           return <Product Product={p} key={p.id} />;
         })}
       </HorizontalScroll>
-    </>
+    </div>
   ) : null;
 }

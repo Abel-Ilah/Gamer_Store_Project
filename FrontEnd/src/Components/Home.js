@@ -6,7 +6,9 @@ import { BestSellersQuickLinks } from "./BestSellersQuickLinks";
 import { DiscountedProductsQuickLinks } from "./DiscountedProductsQuickLinks";
 import { MixedProductsQuickLinks } from "./MixedProducts";
 import { ProductsOfXCategory } from "./ProductsOfXCategory";
+import { DiscountBanner } from "./DiscountBanner";
 import { TopReviews } from "./TopReviews";
+import { Incentives } from "./Incentives";
 export function Home() {
   return (
     <div>
@@ -19,7 +21,9 @@ export function Home() {
         <NewProductsQuickLinks />
         <CategoriesQuickLinks />
         <BestSellersQuickLinks />
+        <DiscountBanner />
         <TopReviews />
+        <Incentives />
       </Container>
     </div>
   );
