@@ -89,38 +89,19 @@ namespace DataSource.Repositories
 
         public  async Task<List<CartItemDTO>>GetCartByUserIdAsync(int userId)
         {
-            var today = DateOnly.FromDateTime(DateTime.Today);
+            var cartItems = await (from ci in _context.CartItems
+                                    join p in _context.ProductsView
+                                    on ci.ProductId equals p.Id
 
-            var cartItems = await _context.CartItems.Where(ci=>ci.UserId==userId).
-                Include(ci=>ci.Product).ThenInclude(p=>p.ProductDiscounts)
-                .Include(ci=>ci.Product).ThenInclude(p=>p.Category).ThenInclude(c=>c.CategoriesDiscounts)
-                .Include(ci=>ci.Product).ThenInclude(p=>p.ProductImages)
-                .Select(  (ci)=> new CartItemDTO
-                {
-                    Id = ci.Id,
-                    userId = ci.UserId,
-                    Quantity = ci.Quantity,
-                    Product = new ProductDTO()
-                    {
-                        Id = ci.Product.Id,
-                        Name = ci.Product.Name,
-                        Price = ci.Product.Price,
-                        QuantityInStock = ci.Product.QuantityInStock,
-                        Date = ci.Product.Date,
-                        ImageUrl = ci.Product.ProductImages.Where(pi => pi.IsMain).Select(pi => pi.ImageUrl).SingleOrDefault(),
-                        DiscountValue = Math.Max(
-                        ci.Product.ProductDiscounts
-                            .Where(pd => pd.Discount.StartDate <= today && pd.Discount.EndDate >= today && pd.Discount.IsActive)
-                            .Select(pd => pd.Discount.Value)
-                            .FirstOrDefault(),
+                                    where ci.UserId == userId
 
-                        ci.Product.Category.CategoriesDiscounts
-                            .Where(cd => cd.Discount.StartDate <= today && cd.Discount.EndDate >= today && cd.Discount.IsActive)
-                            .Select(cd => cd.Discount.Value)
-                            .FirstOrDefault()
-                    ),
-                    }
-                }).ToListAsync();
+                                    select new CartItemDTO
+                                    {
+                                        Id = ci.Id,
+                                        userId = ci.UserId,
+                                        Quantity = ci.Quantity,
+                                        Product = p
+                                    }).ToListAsync();
 
             return cartItems;
         

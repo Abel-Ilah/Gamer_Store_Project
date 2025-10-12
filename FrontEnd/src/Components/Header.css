@@ -2,7 +2,10 @@
   /* background-color: #1e1e1e; */
   /* background: linear-gradient(to left, #0a151a, #203a43, #2c5364); */
   /* background: linear-gradient(to left, #2c3e50, #242323); */
-  background-color: white;
+  z-index: 2;
+  width: 100%;
+  margin-bottom: 40px;
+  box-shadow: 0px 0px 5px gray;
 }
 .header .content {
   display: flex;
@@ -17,21 +20,4 @@
 }
 .header .content #logo {
   height: 65px;
-}
-
-@media (min-width: 900px) {
-  .header::after {
-    position: absolute;
-    content: "";
-    width: 100%;
-    height: 40px;
-    bottom: calc(0% - 40px);
-    left: 0;
-    /* background-color: #464545; */
-    z-index: -1;
-    border-top: 0.5px solid rgb(201, 197, 197);
-  }
-  .header {
-    margin-bottom: 40px;
-  }
 }

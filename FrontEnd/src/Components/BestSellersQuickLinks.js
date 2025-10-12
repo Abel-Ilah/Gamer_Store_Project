@@ -11,6 +11,7 @@ import {
 } from "../features/products/productsSlice";
 import { useEffect, useState } from "react";
 import settings from "../appsettings.json";
+import { setTitle } from "../features/productsPageTItle/ProductsPageTitleSlice";
 
 export function BestSellersQuickLinks() {
   const [productsState, setProductsState] = useState({
@@ -73,6 +74,7 @@ export function BestSellersQuickLinks() {
       },
     };
     dispatch(getFilteredProducts(filter));
+    dispatch(setTitle("Best Sellers"));
   }
 
   return productsState.products ? (

@@ -20,6 +20,7 @@ import {
   getFilteredProducts,
 } from "../features/products/productsSlice";
 import settings from "../appsettings.json";
+import { setTitle } from "../features/productsPageTItle/ProductsPageTitleSlice";
 
 export function Nav() {
   const categories = useCategories();
@@ -38,11 +39,11 @@ export function Nav() {
     setAnchorElNav(null);
   };
 
-  const handleCategoryClick = (categoryName) => {
+  const handleCategoryClick = (category) => {
     const filter = {
       tag: {
         name: GET_PRODUCTS_BY_CATEGORY,
-        value: categoryName,
+        value: category.id,
       },
       price: {
         min: 1,
@@ -54,6 +55,7 @@ export function Nav() {
       },
     };
     dispatch(getFilteredProducts(filter));
+    dispatch(setTitle(category.name || "Products"));
   };
 
   return (
@@ -136,7 +138,7 @@ export function Nav() {
                     <Link
                       key={c.id}
                       to={`/products/${c.name}`}
-                      onClick={() => handleCategoryClick(c.name)}
+                      onClick={() => handleCategoryClick(c)}
                     >
                       <ListItemButton className="list-item">
                         <ListItemIcon sx={{ minWidth: "30px" }}>
@@ -237,7 +239,7 @@ export function Nav() {
                   <li key={c.id}>
                     <Link
                       onClick={() => {
-                        handleCategoryClick(c.name);
+                        handleCategoryClick(c);
                         setShowCategoriesList_lg(false);
                       }}
                       to={`/products/${c.name}`}

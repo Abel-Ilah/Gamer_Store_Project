@@ -26,7 +26,7 @@ namespace DataSource.DTOs
 
         public string? About { get; set; }
 
-        public double Rating { get; set; } = 5;
+        public double Rating { get; set; }
 
         public int reviewsCount { get; set; }
 

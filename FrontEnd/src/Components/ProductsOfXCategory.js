@@ -5,13 +5,14 @@ import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
-  getProductsByCategory,
   GET_PRODUCTS_BY_CATEGORY,
   getFilteredProducts,
+  getProductsByCategoryId,
 } from "../features/products/productsSlice";
 import { useEffect, useMemo, useState } from "react";
 import settings from "../appsettings.json";
 import { useCategories } from "../contexts/CategoriesProvider";
+import { setTitle } from "../features/productsPageTItle/ProductsPageTitleSlice";
 export function ProductsOfXCategory() {
   const [productsState, setProductsState] = useState({
     loading: false,
@@ -29,7 +30,11 @@ export function ProductsOfXCategory() {
       return randomCategory;
     }
   }, [categories]);
-
+  console.log("category : ", randomCategory);
+  if (randomCategory) {
+    console.log(typeof randomCategory.id);
+  }
+  console.log("state : ", productsState);
   useEffect(() => {
     if (randomCategory) {
       setProductsState({ loading: true, products: null, error: null });
@@ -52,9 +57,9 @@ export function ProductsOfXCategory() {
         }
       }
       dispatch(
-        getProductsByCategory({
+        getProductsByCategoryId({
           productsCount: 10,
-          category: randomCategory.name,
+          categoryId: randomCategory.id,
         })
       )
         .unwrap()
@@ -80,7 +85,7 @@ export function ProductsOfXCategory() {
     const filter = {
       tag: {
         name: GET_PRODUCTS_BY_CATEGORY,
-        value: randomCategory.name,
+        value: randomCategory.id,
       },
       price: {
         min: 1,
@@ -92,6 +97,7 @@ export function ProductsOfXCategory() {
       },
     };
     dispatch(getFilteredProducts(filter));
+    dispatch(setTitle(randomCategory?.name || "Products"));
   }
 
   return productsState.products ? (

@@ -1,92 +1,57 @@
 import "./FilteredProducts.css";
+import "./Shared.css";
 import { ProductsGrid } from "./ProductsGrid";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import DiscountIcon from "@mui/icons-material/Discount";
 import StarIcon from "@mui/icons-material/Star";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import VerifiedIcon from "@mui/icons-material/Verified";
+import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import Pagination from "@mui/material/Pagination";
 import { ProductsFilter } from "./ProductsFilter";
-import { LoadingPage } from "./LoadingPage";
-import { useParams } from "react-router-dom";
+import { ProductsSkeleton } from "./ProductsSkeleton";
+import { useLocation, useParams } from "react-router-dom";
 import appsettings from "../appsettings.json";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import settings from "../appsettings.json";
-
+import { setTitle } from "../features/productsPageTItle/ProductsPageTitleSlice";
 import {
   GET_ALL_PRODUCTS,
   GET_BEST_SELLERS,
   GET_DISCOUNTED_PRODUCTS,
   GET_NEW_PRODUCTS,
+  GET_TOP_RATED_PRODUCTS,
   getFilteredProducts,
 } from "../features/products/productsSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { PaginationItem, useTheme, useMediaQuery } from "@mui/material";
 
 let pageSize = appsettings.productsPageSize;
-
-function FastFilter({ handlBtnClick }) {
-  return (
-    <div className="fast-filter">
-      <Link to={"/products/new-products"}>
-        <Button
-          variant="outlined"
-          onClick={() =>
-            handlBtnClick({
-              name: GET_NEW_PRODUCTS,
-              value: GET_NEW_PRODUCTS,
-            })
-          }
-        >
-          <VerifiedIcon style={{ color: "green" }} />
-          New Products
-        </Button>
-      </Link>
-      <Link to={"/products/discounted-products"}>
-        <Button
-          variant="outlined"
-          onClick={() =>
-            handlBtnClick({
-              name: GET_DISCOUNTED_PRODUCTS,
-              value: GET_DISCOUNTED_PRODUCTS,
-            })
-          }
-        >
-          <DiscountIcon style={{ color: "red" }} />
-          Discounts
-        </Button>
-      </Link>
-      <Link to={"/products/best-sellers"}>
-        <Button
-          variant="outlined"
-          onClick={() =>
-            handlBtnClick({
-              name: GET_BEST_SELLERS,
-              value: GET_BEST_SELLERS,
-            })
-          }
-        >
-          <ShoppingCartIcon style={{ color: "teal" }} />
-          Best Sellers
-        </Button>
-      </Link>
-      <Button variant="outlined">
-        <StarIcon style={{ color: "orange" }} />
-        Top Rated
-      </Button>
-    </div>
-  );
-}
-
 export function FilteredProducts() {
   const { categoryName: selectedCategory } = useParams();
-  const dispatch = useDispatch();
+  const [showProductsRating, setShowProductsRating] = useState(false);
+  const [CurrentPage, setCurrentPage] = useState(() => {
+    const storedFilter = JSON.parse(sessionStorage.getItem("filter"));
+    if (storedFilter) {
+      return storedFilter.page.number || 1;
+    }
+    return 1;
+  });
 
+  const [totalPages, setTotalPages] = useState(1);
+  const { title } = useSelector((state) => state.title);
   const { data, loading, error } = useSelector((state) => state.products);
 
-  function handleFastFilterBtnsClick(tag) {
+  const locaiton = useLocation();
+  const dispatch = useDispatch();
+  const theme = useTheme();
+
+  const isMobile = useMediaQuery(theme.breakpoints.only("xs"));
+
+  function handleFastFilterBtnsClick(tag, event) {
     const filter = {
       tag,
       price: {
@@ -98,8 +63,34 @@ export function FilteredProducts() {
         size: settings.productsPageSize,
       },
     };
-    dispatch(getFilteredProducts(filter));
+    dispatch(getFilteredProducts(filter))
+      .unwrap()
+      .then()
+      .catch((err) => {});
+    if (event) {
+      dispatch(
+        setTitle(event.currentTarget.getAttribute("data") || "Products")
+      );
+    }
   }
+
+  const handlePageChange = (_, value) => {
+    setCurrentPage(value);
+    const filter = JSON.parse(sessionStorage.getItem("filter"));
+    if (filter) {
+      filter.page.number = value;
+      dispatch(getFilteredProducts(filter));
+    }
+  };
+
+  useEffect(
+    (_) => {
+      if (data && data.totalProducts > 0) {
+        setTotalPages(Math.ceil(data.totalProducts / pageSize));
+      }
+    },
+    [data]
+  );
 
   useEffect(() => {
     let filter = JSON.parse(sessionStorage.getItem("filter"));
@@ -122,42 +113,159 @@ export function FilteredProducts() {
     dispatch(getFilteredProducts(filter));
   }, []);
 
+  useEffect(() => {
+    setShowProductsRating(locaiton.pathname.includes("top-rated"));
+    setCurrentPage(1);
+  }, [locaiton.pathname]);
+
   return (
     <Container maxWidth="xl">
-      <div className="products-category">
-        <ProductsFilter activeCategory={selectedCategory} />
-        <div style={{ flexGrow: 1 }}>
-          <FastFilter handlBtnClick={handleFastFilterBtnsClick} />
-          {loading && <LoadingPage />}
-          {data && data.products && data.products.length > 0 && (
-            <div>
-              <ProductsGrid products={data.products} />
-              <div className="next-prev-page-wraper">
+      <div className="products-category shared">
+        <div className="head">
+          <StorefrontIcon className="icon" />
+          <h2 className="s-title">{title}</h2>
+        </div>
+        <div className="content">
+          <ProductsFilter activeCategory={selectedCategory} />
+          <div style={{ flexGrow: 1 }}>
+            <div className="fast-filter">
+              <Link to={"/products/new-products"}>
                 <Button
-                  style={{
-                    margin: "15px 0",
-                  }}
-                  variant="contained"
+                  variant="outlined"
+                  data="New Products"
+                  onClick={(e) =>
+                    handleFastFilterBtnsClick(
+                      {
+                        name: GET_NEW_PRODUCTS,
+                        value: GET_NEW_PRODUCTS,
+                      },
+                      e
+                    )
+                  }
                 >
-                  {" "}
-                  <ArrowBackIosIcon className="arrow" /> Prev
+                  <VerifiedIcon style={{ color: "green" }} />
+                  New Products
                 </Button>
-                <span id="page-number"></span>
+              </Link>
+              <Link to={"/products/discounted-products"}>
                 <Button
-                  style={{
-                    margin: "15px 0",
-                    pointerEvents:
-                      pageSize > data.products.length ? "none" : "auto",
-                    opacity: pageSize > data.products.length ? 0.5 : 1,
-                  }}
-                  variant="contained"
+                  data="Discounted Products"
+                  variant="outlined"
+                  onClick={(e) =>
+                    handleFastFilterBtnsClick(
+                      {
+                        name: GET_DISCOUNTED_PRODUCTS,
+                        value: GET_DISCOUNTED_PRODUCTS,
+                      },
+                      e
+                    )
+                  }
                 >
-                  {" "}
-                  Next <ArrowForwardIosIcon className="arrow" />
+                  <DiscountIcon style={{ color: "red" }} />
+                  Discounts
                 </Button>
-              </div>
+              </Link>
+              <Link to={"/products/best-sellers"}>
+                <Button
+                  data="Best Sellers"
+                  variant="outlined"
+                  onClick={(e) =>
+                    handleFastFilterBtnsClick(
+                      {
+                        name: GET_BEST_SELLERS,
+                        value: GET_BEST_SELLERS,
+                      },
+                      e
+                    )
+                  }
+                >
+                  <ShoppingCartIcon style={{ color: "teal" }} />
+                  Best Sellers
+                </Button>
+              </Link>
+              <Link to={"/products/top-rated"}>
+                <Button
+                  data="Top Rated"
+                  variant="outlined"
+                  onClick={(e) => {
+                    handleFastFilterBtnsClick(
+                      {
+                        name: GET_TOP_RATED_PRODUCTS,
+                        value: GET_TOP_RATED_PRODUCTS,
+                      },
+                      e
+                    );
+                    setShowProductsRating(true);
+                  }}
+                >
+                  <StarIcon style={{ color: "orange" }} />
+                  Top Rated
+                </Button>
+              </Link>
             </div>
-          )}
+
+            {loading && (
+              <>
+                <ProductsSkeleton />
+                <ProductsSkeleton />
+              </>
+            )}
+            {data && data.products.length > 0 && (
+              <div className="wraper">
+                <div className="products">
+                  <ProductsGrid
+                    products={data.products}
+                    showRating={showProductsRating}
+                  />
+                </div>
+                {totalPages > 1 && (
+                  <Pagination
+                    className="pagination"
+                    count={totalPages}
+                    page={CurrentPage}
+                    onChange={handlePageChange}
+                    siblingCount={isMobile ? 1 : 2}
+                    boundaryCount={1}
+                    hideNextButton={isMobile}
+                    hidePrevButton={isMobile}
+                    renderItem={(item) => (
+                      <PaginationItem
+                        component={Link}
+                        {...item}
+                        sx={{
+                          color: "white",
+                          backgroundColor: "var(--secondary-color)",
+                          "&.Mui-selected": {
+                            backgroundColor: "red",
+                          },
+                        }}
+                        disabled={
+                          item.page === CurrentPage ||
+                          (item.type === "previous" && CurrentPage === 1) ||
+                          (item.type === "next" && CurrentPage === totalPages)
+                        }
+                      />
+                    )}
+                    variant="outlined"
+                    shape="rounded"
+                  />
+                )}
+              </div>
+            )}
+            {data && data.products.length === 0 && (
+              <div className="empty">
+                <StorefrontOutlinedIcon className="icon" />
+                <h4 className="msg">no products found</h4>
+              </div>
+            )}
+            {error && (
+              <div className="error">
+                <div className="icon"></div>
+                <h3 className="error-title">Error</h3>
+                <h4 className="text">{error}</h4>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Container>

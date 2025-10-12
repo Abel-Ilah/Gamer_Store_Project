@@ -33,6 +33,20 @@ export const GetOrderById = createAsyncThunk(
     }
   }
 );
+export const GetUserOrders = createAsyncThunk(
+  "order/getUserOrders",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5268/api/order/ordersHistory?UserId=${userId}`,
+        { signal: controller.signal }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 const initialState = {
   data: null,

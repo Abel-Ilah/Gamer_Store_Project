@@ -62,48 +62,19 @@ namespace DataSource.Repositories
 
         public async Task <List<WishlistItemReadDTO>>GetWishlistByUesrId(int userId)
         {
-            var today = DateOnly.FromDateTime(DateTime.Now);
+           var wishlistItems = await (from ci in _context.WishlistItems
+                                      join p in _context.ProductsView
+                                      on ci.ProductId equals p.Id
 
-            var Wishlist = await (from item in _context.WishlistItems
+                                      where ci.UserId == userId
 
-                           join p in _context.Products
-                           on item.ProductId equals p.Id
-
-                           join image in _context.ProductImages
-                           on p.Id equals image.ProductId
-
-                           join poductDiscount in _context.ProductsDiscounts
-                           on p.Id equals poductDiscount.ProductId into pdGroup
-                           from pd in pdGroup.Where(pd => pd.Discount.IsActive == true
-                           && pd.Discount.StartDate <= today
-                           && pd.Discount.EndDate >= today).DefaultIfEmpty()
-
-                           join categoryDiscount in _context.CategoriesDiscounts
-                           on p.CategoryId equals categoryDiscount.CategoryId into cdGroup
-                           from cd in cdGroup.Where(cd => cd.Discount.IsActive == true
-                           && cd.Discount.StartDate <= today
-                           && cd.Discount.EndDate >= today).DefaultIfEmpty()
-
-
-                           where item.UserId == userId
-                           && image.IsMain == true
-
-                           select new WishlistItemReadDTO
-                           {
-                               Id = item.Id,
-                               UserId = item.UserId,
-                               Product = new ProductDTO
-                               {
-                                   Id = p.Id,
-                                   Name = p.Name,
-                                   Price = p.Price,
-                                   Date = p.Date,
-                                   QuantityInStock = p.QuantityInStock,
-                                   DiscountValue = Math.Max(pd != null ? pd.Discount.Value : 0, cd != null ? cd.Discount.Value : 0),
-                                   ImageUrl = image.ImageUrl,
-                               }
-                           }).ToListAsync();
-            return Wishlist;
+                                      select new WishlistItemReadDTO
+                                      {
+                                          Id = ci.Id,
+                                          UserId = ci.UserId,
+                                          Product = p
+                                      }).ToListAsync();
+            return wishlistItems;
         }
 
 

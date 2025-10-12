@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataSource.Data;
+using DataSource.DTOs;
 using DataSource.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,6 +34,47 @@ namespace DataSource.Repositories
             return await _context.Orders.Include(o=>o.OrderItems).ThenInclude(oi=>oi.Product).ThenInclude(p=>p.ProductImages).AsNoTracking().SingleOrDefaultAsync(o => o.Id == id);
         }
 
+        public async Task <List< OrderReadDTO>> getAllOrdersAsync(int UserId)
+        {
+            var orders = await _context.Orders.Where(o=>o.UserId==UserId)
+                                              .AsNoTracking()
+                                              .Include(o => o.OrderItems)
+                                              .ThenInclude(oi => oi.Product)
+                                              .OrderByDescending(o=>o.OrderDate)
+                                              .Select(o => new OrderReadDTO
+                                              {
+                                                  Id = o.Id,
+                                                  UserId = o.UserId,
+                                                  OrderDate = o.OrderDate,
+                                                  TotalAmount = o.TotalAmount,
+                                                  FullName = o.FullName,
+                                                  PhoneNumber = o.PhoneNumber,
+                                                  Email = o.Email,
+                                                  Address = o.Address,
+                                                  status = o.Status.Name,
+                                                  OrderItems = o.OrderItems.Select(oi => new ReadOrderItemDTO
+                                                  {
+                                                      Id = oi.Id,
+                                                      OrderId = oi.OrderId,
+                                                      Quantity = oi.Quantity,
+                                                      UnitPrice  = oi.UnitPrice,
+                                                      TotalPrice = oi.TotalPrice,
+                                                      Product  = new ShortProductDTO
+                                                      {
+                                                          id = oi.Product.Id,
+                                                          name = oi.Product.Name,
+                                                          imageUrl = oi.Product.ProductImages
+                                                          .Where(i=>i.IsMain)
+                                                          .Select(i=>i.ImageUrl)
+                                                          .FirstOrDefault()
+                                                      }
+                                             
+                                                  }).ToList()
+                                             
+             }).ToListAsync();
+                                             
+             return orders;
+        }
         public async Task<Guid> AddAsync(Order order)
         {
             _context.Orders.Add(order);

@@ -43,7 +43,7 @@
   font-weight: normal;
 }
 .product-discounted .content .info button {
-  border-radius: 15px;
+  border-radius: 10px;
   color: white;
   background-color: rgb(78, 124, 224);
   font-weight: bold;
@@ -52,7 +52,7 @@
   box-shadow: none;
 }
 .product-discounted .content .info button:hover {
-  background-color: rgb(5, 161, 5);
+  background-color: var(--dark-color);
 }
 @media (max-width: 700px) {
   .product-discounted .content {

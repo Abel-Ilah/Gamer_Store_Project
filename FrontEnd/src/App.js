@@ -19,11 +19,7 @@ import SnackBar from "./Components/SnackBar";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GetCurrentUser, markUserAsReady } from "./features/users/UserSlice";
-import {
-  getGuestCart,
-  GetUserCart,
-  markCartAsReady,
-} from "./features/cart/CartSlice";
+import { getGuestCart, GetUserCart } from "./features/cart/CartSlice";
 import { FilteredProducts } from "./Components/FilteredProducts";
 import { Wishlist } from "./Components/Wishlist";
 import {
@@ -35,6 +31,7 @@ import {
   getUserCompareList,
 } from "./features/Compare/CompareSlice";
 import { Comparelist } from "./Components/Comparelist";
+import OrdersHistory from "./Components/OrdersHistory";
 
 function App() {
   const dispatch = useDispatch();
@@ -77,6 +74,7 @@ function App() {
           <Route path="/products/" element={<FilteredProducts />}>
             <Route path="new-products" element={<FilteredProducts />} />
             <Route path="best-sellers" element={<FilteredProducts />} />
+            <Route path="top-rated" element={<FilteredProducts />} />
             <Route path="discounted-products" element={<FilteredProducts />} />
             <Route path=":categoryName" element={<FilteredProducts />} />
           </Route>
@@ -105,6 +103,7 @@ function App() {
           </Route>
 
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
+          <Route path="/orders-history" element={<OrdersHistory />} />
         </Routes>
         <SnackBar />
 

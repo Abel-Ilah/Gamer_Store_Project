@@ -4,6 +4,8 @@ import Container from "@mui/material/Container";
 import { useSelector } from "react-redux";
 import { LoadingPage } from "./LoadingPage";
 import LoopIcon from "@mui/icons-material/Loop";
+import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
 
 export function Comparelist() {
   const { compare, loading, error } = useSelector((state) => state.compare);
@@ -16,7 +18,16 @@ export function Comparelist() {
           <h2 className="s-title">Compare list</h2>
         </div>
         {loading && <LoadingPage />}
-        {error && <h4 className="error">{error} </h4>}
+        {error && (
+          <div className="error">
+            <div className="icon"></div>
+            <h3 className="error-title">Error</h3>
+            <h4 className="text">{error}</h4>
+            <Link to={"/"}>
+              <Button variant="contained">Home page</Button>
+            </Link>
+          </div>
+        )}
 
         {compare && compare.length > 0 && (
           <div className="content">
@@ -30,7 +41,13 @@ export function Comparelist() {
           </div>
         )}
         {compare && compare.length === 0 && (
-          <h4 className="empty">Compare list is empty </h4>
+          <div className="empty">
+            <LoopIcon className="icon" />
+            <h4 className="msg">No items found in comparelist</h4>
+            <Link to={"/"}>
+              <Button variant="contained">Shop Now</Button>
+            </Link>
+          </div>
         )}
       </Container>
     </div>

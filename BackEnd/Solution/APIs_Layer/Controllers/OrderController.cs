@@ -23,7 +23,7 @@ namespace APIs.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ReadOrderDTO>> AddNewOrderAsync(WriteOrderDTO order)
+        public async Task<ActionResult<OrderReadDTO>> AddNewOrderAsync(WriteOrderDTO order)
         {
             if (order == null) return BadRequest("invalid data!");
 
@@ -75,7 +75,7 @@ namespace APIs.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ReadOrderDTO>> GetOrderByIdAsync(Guid id)
+        public async Task<ActionResult<OrderReadDTO>> GetOrderByIdAsync(Guid id)
         {
             if (id == Guid.Empty) return BadRequest("order id is not valid!");
 
@@ -106,7 +106,7 @@ namespace APIs.Controllers
                     orderItems.Add(itemDTO);
                 }
 
-                var orderDTO = new ReadOrderDTO
+                var orderDTO = new OrderReadDTO
                 {
                     Id = id,
                     UserId = order.UserId,
@@ -131,5 +131,22 @@ namespace APIs.Controllers
 
         }
 
+        [HttpGet("ordersHistory")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<OrderReadDTO>>> getAllOrdersAsync(int UserId)
+        {
+            if (UserId <= 0) return BadRequest("not valid userId");
+            try
+            {
+                
+                var orders = await _orderService.getAllOrdersAsync(UserId);
+                return Ok(orders);
+            }catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

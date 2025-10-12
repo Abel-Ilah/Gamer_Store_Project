@@ -5,18 +5,15 @@ import Grid from "@mui/material/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { CartItem } from "./CartItem";
 import { CartSkeleton } from "./CartSkeleton";
-import { RelatedProducts } from "./RelatedProducts";
 import { GET_CART } from "../features/cart/CartSlice";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Divider } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { getRelatedProducts } from "../features/products/productsSlice";
 import { useMediaQuery, useTheme } from "@mui/material";
 import settings from "../appsettings.json";
 
 export function Cart() {
-  const [relatedproducts, setRelatedProducts] = useState(null);
   const {
     cart,
     loading: cartLoading,
@@ -35,12 +32,6 @@ export function Cart() {
   const isMd = useMediaQuery(theme.breakpoints.only("md"));
   const isLg = useMediaQuery(theme.breakpoints.only("lg"));
   const isXl = useMediaQuery(theme.breakpoints.only("xl"));
-
-  useEffect(() => {
-    if (cart && cart.length > 0) {
-      relatedProducts();
-    }
-  }, [cart]);
 
   useEffect(() => {
     if (isXs) {
@@ -80,19 +71,8 @@ export function Cart() {
       : 0;
   }
 
-  function relatedProducts() {
-    setRelatedProducts(null);
-    const productId = cart[cart.length - 1].product.id;
-    const pageSize = 10;
-    dispatch(getRelatedProducts({ productId, pageSize }))
-      .unwrap()
-      .then((products) => {
-        setRelatedProducts(products);
-      })
-      .catch();
-  }
-
   function checkoutBtnClick() {
+    setQuantityError(null);
     let newError = "";
     for (const item of cart) {
       if (item.product.quantityInStock === 0) {
@@ -106,18 +86,17 @@ export function Cart() {
         break;
       }
     }
-    console.log("error log: ", newError);
+
     if (newError) {
-      setQuantityError(newError);
+      setQuantityError((prev) => (prev = newError));
       window.scrollTo(0, 0);
     } else {
-      setQuantityError(null);
       navigate("/checkout");
     }
   }
   return (
     <div className="cart shared">
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" style={{ height: "100%" }}>
         <div className="head">
           <ShoppingCartOutlinedIcon className="icon" />
           <h2 className="s-title">Shopping cart</h2>
@@ -126,10 +105,24 @@ export function Cart() {
         {cartLoading && operation === GET_CART && <CartSkeleton />}
 
         {cart && cart.length === 0 && (
-          <h4 className="empty">Your cart is empty</h4>
+          <div className="empty">
+            <ShoppingCartOutlinedIcon className="icon" />
+            <h4 className="msg">No items found in cart</h4>
+            <Link to={"/"}>
+              <Button variant="contained">Shop Now</Button>
+            </Link>
+          </div>
         )}
-        {error && <h4 className="error">{error}</h4>}
-
+        {error && (
+          <div className="error">
+            <div className="icon"></div>
+            <h3 className="error-title">Error</h3>
+            <h4 className="text">{error}</h4>
+            <Link to={"/"}>
+              <Button variant="contained">Home page</Button>
+            </Link>
+          </div>
+        )}
         {cart && cart.length > 0 && (
           <div className="content">
             {quantityError && (
@@ -178,14 +171,6 @@ export function Cart() {
                     <span>checkout</span>
                   </Button>
                 </div>
-                {relatedproducts && (
-                  <div className="related-products">
-                    <RelatedProducts
-                      products={relatedproducts}
-                      slidesToShow={slidesToShow}
-                    />
-                  </div>
-                )}
               </Grid>
             </Grid>
           </div>

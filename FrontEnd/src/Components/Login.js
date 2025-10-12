@@ -1,6 +1,5 @@
 import "./Login.css";
 import TextField from "@mui/material/TextField";
-import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import Button from "@mui/material/Button";
@@ -22,6 +21,7 @@ import {
   SEVERITY_ERROR,
   showMessage,
 } from "../features/snackbar/SnackbarSlice";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export function Login() {
   const [login, setLogin] = useState(() => {
@@ -30,6 +30,8 @@ export function Login() {
       ? savedLogin
       : { email: "", password: "", autoLogin: false };
   });
+
+  const [loginDisabled, setLoginDisabled] = useState(false);
 
   const [errors, setErrors] = useState({});
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -43,6 +45,7 @@ export function Login() {
   }, []);
 
   const [loading, setLoading] = useState(false);
+
   const validate = () => {
     const newErrors = {};
     if (!login.email) {
@@ -67,6 +70,7 @@ export function Login() {
       dispatch(GetCurrentUser({ email: login.email, password: login.password }))
         .unwrap()
         .then((user) => {
+          setLoginDisabled(true);
           localStorage.setItem(
             "login",
             JSON.stringify({ ...login, autoLogin: true })
@@ -104,21 +108,16 @@ export function Login() {
   return (
     <div className="login">
       <Container maxWidth="xl">
-        <h3 className="title">
-          <LocalFireDepartmentIcon
-            style={{ color: "orange", fontSize: "30px" }}
-          />
-          Sign In to Your Account
-          <LocalFireDepartmentIcon
-            style={{ color: "orange", fontSize: "30px" }}
-          />
-        </h3>
-
         <div className="form-wraper">
           <form className="form">
-            {loading && (
-              <div className="loading">
-                <div className="circle"></div>
+            <h3 className="form-title">Login</h3>
+            {Object.keys(errors).length > 0 && (
+              <div className="errors" onClick={() => setErrors({})}>
+                {Object.values(errors).map((er, i) => (
+                  <span key={i} className="text">
+                    - {er}
+                  </span>
+                ))}
               </div>
             )}
             <TextField
@@ -169,6 +168,11 @@ export function Login() {
               className="login-btn"
               variant="contained"
               onClick={handleLogin}
+              disabled={loading || loginDisabled}
+              loading={loading}
+              loadingIndicator={
+                <CircularProgress size={25} style={{ color: "white" }} />
+              }
             >
               Login
             </Button>
@@ -184,21 +188,6 @@ export function Login() {
                 <Link to="/signup">Sign up</Link>
               </span>
             </div>
-            {Object.keys(errors).length > 0 && (
-              <div className="errors-list" onClick={() => setErrors({})}>
-                <ul>
-                  <span className="close" onClick={() => setErrors({})}>
-                    <CloseIcon />
-                  </span>
-                  {Object.values(errors).map((er, i) => (
-                    <div key={i} className="error-message">
-                      <span className="icon">⚠️</span>
-                      <span className="text">{er}</span>
-                    </div>
-                  ))}
-                </ul>
-              </div>
-            )}
           </form>
         </div>
       </Container>

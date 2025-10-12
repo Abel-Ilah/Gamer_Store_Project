@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useTheme, useMediaQuery } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 //components:
 import { Search } from "./Search";
 import { Nav } from "./Nav";
@@ -11,24 +11,26 @@ import { AccountMenu } from "./AccountMenu";
 import { CartBadge } from "./CartBadge";
 import { WishListBadge } from "./WishListBadge";
 import { CompareBadge } from "./CompareBadge";
+import { useSelector } from "react-redux";
 
 export function Header() {
+  const { cssPosition } = useSelector((state) => state.headerCssPosition);
   const theme = useTheme();
+  const location = useLocation();
   const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <div
       className="header"
       style={{
-        position: isMdScreen ? "relative" : "unset",
-        marginBottom: isMdScreen ? "40px" : "0px",
+        position: location.pathname === "/" ? cssPosition : "relative",
       }}
     >
       <Container maxWidth="xl">
         <div className="content">
           {/* logo */}
           <Link style={{ order: isMdScreen ? 1 : 2 }} to="/">
-            <img id="logo" src="assets/store-logo.png" alt="logo" />
+            <img id="logo" src="/assets/store-logo.png" alt="logo" />
           </Link>
           {/* ======= */}
           {/* search  */}

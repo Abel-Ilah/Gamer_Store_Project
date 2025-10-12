@@ -1,9 +1,15 @@
 :root {
+  /* colors */
   --primary-color: #585858;
   --secondary-color: #2196f3;
   --dark-color: rgb(27, 27, 27);
+  --section-color: #daedff;
+  --light-red: rgb(241, 62, 62);
+  /* =========== */
+  /* transitions */
   --main-tr: all 0.3s;
   --tr-2: all 0.4s;
+  /* =========== */
 }
 .App {
   text-align: center;

@@ -17,7 +17,12 @@ namespace DataSource.DTOs
 
         public decimal DiscountValue { get; set; } = 0!;
 
-        public string? ImageUrl { get; set; } 
+        public double Rating { get; set; } = 0;
+
+        public string? ImageUrl { get; set; }
+
+       
+
 
     }
 }

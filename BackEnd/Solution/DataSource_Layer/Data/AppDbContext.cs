@@ -22,7 +22,6 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<CompareItem> CompareItems { get; set; }
 
-
     public virtual DbSet<Discount> Discounts { get; set; }
 
     public virtual DbSet<EmailConfirmationCode> EmailConfirmationCodes { get; set; }
@@ -34,6 +33,8 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
+
+    public DbSet<vw_Product> ProductsView { get; set; }
 
     public virtual DbSet<ProductImage> ProductImages { get; set; }
 

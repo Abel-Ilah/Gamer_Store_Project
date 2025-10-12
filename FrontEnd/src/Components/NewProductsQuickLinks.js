@@ -72,6 +72,7 @@ export function NewProductsQuickLinks() {
       },
     };
     dispatch(getFilteredProducts(filter));
+    dispatch("New Products");
   }
 
   return productsState.products && productsState.products.length > 0 ? (

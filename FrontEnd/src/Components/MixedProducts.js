@@ -11,6 +11,7 @@ import {
 } from "../features/products/productsSlice";
 import { useEffect, useState } from "react";
 import settings from "../appsettings.json";
+import { setTitle } from "../features/productsPageTItle/ProductsPageTitleSlice";
 
 export function MixedProductsQuickLinks() {
   const [productsState, setProductsState] = useState({
@@ -30,7 +31,6 @@ export function MixedProductsQuickLinks() {
       )
       .catch((err) => {
         setProductsState({ loading: false, products: null, error: err });
-        console.log("the erro is : ", err);
       });
   }, []);
 
@@ -50,6 +50,7 @@ export function MixedProductsQuickLinks() {
       },
     };
     dispatch(getFilteredProducts(filter));
+    dispatch(setTitle("All Products"));
   }
 
   return productsState.products ? (

@@ -13,7 +13,7 @@ export function LoadingPage() {
         width: "100%",
       }}
     >
-      <CircularProgress />
+      <CircularProgress style={{ marginTop: "40px" }} />
     </Box>
   );
 }

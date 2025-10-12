@@ -68,7 +68,9 @@ export function OrderConfirmation() {
               <Button variant="contained">
                 <Link to={"/"}>Continue shopping</Link>
               </Button>
-              <Button variant="contained">Orders history</Button>
+              <Button variant="contained">
+                <Link to={"/orders-history"}>Orders history</Link>
+              </Button>
             </div>
           </div>
         )}

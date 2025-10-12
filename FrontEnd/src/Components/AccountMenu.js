@@ -13,6 +13,7 @@ import Logout from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LoopIcon from "@mui/icons-material/Loop";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import { Link, useNavigate } from "react-router-dom";
 
 import { logout } from "../features/users/UserSlice";
@@ -129,12 +130,12 @@ export function AccountMenu() {
 
         <div>
           {currentUser && (
-            <Link to={"/accont/"}>
+            <Link to={"/orders-history/"}>
               <MenuItem className="menu-item" onClick={handleClose}>
                 <ListItemIcon>
-                  <AccountCircleIcon fontSize="medium" />
+                  <HistoryOutlinedIcon fontSize="medium" />
                 </ListItemIcon>
-                Account
+                Orders History
               </MenuItem>
             </Link>
           )}

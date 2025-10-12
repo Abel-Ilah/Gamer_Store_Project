@@ -11,9 +11,9 @@ namespace DataSource.DTOs
     {
         public int Id { get; set; }
         public int userId { get; set; }
-        public virtual ProductDTO Product { get; set; } = null!;
+        public virtual vw_Product Product { get; set; } = null!;
         public int Quantity { get; set; }
-
+        
     }
 
     public partial class CartItemWriteDTO

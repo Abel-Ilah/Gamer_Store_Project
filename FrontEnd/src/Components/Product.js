@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./Product.css";
 import Button from "@mui/material/Button";
+import Rating from "@mui/material/Rating";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LoopIcon from "@mui/icons-material/Loop";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -12,7 +13,7 @@ import {
   AddNewItemLocal,
   ADD_ITEM,
 } from "../features/cart/CartSlice";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   showMessage,
   SEVERITY_SUCCESS,
@@ -28,13 +29,13 @@ import {
   addNewComparelistItem,
   AddNewCompareListItemLocal,
 } from "../features/Compare/CompareSlice";
-import { CircularProgress, colors } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 let last60Days = new Date(Date.now() - 30 * 86400000)
   .toISOString()
   .split("T")[0];
 
-export function Product({ Product: product }) {
+export function Product({ Product: product, showRating = false }) {
   const { user } = useSelector((state) => state.user);
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -362,7 +363,15 @@ export function Product({ Product: product }) {
         <Link to={`/product/${product.id}`}>
           <h5 className="product-name">{product.name}</h5>
         </Link>
-
+        {showRating && (
+          <Rating
+            precision={0.1}
+            name="read-only"
+            value={product.rating}
+            readOnly
+            style={{ fontSize: "25px", marginLeft: "-3px" }}
+          />
+        )}
         <span className="price">
           {calculatePrice(product.price, product.discountValue)}{" "}
           {settings.currrency}

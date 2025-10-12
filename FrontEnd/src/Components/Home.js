@@ -1,5 +1,5 @@
 import Container from "@mui/material/Container";
-import { PromoSection } from "./PromoSection";
+import { HeroSection } from "./HeroSection";
 import { CategoriesQuickLinks } from "./CategoriesQuickLinks";
 import { NewProductsQuickLinks } from "./NewProductsQuickLinks";
 import { BestSellersQuickLinks } from "./BestSellersQuickLinks";
@@ -13,7 +13,7 @@ export function Home() {
   return (
     <div>
       {" "}
-      {/* <PromoSection /> */}
+      <HeroSection />
       <Container maxWidth="xl">
         <DiscountedProductsQuickLinks />
         <ProductsOfXCategory />

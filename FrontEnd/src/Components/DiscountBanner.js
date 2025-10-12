@@ -9,6 +9,7 @@ import {
   getFilteredProducts,
 } from "../features/products/productsSlice";
 import settings from "../appsettings.json";
+import { setTitle } from "../features/productsPageTItle/ProductsPageTitleSlice";
 
 export const DiscountBanner = () => {
   const [discountedCategory, setDiscountedCategory] = useState(null);
@@ -23,14 +24,14 @@ export const DiscountBanner = () => {
       .then((res) => {
         setDiscountedCategory(res);
       })
-      .catch();
+      .catch(() => {});
   }
 
-  const handleCheckDetailsClick = (categoryName) => {
+  const handleCheckDetailsClick = (categoryId) => {
     const filter = {
       tag: {
         name: GET_PRODUCTS_BY_CATEGORY,
-        value: categoryName,
+        value: categoryId,
       },
       price: {
         min: 1,
@@ -85,8 +86,9 @@ export const DiscountBanner = () => {
         <button
           className="banner-btn btn-effect"
           onClick={() => {
-            handleCheckDetailsClick(discountedCategory.name);
+            handleCheckDetailsClick(discountedCategory.id);
             navigate(`/products/${discountedCategory.name}`);
+            dispatch(setTitle(discountedCategory.name));
           }}
         >
           <span>

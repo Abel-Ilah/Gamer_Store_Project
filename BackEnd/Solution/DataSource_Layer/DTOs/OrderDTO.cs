@@ -28,7 +28,7 @@ namespace DataSource.DTOs
         
     }
 
-    public class ReadOrderDTO:OrderDTO
+    public class OrderReadDTO:OrderDTO
     {
       public string status { get; set; }= null!;
       public virtual ICollection<ReadOrderItemDTO> OrderItems { get; set; } = new List<ReadOrderItemDTO>();

@@ -16,6 +16,7 @@ import {
 import { useDispatch } from "react-redux";
 import { AddNewUser, clearUserStatus } from "../features/users/UserSlice";
 import { SendNewConfirmationCode } from "../features/emailVerification/sendVerificationCodeSlice";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export function SignUp() {
   const [NewUser, setNewUser] = useState({
@@ -30,6 +31,7 @@ export function SignUp() {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,6 +84,7 @@ export function SignUp() {
       dispatch(AddNewUser(NewUser))
         .unwrap()
         .then((createdUser) => {
+          setDisabled(true);
           localStorage.setItem(
             "login",
             JSON.stringify({
@@ -124,21 +127,16 @@ export function SignUp() {
   return (
     <div className="signup">
       <Container maxWidth="xl">
-        <h3 className="title">
-          <LocalFireDepartmentIcon
-            style={{ color: "orange", fontSize: "30px" }}
-          />
-          Sign Up & Start Shopping
-          <LocalFireDepartmentIcon
-            style={{ color: "orange", fontSize: "30px" }}
-          />
-        </h3>
-
         <div className="form-wraper">
           <form className="form">
-            {loading && (
-              <div className="loading">
-                <div className="circle"></div>
+            <h3 className="form-title">Sing Up</h3>
+            {Object.keys(errors).length > 0 && (
+              <div className="errors" onClick={() => setErrors({})}>
+                {Object.values(errors).map((er, i) => (
+                  <span key={i} className="text">
+                    - {er}
+                  </span>
+                ))}
               </div>
             )}
             <TextField
@@ -241,53 +239,20 @@ export function SignUp() {
                 e.preventDefault();
                 handleSubmit();
               }}
+              loading={loading}
+              loadingIndicator={
+                <CircularProgress size={25} style={{ color: "white" }} />
+              }
+              disabled={loading || disabled}
             >
               Register
             </Button>
-            <div className="text">
-              I declare that I am acquainted with the{" "}
-              <span>
-                <Link>Privacy Policy</Link>
-              </span>{" "}
-              and the{" "}
-              <span>
-                <Link>Terms and Conditions</Link>
-              </span>{" "}
-              and I want to register as a new customer.
-            </div>
             <div className="signin">
               Already have an account ?
-              <span>
-                <Link>Sign in</Link>
+              <span style={{ color: "red" }}>
+                <Link to="/login">Sign in</Link>
               </span>
             </div>
-            {Object.keys(errors).length > 0 && (
-              <div
-                className="errors-list"
-                onClick={() => {
-                  setErrors({});
-                }}
-              >
-                <ul>
-                  <span
-                    className="close"
-                    onClick={() => {
-                      setErrors({});
-                    }}
-                  >
-                    <CloseIcon />
-                  </span>
-                  {Object.values(errors).map((er, i) => {
-                    return (
-                      <div key={i} class="error-message">
-                        <span class="icon">⚠️</span>
-                        <span class="text">{er}</span>
-                      </div>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
           </form>
         </div>
       </Container>

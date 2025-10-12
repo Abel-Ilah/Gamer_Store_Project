@@ -15,6 +15,7 @@ import {
   GET_PRODUCTS_BY_CATEGORY,
   getFilteredProducts,
 } from "../features/products/productsSlice";
+import { setTitle } from "../features/productsPageTItle/ProductsPageTitleSlice";
 
 function valuetext(value) {
   return `${value}°C`;
@@ -38,13 +39,13 @@ export function ProductsFilter({ activeCategory }) {
     }
   };
 
-  const handleCategoryClick = (categoryName) => {
+  const handleCategoryClick = (category) => {
     const defaultRange = [1, 100000];
     setRange(defaultRange);
     const filter = {
       tag: {
         name: GET_PRODUCTS_BY_CATEGORY,
-        value: categoryName,
+        value: category.id,
       },
       price: {
         min: defaultRange[0],
@@ -56,6 +57,8 @@ export function ProductsFilter({ activeCategory }) {
       },
     };
     dispatch(getFilteredProducts(filter));
+
+    dispatch(setTitle(category.name || "Products"));
   };
 
   const handleFilterByPrice = () => {
@@ -200,7 +203,7 @@ export function ProductsFilter({ activeCategory }) {
                   key={c.id}
                   to={`/products/${c.name}`}
                   onClick={() => {
-                    handleCategoryClick(c.name);
+                    handleCategoryClick(c);
                     setShowFilterOnMediumScreens(false);
                   }}
                 >

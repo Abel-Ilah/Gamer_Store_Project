@@ -42,7 +42,10 @@ namespace Services.services
             return await _OrderRepository.GetByIdAsync(id);
         }
 
-
+        public async Task<List<OrderReadDTO>> getAllOrdersAsync(int UserId)
+        {
+            return await _OrderRepository.getAllOrdersAsync(UserId);
+        }
 
     }
 }

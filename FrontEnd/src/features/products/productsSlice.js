@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { data } from "react-router-dom";
 
 //tag names:
 export const GET_ALL_PRODUCTS = "GET_ALL_PRODUCTS";
@@ -8,40 +7,11 @@ export const GET_PRODUCTS_BY_CATEGORY = "GET_PRODUCTS_BY_CATEGORY";
 export const GET_NEW_PRODUCTS = "GET_NEW_PRODUCTS";
 export const GET_DISCOUNTED_PRODUCTS = "GET_DISCOUNTED_PRODUCTS";
 export const GET_BEST_SELLERS = "GET_BEST_SELLERS";
-// export const GET_PRODUCT_BY_ID = "GET_PRODUCT_BY_ID";
-// export const GET_POPULAR_PRODUCTS = "GET_POPULAR_PRODUCTS";
+export const GET_TOP_RATED_PRODUCTS = "GET_TOP_RATED_PRODUCTS";
 
 const controller = new AbortController();
 
-export const searchForProducts = createAsyncThunk(
-  "products/searchProducts",
-  async ({ name, categoryId }, { rejectWithValue }) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:5268/api/products/search?name=${name}&categoryId=${categoryId}`,
-        { signal: controller.signal }
-      );
-      return res.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
-export const getRelatedProducts = createAsyncThunk(
-  "products/relatedProducts",
-  async ({ productId, pageSize }, { rejectWithValue }) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:5268/api/products/related-products?productId=${productId}&pageSize=${pageSize}`,
-        { signal: controller.signal }
-      );
-      return res.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
+// get products with filter :
 
 export const getFilteredProducts = createAsyncThunk(
   "products/filteredProducts",
@@ -53,7 +23,7 @@ export const getFilteredProducts = createAsyncThunk(
         url = `http://localhost:5268/api/products?pageNumber=${page.number}&pageSize=${page.size}&minPrice=${price.min}&maxPrice=${price.max}`;
         break;
       case GET_PRODUCTS_BY_CATEGORY:
-        url = `http://localhost:5268/api/products/filtered-${tag.value}?pageNumber=${page.number}&pageSize=${page.size}&MinPrice=${price.min}&MaxPrice=${price.max}`;
+        url = `http://localhost:5268/api/products/filtered-Category?categoryId=${tag.value}&pageNumber=${page.number}&pageSize=${page.size}&MinPrice=${price.min}&MaxPrice=${price.max}`;
         break;
       case GET_NEW_PRODUCTS:
         url = `http://localhost:5268/api/products/filtered-new-products?pageNumber=${page.number}&pageSize=${page.size}&minPrice=${price.min}&maxPrice=${price.max}`;
@@ -61,10 +31,9 @@ export const getFilteredProducts = createAsyncThunk(
       case GET_DISCOUNTED_PRODUCTS:
         url = `http://localhost:5268/api/products/filtered-discounts?pageNumber=${page.number}&pageSize=${page.size}&minPrice=${price.min}&maxPrice=${price.max}`;
         break;
-      // case GET_POPULAR_PRODUCTS:
-      //   url = `http://localhost:5268/api/products/popular-products`;
-      //   sessionStorage.setItem("filter", JSON.stringify(filter));
-      //   break;
+      case GET_TOP_RATED_PRODUCTS:
+        url = `http://localhost:5268/api/products/filtered-top-rated?pageNumber=${page.number}&pageSize=${page.size}&minPrice=${price.min}&maxPrice=${price.max}`;
+        break;
       case GET_BEST_SELLERS:
         url = `http://localhost:5268/api/products/filtered-best-sellers?pageNumber=${page.number}&pageSize=${page.size}&minPrice=${price.min}&maxPrice=${price.max}`;
         break;
@@ -108,7 +77,7 @@ export const getMixedProducts = createAsyncThunk(
       );
       return res.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -158,12 +127,43 @@ export const getDiscountedProducts = createAsyncThunk(
   }
 );
 
-export const getProductsByCategory = createAsyncThunk(
+export const getProductsByCategoryId = createAsyncThunk(
   "products/category",
-  async ({ productsCount, category }, { rejectWithValue }) => {
+  async ({ categoryId, productsCount }, { rejectWithValue }) => {
     try {
       const res = await axios.get(
-        `http://localhost:5268/api/products/${category}?pageSize=${productsCount}`,
+        `http://localhost:5268/api/products/category?categoryId=${categoryId}&pageSize=${productsCount}`,
+        { signal: controller.signal }
+      );
+      return res.data;
+    } catch (error) {
+      console.log("errrrr : ", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const searchForProducts = createAsyncThunk(
+  "products/searchProducts",
+  async ({ name, categoryId }, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5268/api/products/search?name=${name}&categoryId=${categoryId}`,
+        { signal: controller.signal }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const getHeroSectionProducts = createAsyncThunk(
+  "products/heroSection",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5268/api/products/hero-section`,
         { signal: controller.signal }
       );
       return res.data;

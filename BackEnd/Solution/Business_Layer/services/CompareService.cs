@@ -34,7 +34,7 @@ namespace Services.services
             return await _compareRepo.DeleteItemAsync(itemId);
         }
 
-        public async Task<List<WishlistItemReadDTO>> GetCompareListByUserIdAsync(int userId)
+        public async Task<List<CompareItemReadDTO>> GetCompareListByUserIdAsync(int userId)
         {
             return await _compareRepo.GetCompareListByUserIdAsync(userId);
         }

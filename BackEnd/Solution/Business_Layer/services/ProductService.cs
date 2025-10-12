@@ -16,59 +16,58 @@ namespace Services.services
         }
 
         //get products with filter :
-        public async Task<ProductsListDTO?> GetAllProductsAsync(int pageNumber, int pageSize,int minPrice,int maxPrice)
+        public async Task<ProductsListDTO> GetAllProductsAsync(int pageNumber, int pageSize,int minPrice,int maxPrice)
         {
             return await _ProductRepository.GetAllProductsAsync(pageNumber, pageSize,minPrice,maxPrice);
         }
-        public async Task<ProductsListDTO?> GetNewProductsAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ProductsListDTO> GetNewProductsAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             return await _ProductRepository.GetNewProductsAsync(pageNumber, pageSize, minPrice, maxPrice);
         }
-        public async Task<ProductsListDTO?> GetProductsByCategoryNameAsync(string categoryName, int pageNumber, int pageSize, decimal MinPrice, decimal MaxPrice)
+        public async Task<ProductsListDTO> GetProductsByCategoryIdAsync(int categoryId, int pageNumber, int pageSize, decimal MinPrice, decimal MaxPrice)
         {
-            return await _ProductRepository.GetProductsByCategoryNameAsync(categoryName, pageNumber, pageSize, MinPrice, MaxPrice);
+            return await _ProductRepository.GetProductsByCategoryIdAsync(categoryId, pageNumber, pageSize, MinPrice, MaxPrice);
         }
         public async Task<ProductsListDTO>GetDiscountedProductsAsync(int pageNumber,int pageSize,int minPrice,int maxPrice)
         {
             return await _ProductRepository.GetDiscountedProducts(pageNumber, pageSize,minPrice,maxPrice);
         }
-        public async Task<ProductsListDTO?> GetBestSellersAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ProductsListDTO> GetBestSellersAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
            return await _ProductRepository.GetBestSellers(pageNumber, pageSize,minPrice,maxPrice);
         }
+        public async Task<ProductsListDTO> GetTopRatedProductsAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        {
+            return await _ProductRepository.GetTopRatedProductsAsync(pageNumber, pageSize, minPrice, maxPrice);
+        }
 
         // get products : 
-        public async Task<List<ProductDTO>> GetAllProductsAsync(int pageSize)
+        public async Task<List<vw_Product>> GetAllProductsAsync(int pageSize)
         {
             return await _ProductRepository.GetAllProductsAsync(pageSize);
         }
 
-        public async Task<List<ProductDTO>> GetNewProductsAsync(int pageSize)
+        public async Task<List<vw_Product>> GetNewProductsAsync(int pageSize)
         {
             return await _ProductRepository.GetNewProductsAsync(pageSize);
         }
 
-        public async Task<List<ProductDTO>> GetProductsByCategoryNameAsync(string categoryName,int pageSize)
+        public async Task<List<vw_Product>> GetProductsByCategoryIdAsync(int categoryId, int pageSize)
         {
-            return await _ProductRepository.GetProductsByCategoryNameAsync (categoryName,pageSize);
+            return await _ProductRepository.GetProductsByCategoryIdAsync (categoryId,pageSize);
         }
 
-        public async Task<List<ProductDTO>> GetDiscountedProductsAsync(int pageSize)
+        public async Task<List<vw_Product>> GetDiscountedProductsAsync(int pageSize)
         {
             return await _ProductRepository.GetDiscountedProducts(pageSize);
         }
 
-        public async Task <ProductDetailsDTO?>getProductByIdAsync(int productId)
+        public async Task <ProductDetailsDTO?>getProductDetailsByIdAsync(int productId)
         {
             return await _ProductRepository.GetProductDetailsByIdAsync(productId);
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetRelatedProductsAsync(int productId,int pageSize)
-        {
-            return await _ProductRepository.GetRelatedProductsAsync(productId, pageSize);
-        }
-
-        public async Task<List<ProductDTO>> GetBestSellersAsync(int pageSize)
+        public async Task<List<vw_Product>> GetBestSellersAsync(int pageSize)
         {
             return await _ProductRepository.GetBestSellers(pageSize);
         }
@@ -76,6 +75,11 @@ namespace Services.services
         public async Task<List<ShortProductDTO>> FindAsync(string name, int categoryId = 0)
         {
             return await _ProductRepository.FindAsync(name, categoryId);
+        }
+
+        public async Task<HeroSectionProducts> GetHeroSectionProductsAsync()
+        {
+            return await _ProductRepository.GetHeroSectionProductsAsync();
         }
 
     }

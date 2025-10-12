@@ -4,6 +4,8 @@ import Container from "@mui/material/Container";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useSelector } from "react-redux";
 import { LoadingPage } from "./LoadingPage";
+import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
 
 export function Wishlist() {
   const { wishlist, loading, error } = useSelector((state) => state.wishlist);
@@ -16,7 +18,16 @@ export function Wishlist() {
           <h2 className="s-title">Wishlist</h2>
         </div>
         {loading && <LoadingPage />}
-        {error && <h4 className="error">{error}</h4>}
+        {error && (
+          <div className="error">
+            <div className="icon"></div>
+            <h3 className="error-title">Error</h3>
+            <h4 className="text">{error}</h4>
+            <Link to={"/"}>
+              <Button variant="contained">Home page</Button>
+            </Link>
+          </div>
+        )}
         {wishlist && wishlist.length > 0 && (
           <div className="content">
             {wishlist.map((item) => (
@@ -25,7 +36,13 @@ export function Wishlist() {
           </div>
         )}
         {wishlist && wishlist.length === 0 && (
-          <h4 className="empty">Wishlist is empty </h4>
+          <div className="empty">
+            <FavoriteBorderIcon className="icon" />
+            <h4 className="msg">No items found in wishlist</h4>
+            <Link to={"/"}>
+              <Button variant="contained">Shop Now</Button>
+            </Link>
+          </div>
         )}
       </Container>
     </div>

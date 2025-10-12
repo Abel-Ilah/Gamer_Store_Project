@@ -6,15 +6,16 @@ import {
   getFilteredProducts,
 } from "../features/products/productsSlice";
 import settings from "../appsettings.json";
+import { setTitle } from "../features/productsPageTItle/ProductsPageTitleSlice";
 
 export function Category({ category }) {
   const dispatch = useDispatch();
 
-  const handleCategoryClick = (categoryName) => {
+  const handleCategoryClick = (category) => {
     const filter = {
       tag: {
         name: GET_PRODUCTS_BY_CATEGORY,
-        value: categoryName,
+        value: category.id,
       },
       price: {
         min: 1,
@@ -26,6 +27,7 @@ export function Category({ category }) {
       },
     };
     dispatch(getFilteredProducts(filter));
+    dispatch(setTitle(category.name || "Products"));
   };
 
   function addCloudinaryTransform(
@@ -41,7 +43,7 @@ export function Category({ category }) {
     <Link
       to={`/products/${category.name}`}
       onClick={() => {
-        handleCategoryClick(category.name);
+        handleCategoryClick(category);
       }}
     >
       <div className="category">
