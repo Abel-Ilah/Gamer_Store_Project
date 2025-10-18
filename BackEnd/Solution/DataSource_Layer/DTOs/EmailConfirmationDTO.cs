@@ -13,7 +13,7 @@ namespace DataSource.DTOs
         public int UserId { get; set; }
 
         public string Code { get; set; } = null!;
-
+        public string Purpose { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
 
         public DateTime ExpiresAt { get; set; }

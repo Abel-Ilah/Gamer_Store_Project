@@ -1,15 +1,60 @@
 [
   {
     "ContainingType": "APIs.Controllers.AuthController",
-    "Method": "SendConfirmationEmail",
-    "RelativePath": "api/auth/send-confirmation",
+    "Method": "CreateNewPasswordAsync",
+    "RelativePath": "api/auth/new-password",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newPassword",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.AuthController",
+    "Method": "SendPasswordResetTokenAsync",
+    "RelativePath": "api/auth/send-reset-token",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "userId",
-        "Type": "System.Int32",
+        "Name": "email",
+        "Type": "System.String",
         "IsRequired": false
       }
     ],
@@ -30,7 +75,7 @@
           "application/json",
           "text/json"
         ],
-        "StatusCode": 404
+        "StatusCode": 400
       },
       {
         "Type": "System.Void",
@@ -41,21 +86,56 @@
   },
   {
     "ContainingType": "APIs.Controllers.AuthController",
-    "Method": "VerifyEamilAsync",
+    "Method": "SendEmailVerificationCodeAsync",
+    "RelativePath": "api/auth/send-verification",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "DataSource.DTOs.EmailConfirmationDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.AuthController",
+    "Method": "VerifyConfirmEmailCodeAsync",
     "RelativePath": "api/auth/verify-email",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "verificationCode",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "dto",
+        "Type": "DataSource.DTOs.VerificationDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [

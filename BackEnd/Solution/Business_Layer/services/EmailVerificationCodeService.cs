@@ -1,49 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataSource.DTOs;
 using DataSource.Entities;
 using DataSource.Repositories;
-using Services.classes;
+
 
 namespace Services.services
 {
-    public class EmailConfirmationCodeService
+    public class EmailVerificationCodeService
     {
-        private readonly EmailConfirmationRepository _EmailConfirmationRepository;
+        private readonly EmailVerificationRepository _emailVerificationRepository;
         private readonly EmailService _EmailService;
         private readonly UserService _UserService;
-        public EmailConfirmationCodeService(EmailConfirmationRepository emailConfirmationRepository,EmailService emailService,UserService userService) 
+        public EmailVerificationCodeService(EmailVerificationRepository emailVerificationRepository,EmailService emailService,UserService userService) 
         {
-            _EmailConfirmationRepository = emailConfirmationRepository;
+            _emailVerificationRepository = emailVerificationRepository;
             _EmailService = emailService;
             _UserService = userService;
 
         }
 
-        public async Task<int>AddAsync(int userId) 
+        public async Task<int>AddAsync(string email) 
         {
-          var user = await _UserService.GetUserByIdAsync(userId);
-          if(user == null) return 0;
+            var userId = await _UserService.GetUserId(email);
+            
+            if (userId == 0) throw new Exception("email not exists");
           
             var random = new Random();
             int confirmationCode = random.Next(100000, 1000000);
             var createdAt = DateTime.Now;
             var expiresAt = createdAt.AddMinutes(15);
-            EmailConfirmationCode emailConfirmationObject = new EmailConfirmationCode()
+            VerificationCode emailConfirmationObject = new VerificationCode()
             {
                 UserId = userId,
                 CreatedAt = createdAt,
                 ExpiresAt = expiresAt,
                 IsUsed = false,
                 Code = confirmationCode.ToString(),
-
             };
-         int emailConfirmationId =   await _EmailConfirmationRepository.AddAsync(emailConfirmationObject);
+         int VerificationCodeId =   await _emailVerificationRepository.AddAsync(emailConfirmationObject);
 
-         if(emailConfirmationId> 0)
+         if(VerificationCodeId> 0)
          {
                 var subject = "Your Email Confirmation Code";
                 var body = $@"
@@ -55,22 +50,17 @@ namespace Services.services
                 </div>
                 <p style=""font-size: 14px; color: #999;"">This code is valid for 15 minutes.</p>
                 </div>";
-                await _EmailService.SendAsync(user.Email, subject, body);
+                await _EmailService.SendAsync(email, subject, body);
          }
-         return emailConfirmationId;
+         return VerificationCodeId;
         }
 
-        public async Task<EmailConfirmationCode?>GetByIdAsync(int id)
-        {
-            return await _EmailConfirmationRepository.GetByIdAsync(id);
-        }
+       public async Task<bool> VerifyEmailAsync(VerificationDTO verificationDTO)
+       {
+           return await _emailVerificationRepository.VerifyEmailAsync(verificationDTO);
+       }
 
-        public async Task<bool> VerifyEmailAsync(int userId, string verificationCode)
-        {
-            return await _EmailConfirmationRepository.VerifyEmailAsync(userId, verificationCode);
-        }
-   
-
+     
     }
 
 }

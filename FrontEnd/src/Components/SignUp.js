@@ -1,12 +1,10 @@
 import "./SignUp.css";
 import TextField from "@mui/material/TextField";
-import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import Button from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import Container from "@mui/material/Container";
 import {
   showMessage,
@@ -15,7 +13,10 @@ import {
 } from "../features/snackbar/SnackbarSlice";
 import { useDispatch } from "react-redux";
 import { AddNewUser, clearUserStatus } from "../features/users/UserSlice";
-import { SendNewConfirmationCode } from "../features/emailVerification/sendVerificationCodeSlice";
+import {
+  SendNewConfirmationCode,
+  CONFIRM_EMAIL,
+} from "../features/emailVerification/EmailVerificationSlice";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export function SignUp() {
@@ -83,17 +84,17 @@ export function SignUp() {
       setLoading(true);
       dispatch(AddNewUser(NewUser))
         .unwrap()
-        .then((createdUser) => {
+        .then((addedUser) => {
           setDisabled(true);
           localStorage.setItem(
             "login",
             JSON.stringify({
-              email: createdUser.email,
-              password: createdUser.password,
+              email: addedUser.email,
+              password: addedUser.password,
               autoLogin: true,
             })
           );
-          dispatch(SendNewConfirmationCode(createdUser.id))
+          dispatch(SendNewConfirmationCode(addedUser.email))
             .unwrap()
             .then(() => {
               setLoading(false);
@@ -110,7 +111,7 @@ export function SignUp() {
               dispatch(
                 showMessage({
                   message:
-                    "Your account was created, but we couldn’t send the verification code due to a server issue. Please try again later.",
+                    "Your account was created, but we couldn't send the verification code due to a server issue. Please try again later.",
                   severity: SEVERITY_WARNING,
                 })
               );

@@ -24,7 +24,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Discount> Discounts { get; set; }
 
-    public virtual DbSet<EmailConfirmationCode> EmailConfirmationCodes { get; set; }
+    public virtual DbSet<VerificationCode> VerificationCodes { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -35,6 +35,8 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<Product> Products { get; set; }
 
     public DbSet<vw_Product> ProductsView { get; set; }
+
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
     public virtual DbSet<ProductImage> ProductImages { get; set; }
 

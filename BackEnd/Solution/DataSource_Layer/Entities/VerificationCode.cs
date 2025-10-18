@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataSource.Entities;
 
-public partial class EmailConfirmationCode
+public partial class VerificationCode
 {
     public int Id { get; set; }
 

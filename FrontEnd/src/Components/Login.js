@@ -5,7 +5,6 @@ import LockIcon from "@mui/icons-material/Lock";
 import Button from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import CloseIcon from "@mui/icons-material/Close";
 import Container from "@mui/material/Container";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useDispatch } from "react-redux";
@@ -16,12 +15,13 @@ import {
   clearUserState,
   clearUserStatus,
 } from "../features/users/UserSlice";
-import { SendNewConfirmationCode } from "../features/emailVerification/sendVerificationCodeSlice";
+import { SendNewConfirmationCode } from "../features/emailVerification/EmailVerificationSlice";
 import {
   SEVERITY_ERROR,
   showMessage,
 } from "../features/snackbar/SnackbarSlice";
 import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
 
 export function Login() {
   const [login, setLogin] = useState(() => {
@@ -79,18 +79,17 @@ export function Login() {
             setLoading(false);
             navigate("/");
           } else {
-            dispatch(SendNewConfirmationCode(user.id))
+            dispatch(SendNewConfirmationCode(user.email))
               .unwrap()
               .then(() => {
                 setLoading(false);
                 navigate("/verify-email");
               })
-              .catch(() => {
+              .catch((err) => {
                 setLoading(false);
                 dispatch(
                   showMessage({
-                    message:
-                      "Failed to send verification code due to a server issue. Please try again later.",
+                    message: err,
                     severity: SEVERITY_ERROR,
                   })
                 );
@@ -177,17 +176,15 @@ export function Login() {
               Login
             </Button>
 
-            <div className="signup-link">
-              Don't have an account?
-              <span
-                onClick={() => {
-                  setErrors({});
-                  dispatch(clearUserState());
-                }}
-              >
-                <Link to="/signup">Sign up</Link>
-              </span>
-            </div>
+            <Link className="forgot-password" to="/account/password/forgot">
+              Forgot your password?
+            </Link>
+            <Divider className="divider" />
+            <Link to="/signup" className="signup-link">
+              <Button variant="contained" className="signup-btn">
+                Sign up
+              </Button>
+            </Link>
           </form>
         </div>
       </Container>

@@ -1,0 +1,21 @@
+.token-sent-page {
+  min-height: 100vh;
+  padding-top: 100px;
+}
+.token-sent-page .content {
+  width: 100%;
+  max-width: 300px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: var(--main-shadow);
+  margin: 0px auto;
+}
+.token-sent-page .content .content-title {
+  color: var(--light-green);
+  font-weight: bold;
+}
+.token-sent-page .content .text {
+  margin-top: 15px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}

@@ -21,3 +21,8 @@
 .header .content #logo {
   height: 65px;
 }
+@media (max-width: 900px) {
+  .header {
+    margin-bottom: 0px;
+  }
+}

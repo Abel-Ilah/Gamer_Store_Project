@@ -1,4 +1,5 @@
 ﻿using DataSource.Data;
+using DataSource.DTOs;
 using DataSource.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,7 @@ namespace DataSource.Repositories
             return user;
         }
 
+       
         public async Task<int> AddAsync(User user)
         {
             _context.Users.Add(user);
@@ -55,6 +57,10 @@ namespace DataSource.Repositories
         public async Task<bool> IsEmailExistsAsync(string email)
         {
             return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+        public async Task<int>GetUserId(string email)
+        {
+            return await _context.Users.AsNoTracking().Where(u=>u.Email == email).Select(u=>u.Id).FirstOrDefaultAsync();
         }
 
     }

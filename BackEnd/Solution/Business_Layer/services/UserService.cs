@@ -28,6 +28,12 @@ namespace Services.services
         {
             return await _userRepository.GetUserByLoginInfo(email, password);
         }
+
+        public async Task<int> GetUserId(string email)
+        {
+            return await _userRepository.GetUserId(email);
+        }
+
         public async Task<int> AddUserAsync(User user)
         {
             if (await _userRepository.IsEmailExistsAsync(user.Email))

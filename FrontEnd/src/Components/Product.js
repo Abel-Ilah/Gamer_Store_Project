@@ -121,15 +121,6 @@ export function Product({ Product: product, showRating = false }) {
             quantity: addedItem.quantity,
           };
           dispatch(AddNewItemLocal(localItem));
-          // add item locally to temp cart in guest mode (logout)
-          if (addedItem.userId === null) {
-            let guestCart = JSON.parse(sessionStorage.getItem("cart"));
-            guestCart =
-              guestCart && guestCart.length > 0
-                ? [localItem, ...guestCart]
-                : [localItem];
-            sessionStorage.setItem("cart", JSON.stringify(guestCart));
-          }
           setStatus({
             loading: false,
             error: null,
@@ -317,20 +308,18 @@ export function Product({ Product: product, showRating = false }) {
         />
         <div className="cta-btns">
           <IconButton
-            style={{
-              pointerEvents: isProductInComparelist ? "none" : "unset",
-              color: isProductInComparelist ? "#ff000e" : "white",
-            }}
             onClick={handleAddToComparelist}
             loading={comparelistItemStatus.loading}
             loadingIndicator={
               <CircularProgress size={25} sx={{ color: "white" }} />
             }
-            disabled={comparelistItemStatus.loading}
+            disabled={comparelistItemStatus.loading || isProductInComparelist}
           >
             <LoopIcon
               style={{
                 display: comparelistItemStatus.loading ? "none" : "inline-flex",
+                color: isProductInComparelist ? "#AEEA00" : "white",
+                fontWeight: "bold",
               }}
             />
           </IconButton>
@@ -340,11 +329,8 @@ export function Product({ Product: product, showRating = false }) {
           </IconButton>
 
           <IconButton
-            style={{
-              pointerEvents: isProductInWishlist ? "none" : "unset",
-              color: isProductInWishlist ? "#ff000e" : "white",
-            }}
             onClick={handleAddToWishlist}
+            disabled={wishlistItemStatus.loading || isProductInWishlist}
             loading={wishlistItemStatus.loading}
             loadingIndicator={
               <CircularProgress size={25} sx={{ color: "white" }} />
@@ -353,6 +339,7 @@ export function Product({ Product: product, showRating = false }) {
             <FavoriteIcon
               style={{
                 display: wishlistItemStatus.loading ? "none" : "inline-flex",
+                color: isProductInWishlist ? "#AEEA00" : "white",
               }}
             />
           </IconButton>

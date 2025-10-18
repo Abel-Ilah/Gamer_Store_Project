@@ -34,7 +34,6 @@ import {
   addNewWishlistItem,
   AddNewWishlistItemLocal,
 } from "../features/wishlist/WishlistSlice";
-import { styled } from "@mui/material/styles";
 
 export function ProductDetails() {
   const [productState, setProductState] = useState({

@@ -32,7 +32,10 @@ import {
 } from "./features/Compare/CompareSlice";
 import { Comparelist } from "./Components/Comparelist";
 import OrdersHistory from "./Components/OrdersHistory";
-
+import { NotFoundPage } from "./Components/NotFoundPage ";
+import { ForgotPassword } from "./Components/ForgotPassword";
+import { NewPassword } from "./Components/NewPassword";
+import { ResetTokenSentPage } from "./Components/ResetTokenSentPage";
 function App() {
   const dispatch = useDispatch();
   const { user, ready: isUserReady } = useSelector((state) => state.user);
@@ -95,15 +98,24 @@ function App() {
             />
           </Route>
 
-          <Route element={<ProtectedRoute requireLogin requireCart />}>
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/compare" element={<Comparelist />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-          </Route>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/compare" element={<Comparelist />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/wishlist" element={<Wishlist />} />
 
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/orders-history" element={<OrdersHistory />} />
+          <Route path="*" element={<NotFoundPage />} />
+
+          <Route path="/account/password/forgot" element={<ForgotPassword />} />
+          <Route
+            path="/account/password/forgot/token-sent"
+            element={<ResetTokenSentPage />}
+          />
+          <Route
+            path="/account/password/reset/:token"
+            element={<NewPassword />}
+          />
         </Routes>
         <SnackBar />
 

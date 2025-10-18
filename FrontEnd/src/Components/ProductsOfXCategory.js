@@ -30,11 +30,7 @@ export function ProductsOfXCategory() {
       return randomCategory;
     }
   }, [categories]);
-  console.log("category : ", randomCategory);
-  if (randomCategory) {
-    console.log(typeof randomCategory.id);
-  }
-  console.log("state : ", productsState);
+
   useEffect(() => {
     if (randomCategory) {
       setProductsState({ loading: true, products: null, error: null });

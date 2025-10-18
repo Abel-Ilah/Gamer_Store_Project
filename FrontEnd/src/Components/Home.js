@@ -11,8 +11,7 @@ import { TopReviews } from "./TopReviews";
 import { Incentives } from "./Incentives";
 export function Home() {
   return (
-    <div>
-      {" "}
+    <div id="home-page" style={{ minHeight: "100vh" }}>
       <HeroSection />
       <Container maxWidth="xl">
         <DiscountedProductsQuickLinks />

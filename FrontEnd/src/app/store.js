@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "../features/users/UserSlice";
-import sendEmailVerificationReducer from "../features/emailVerification/sendVerificationCodeSlice";
-import verifyEmailReducer from "../features/emailVerification/verifyEmailSlice";
+import emailVerificationReducer from "../features/emailVerification/EmailVerificationSlice";
 import cartReducer from "../features/cart/CartSlice";
 import productsReducer from "../features/products/productsSlice";
 import snackbarReducer from "../features/snackbar/SnackbarSlice";
@@ -14,8 +13,7 @@ import headerCssPositionReducer from "../features/header/HeaderPositionSlice";
 export const store = configureStore({
   reducer: {
     user: userReducer,
-    sendVerificationCode: sendEmailVerificationReducer,
-    verifyEmail: verifyEmailReducer,
+    emailVerification: emailVerificationReducer,
     cart: cartReducer,
     products: productsReducer,
     snackbar: snackbarReducer,

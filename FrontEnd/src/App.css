@@ -5,11 +5,14 @@
   --dark-color: rgb(27, 27, 27);
   --section-color: #daedff;
   --light-red: rgb(241, 62, 62);
+  --light-green: rgb(2, 165, 2);
   /* =========== */
   /* transitions */
   --main-tr: all 0.3s;
   --tr-2: all 0.4s;
   /* =========== */
+
+  --main-shadow: 0 8px 25px rgba(58, 123, 213, 0.2);
 }
 .App {
   text-align: center;

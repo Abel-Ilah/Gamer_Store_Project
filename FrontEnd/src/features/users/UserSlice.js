@@ -69,6 +69,9 @@ const userSlice = createSlice({
       state.success = false;
       state.ready = true;
     },
+    markUserEmailStateAsVerified: (state) => {
+      if (state.user) state.user.isEmailConfirmed = true;
+    },
   },
   extraReducers: (builder) => {
     //add new user  :
@@ -136,5 +139,10 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { clearUserState, clearUserStatus, markUserAsReady, logout } =
-  userSlice.actions;
+export const {
+  clearUserState,
+  clearUserStatus,
+  markUserAsReady,
+  markUserEmailStateAsVerified,
+  logout,
+} = userSlice.actions;

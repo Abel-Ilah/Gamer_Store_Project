@@ -128,6 +128,7 @@ const OrdersHistory = () => {
                     </Box>
 
                     <Chip
+                      style={{ pointerEvents: "none" }}
                       label={order.status ?? "Unknown"}
                       color={chipColor(order.status)}
                       size="small"
