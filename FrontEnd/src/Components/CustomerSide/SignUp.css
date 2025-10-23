@@ -1,0 +1,92 @@
+.signup {
+  padding: 20px 0 50px;
+  min-height: calc(100vh - 120px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup .form-wraper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup .form-wraper .form .form-title {
+  font-weight: bold;
+  color: var(--main-color);
+  text-decoration: underline;
+}
+
+.signup .form {
+  box-sizing: content-box;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-basis: 300px;
+  width: fit-content;
+  background-color: white;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(58, 123, 213, 0.2);
+  padding: 20px;
+}
+
+.signup .form .input {
+  width: 100% !important;
+  max-width: 300px;
+}
+.signup .form .password-box {
+  position: relative;
+  width: 100%;
+}
+.signup .form .password-box .icon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.signup .form .register {
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 18px;
+  transition: all 0.3s;
+  margin-top: 20px;
+  width: 100%;
+  background-color: var(--main-color);
+}
+.signup .form .register:hover {
+  background-color: red;
+}
+
+.signup .form .signin span a {
+  font-weight: bold;
+  text-decoration: underline !important;
+  margin-left: 5px;
+}
+.signup .form .signin span a:hover {
+  color: #d8000c !important;
+}
+
+.signup .errors {
+  background-color: #ffe5e5;
+  width: 100%;
+  color: red;
+  padding: 10px;
+  border-left: 5px solid red;
+}
+.signup .errors .text {
+  display: block;
+  font-weight: bold;
+  text-align: start;
+}
+
+@media (max-width: 600px) {
+  .signup .form {
+    border-radius: 0px;
+  }
+}

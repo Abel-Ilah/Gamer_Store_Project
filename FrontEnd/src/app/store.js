@@ -10,6 +10,8 @@ import wishlistReducer from "../features/wishlist/WishlistSlice";
 import compareReducer from "../features/Compare/CompareSlice";
 import ProudctsPageTitleReducer from "../features/productsPageTItle/ProductsPageTitleSlice";
 import headerCssPositionReducer from "../features/header/HeaderPositionSlice";
+import themeReducer from "../features/theme/ThemeSlice";
+
 export const store = configureStore({
   reducer: {
     user: userReducer,
@@ -23,5 +25,6 @@ export const store = configureStore({
     compare: compareReducer,
     title: ProudctsPageTitleReducer,
     headerCssPosition: headerCssPositionReducer,
+    theme: themeReducer,
   },
 });

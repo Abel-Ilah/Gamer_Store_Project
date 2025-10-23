@@ -1,0 +1,104 @@
+.dashboard {
+  /* ============ commun vars ========== */
+
+  --radius-1: 5px;
+  --radius-2: 10px;
+  --radius-3: 15px;
+  --radius-4: 20px;
+  --radius-5: 30px;
+
+  --space-1: 5px;
+  --space-2: 10px;
+  --space-3: 20px;
+  --space-4: 30px;
+  --space-5: 40px;
+
+  /* ============================= */
+
+  /* ===== Light Theme (default) ===== */
+  --bg-1: #ffffff;
+  --bg-2: #f5f5f5;
+  --bg-3: #ffffff;
+  --bg-4: #ffffff;
+  --bg-5: #e0e0e0;
+
+  --bg-card: color-mix(in oklab, white 3%, transparent);
+  --bg-hover: var(--bg-5);
+  --border-color: #ddd;
+
+  --text-1: #121212; /* darkest, main text */
+  --text-2: #333333; /* strong text / headings */
+  --text-3: #555555; /* normal body text */
+  --text-4: #777777; /* secondary / muted text */
+  --text-5: #aaaaaa; /* light / hints / placeholders */
+
+  --text-muted: #555555;
+  --text-inverse: #ffffff;
+
+  --color-primary: #1976d2;
+  --color-secondary: #d81b60;
+  --color-success: #4caf50;
+  --color-warning: #ff9800;
+  --color-danger: #f44336;
+
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+.dashboard.dark {
+  /* ===== Dark Theme for Dashboard ===== */
+  --bg-1: #101828;
+  --bg-2: #1f1f1f;
+  --bg-3: #1e1e1e;
+  --bg-4: #1f1f1f;
+  --bg-5: #2c2c2c;
+
+  --bg-hover: var(--bg-5);
+
+  --text-1: #ffffff; /* main headings / important text */
+  --text-2: #e0e0e0; /* strong text / subheadings */
+  --text-3: #b0b0b0; /* default body text */
+  --text-4: #888888; /* secondary / muted text */
+  --text-5: #555555; /* hints / placeholders / less important */
+
+  --text-muted: #aaaaaa;
+  --text-inverse: #121212;
+
+  --color-primary: #90caf9;
+  --color-secondary: #f48fb1;
+  --color-success: #81c784;
+  --color-warning: #ffb74d;
+  --color-danger: #e57373;
+
+  --border-color: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+.dashboard {
+  display: flex;
+  background-color: var(--bg-1);
+  height: 100vh;
+}
+.dashboard .main {
+  flex-grow: 1;
+  height: 100%;
+}
+
+.dashboard .main .content {
+  padding: var(--space-4);
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--gray-100);
+}
+.dark .main .content {
+  background-color: var(--bg-1);
+}
+@media (max-width: 900px) {
+  .dashboard {
+    position: relative;
+    display: block;
+  }
+  .dashboard .main .content {
+    padding: var(--space-3);
+  }
+}

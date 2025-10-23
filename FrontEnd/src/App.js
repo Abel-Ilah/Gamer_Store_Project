@@ -1,27 +1,27 @@
 import "./App.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Header } from "./Components/Header";
-import { Footer } from "./Components/Footer";
-import { Home } from "./Components/Home";
+import { Header } from "./Components/CustomerSide/Header";
+import { Footer } from "./Components/CustomerSide/Footer";
+import { Home } from "./Components/CustomerSide/Home";
 import { CategoriesProvider } from "./contexts/CategoriesProvider";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { ProductDetails } from "./Components/ProductDetails";
-import { SignUp } from "./Components/SignUp";
-import { EmailConfirmation } from "./Components/EmailConfirmation";
-import { Login } from "./Components/Login";
-import { Cart } from "./Components/Cart";
-import { Checkout } from "./Components/Checkout";
-import { OrderConfirmation } from "./Components/OrderConfirmation";
-import { ProtectedRoute } from "./Components/ProtectedRoute";
+import { ProductDetails } from "./Components/CustomerSide/ProductDetails";
+import { SignUp } from "./Components/CustomerSide/SignUp";
+import { EmailConfirmation } from "./Components/CustomerSide/EmailConfirmation";
+import { Login } from "./Components/CustomerSide/Login";
+import { Cart } from "./Components/CustomerSide/Cart";
+import { Checkout } from "./Components/CustomerSide/Checkout";
+import { OrderConfirmation } from "./Components/CustomerSide/OrderConfirmation";
+import { ProtectedRoute } from "./Components/CustomerSide/ProtectedRoute";
 import ScrollTop from "./ScrollToTop";
-import SnackBar from "./Components/SnackBar";
-import { useEffect } from "react";
+import SnackBar from "./Components/CustomerSide/SnackBar";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GetCurrentUser, markUserAsReady } from "./features/users/UserSlice";
 import { getGuestCart, GetUserCart } from "./features/cart/CartSlice";
-import { FilteredProducts } from "./Components/FilteredProducts";
-import { Wishlist } from "./Components/Wishlist";
+import { FilteredProducts } from "./Components/CustomerSide/FilteredProducts";
+import { Wishlist } from "./Components/CustomerSide/Wishlist";
 import {
   getGuestWishlist,
   getUserWishlist,
@@ -30,12 +30,16 @@ import {
   getGuestCompareList,
   getUserCompareList,
 } from "./features/Compare/CompareSlice";
-import { Comparelist } from "./Components/Comparelist";
-import OrdersHistory from "./Components/OrdersHistory";
-import { NotFoundPage } from "./Components/NotFoundPage ";
-import { ForgotPassword } from "./Components/ForgotPassword";
-import { NewPassword } from "./Components/NewPassword";
-import { ResetTokenSentPage } from "./Components/ResetTokenSentPage";
+import { Comparelist } from "./Components/CustomerSide/Comparelist";
+import OrdersHistory from "./Components/CustomerSide/OrdersHistory";
+import { NotFoundPage } from "./Components/CustomerSide/NotFoundPage ";
+import { ForgotPassword } from "./Components/CustomerSide/ForgotPassword";
+import { NewPassword } from "./Components/CustomerSide/NewPassword";
+import { ResetTokenSentPage } from "./Components/CustomerSide/ResetTokenSentPage";
+import { Dashboard } from "./Components/AdminDashBoard/Dashboard";
+import { Profile } from "./Components/AdminDashBoard/Profile";
+import { DashboardHomePage } from "./Components/AdminDashBoard/DashboardHomePage";
+import { Analytics } from "./Components/AdminDashBoard/Analytics";
 function App() {
   const dispatch = useDispatch();
   const { user, ready: isUserReady } = useSelector((state) => state.user);
@@ -65,13 +69,17 @@ function App() {
   }, [isUserReady, user, dispatch]);
 
   const location = useLocation();
-
+  const showLayout = useMemo(() => {
+    return !location.pathname.startsWith("/admin");
+  }, [location]);
   return (
     <CategoriesProvider>
       <div className="App">
-        <Header></Header>
+        {showLayout && <Header></Header>}
         <ScrollTop />
+
         <Routes>
+          {/* users side :  */}
           <Route path="/home" element={<Home />} />
           <Route path="/" element={<Home />} />
           <Route path="/products/" element={<FilteredProducts />}>
@@ -116,10 +124,20 @@ function App() {
             path="/account/password/reset/:token"
             element={<NewPassword />}
           />
-        </Routes>
-        <SnackBar />
+          {/* ============ */}
 
-        <Footer />
+          {/* admin routes : */}
+          <Route path="/admin/" element={<Dashboard />}>
+            <Route index element={<DashboardHomePage />} />
+
+            <Route path="profile" element={<Profile />} />
+            <Route path="analytics" element={<Analytics />} />
+          </Route>
+          {/* ============ */}
+        </Routes>
+
+        <SnackBar />
+        {showLayout && <Footer></Footer>}
       </div>
     </CategoriesProvider>
   );

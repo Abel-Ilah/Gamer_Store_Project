@@ -1,0 +1,84 @@
+.dashboard-sidebar {
+  box-sizing: content-box;
+  border-right: 1px solid var(--border-color);
+  padding: 20px;
+  width: 250px;
+  transition: var(--main-tr);
+  transition-timing-function: ease;
+  align-self: stretch;
+  background-color: var(--bg-1);
+}
+.dashboard-sidebar * {
+  box-sizing: content-box;
+}
+.dashboard-sidebar.collapsed {
+  width: 60px;
+}
+.dashboard-sidebar header {
+  margin-bottom: 40px;
+}
+.dashboard-sidebar.expanded header .logo {
+  display: flex;
+  align-items: center;
+}
+.dashboard-sidebar header .logo svg {
+  color: var(--main-color);
+  font-size: 40px;
+  margin-right: 10px;
+}
+.dashboard-sidebar.collapsed .logo svg {
+  margin: 0;
+  padding: 10px;
+}
+.dashboard-sidebar header .logo .name {
+  text-transform: capitalize;
+  font-weight: bold;
+  color: var(--main-color);
+  margin-top: 4px;
+}
+
+.dashboard-sidebar .m-title {
+  text-align: start;
+  text-transform: uppercase;
+  color: gray;
+}
+.dashboard-sidebar.collapsed .m-title {
+  text-align: center;
+  font-size: 20px;
+}
+.dashboard-sidebar .list .item {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  color: var(--text-3);
+}
+.dashboard-sidebar .list .item svg {
+  color: var(--text-3);
+}
+.dashboard-sidebar .list .item:hover {
+  background-color: var(--bg-5);
+}
+.dashboard-sidebar .list .active {
+  color: var(--main-color);
+  background-color: var(--blue-200);
+}
+.dashboard-sidebar .list .active svg {
+  color: var(--main-color);
+}
+.dashboard-sidebar .active svg {
+  color: var(--main-color);
+}
+.dashboard-sidebar .hided {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .dashboard-sidebar {
+    position: absolute;
+    top: 70px;
+    height: calc(100vh - 110px);
+  }
+  .dashboard-sidebar.collapsed {
+    left: -200px;
+  }
+}

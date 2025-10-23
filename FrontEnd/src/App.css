@@ -1,19 +1,55 @@
 :root {
   /* colors */
+  --main-color: #2196f3;
   --primary-color: #585858;
-  --secondary-color: #2196f3;
   --dark-color: rgb(27, 27, 27);
   --section-color: #daedff;
   --light-red: rgb(241, 62, 62);
   --light-green: rgb(2, 165, 2);
+
+  --gray-50: #f9fafb;
+  --gray-100: rgb(243, 244, 247);
+  --gray-200: rgb(228, 231, 236);
+  --gray-300: #d0d5dd;
+  --gray-400: #98a2b3;
+  --gray-500: #667085;
+  --gray-600: #475467;
+  --gray-700: #344054;
+  --gray-800: #1d2939;
+  --gray-900: #101828;
+
+  --green-50: #ecfdf3;
+  --green-100: #d1fadf;
+  --green-300: #6ce9a6;
+  --green-400: #32d583;
+  --green-500: #12b76a;
+  --green-600: #039855;
+  --green-700: #027a48;
+  --green-800: #05603a;
+
+  --red-50: #fef3f2;
+  --red-100: #fee4e2;
+  --red-300: #fda29b;
+  --red-400: #f97066;
+  --red-500: #f04438;
+  --red-600: #d92d20;
+  --red-700: #b42318;
+  --red-800: #912018;
+
+  --blue-200: rgba(144, 214, 255, 0.171);
+
   /* =========== */
   /* transitions */
   --main-tr: all 0.3s;
   --tr-2: all 0.4s;
   /* =========== */
-
   --main-shadow: 0 8px 25px rgba(58, 123, 213, 0.2);
 }
+
+body.dark {
+  --bg-color: #101828;
+}
+
 .App {
   text-align: center;
 }

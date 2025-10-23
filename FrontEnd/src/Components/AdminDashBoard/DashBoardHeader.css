@@ -1,0 +1,76 @@
+.dashboard-header {
+  height: 70px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.dashboard-header .drop-menu-icon {
+  box-sizing: content-box;
+  color: var(--gray-400);
+  padding: 2px;
+  border: 1px solid var(--gray-400);
+  border-radius: 5px;
+  cursor: pointer;
+}
+#account-menu-item {
+  border-radius: 5px;
+  width: 200px;
+  color: var(--text-1);
+  font-weight: bold;
+  padding: 5px 20px;
+}
+#account-menu-item svg {
+  color: var(--text-5);
+  margin-right: 10px;
+}
+#account-menu-item:hover {
+  background-color: var(--gray-300);
+}
+.dashboard-header .right-side {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.dashboard-header .right-side .icon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--gray-400);
+  border-radius: 50%;
+  color: var(--gray-500);
+}
+
+#admin-avatar {
+  color: var(--text-3);
+  background-color: var(--bg-1);
+  border: 1px solid var(--gray-400);
+  border-radius: 50%;
+}
+.dashboard-header .account-menu {
+  position: relative;
+}
+.dashboard-header .account-menu ul {
+  background-color: var(--bg-2);
+  box-sizing: content-box;
+  position: absolute;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  top: calc(100% + 20px);
+  right: 0%;
+  width: 200px;
+}
+.dashboard-header .account-menu ul li {
+  padding: 10px 20px;
+  margin: 4px;
+  border-radius: 10px;
+  color: var(--text-3);
+}
+.dashboard-header .account-menu ul li:hover {
+  background-color: var(--bg-hover);
+}
+.dashboard-header .account-menu ul li svg {
+  color: var(--text-3);
+}
