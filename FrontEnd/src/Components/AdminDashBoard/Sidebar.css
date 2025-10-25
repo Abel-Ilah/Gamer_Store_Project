@@ -3,6 +3,7 @@
   border-right: 1px solid var(--border-color);
   padding: 20px;
   width: 250px;
+  min-width: 250px;
   transition: var(--main-tr);
   transition-timing-function: ease;
   align-self: stretch;
@@ -13,6 +14,7 @@
 }
 .dashboard-sidebar.collapsed {
   width: 60px;
+  min-width: 60px;
 }
 .dashboard-sidebar header {
   margin-bottom: 40px;
@@ -75,10 +77,11 @@
 @media (max-width: 900px) {
   .dashboard-sidebar {
     position: absolute;
-    top: 70px;
-    height: calc(100vh - 110px);
+    top: 65px;
+    height: calc(100vh - 105px);
+    z-index: 1000;
   }
   .dashboard-sidebar.collapsed {
-    left: -200px;
+    left: -300px;
   }
 }

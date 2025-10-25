@@ -100,7 +100,10 @@ export function Sidebar({ isSidebarFixed }) {
                   activeBtn === "all-products" ? "active" : ""
                 }`}
                 sx={{ pl: 4 }}
-                onClick={() => handleActiveBtn("all-products")}
+                onClick={() => {
+                  handleActiveBtn("all-products");
+                  navigate("/admin/products");
+                }}
               >
                 <ListItemIcon>
                   <KeyboardArrowRightOutlinedIcon />
