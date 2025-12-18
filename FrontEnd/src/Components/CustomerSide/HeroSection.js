@@ -2,14 +2,12 @@ import "./HeroSection.css";
 import Slider from "react-slick";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import Container from "@mui/material/Container";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getHeroSectionProducts } from "../../features/products/productsSlice";
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 import { Link } from "react-router-dom";
-import { setPosition } from "../../features/header/HeaderPositionSlice";
 
 // Custom Arrow Components
 function NextArrow(props) {
@@ -80,8 +78,6 @@ export function HeroSection() {
         return item !== null ? count + 1 : count;
       }, 0) > 0;
 
-    dispatch(setPosition(hasData ? "absolute" : "relative"));
-
     return hasData;
   }
   return objectHasData() ? (
@@ -94,7 +90,7 @@ export function HeroSection() {
         setShowArrows(false);
       }}
     >
-      <Container maxWidth="xl" style={{ position: "static" }}>
+      <div className="hero-inner">
         <Slider {...settings} className="content">
           {products && products.bestSeller && (
             <card className="hs-product">
@@ -135,6 +131,7 @@ export function HeroSection() {
               </div>
             </card>
           )}
+
           {products && products.discounted && (
             <card className="hs-product">
               <div className="image-wraper">
@@ -158,6 +155,7 @@ export function HeroSection() {
               </div>
             </card>
           )}
+
           {products && products.trending && (
             <card className="hs-product">
               <div className="image-wraper">
@@ -204,7 +202,7 @@ export function HeroSection() {
             </card>
           )}
         </Slider>
-      </Container>
+      </div>
     </div>
   ) : null;
 }

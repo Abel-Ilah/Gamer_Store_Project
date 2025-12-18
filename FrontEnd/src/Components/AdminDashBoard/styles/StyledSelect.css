@@ -1,0 +1,50 @@
+.styled-select .MuiOutlinedInput-root fieldset {
+  border-radius: var(--radius-2);
+  border: 1px solid var(--gray-300) !important;
+}
+.dark .styled-select .MuiOutlinedInput-root fieldset {
+  border: 1px solid var(--gray-700) !important;
+}
+
+.styled-select {
+  min-width: 100px;
+}
+.styled-select .MuiSelect-select {
+  padding: var(--space-2);
+}
+.styled-select .select,
+.styled-select .label,
+.styled-select .select .MuiSelect-icon {
+  color: var(--text-3);
+}
+
+/* paper props style */
+.styled-menu {
+  padding: 5px;
+  margin-top: 5px;
+  border-radius: 10px !important;
+  background-color: white !important;
+  box-shadow: none;
+  border: 1px solid #ddd8d8ff;
+}
+
+.styled-menu .MuiMenuItem-root {
+  color: gray;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.styled-menu .MuiMenuItem-root:hover {
+  background-color: var(--gray-300);
+  color: var(--gray-700);
+}
+
+.styled-menu .MuiMenuItem-root.Mui-selected {
+  background-color: #e0e0e0;
+  color: #333333;
+}
+
+.styled-menu .MuiMenuItem-root:not(:last-of-type) {
+  margin-bottom: 5px;
+}
+/* =============== */

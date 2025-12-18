@@ -1,0 +1,45 @@
+.categories-page {
+  text-align: start;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-4);
+  padding: var(--space-3);
+  width: 100%;
+}
+.dark .categories-page {
+  background-color: var(--bg-card);
+}
+.categories-page > header {
+  border-bottom: 1px solid var(--gray-200);
+  padding-bottom: var(--space-2);
+}
+.dark .categories-page > header {
+  border-color: var(--gray-700);
+}
+.categories-page > header .categories-section-title {
+  color: var(--text-1);
+  font-weight: bold;
+}
+.categories-page > header #add-category-btn {
+  box-shadow: none;
+  color: white;
+  font-weight: bold;
+  text-transform: capitalize;
+  font-size: 1rem;
+  border-radius: var(--radius-2);
+  padding: var(--space-2) var(--space-3);
+  transition: var(--main-tr);
+}
+.categories-page > header #add-category-btn:hover {
+  background-color: var(--red-600);
+}
+
+.categories-page .categories-table button {
+  background: none;
+}
+.categories-page .categories-table .icon.delete {
+  color: red;
+}
+.categories-page .categories-table .icon.edit {
+  color: var(--main-color);
+}

@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 //mui components:
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -14,13 +15,13 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {
   GET_PRODUCTS_BY_CATEGORY,
   getFilteredProducts,
 } from "../../features/products/productsSlice";
 import settings from "../../appsettings.json";
 import { setTitle } from "../../features/productsPageTItle/ProductsPageTitleSlice";
+import { set } from "lodash";
 
 export function Nav() {
   const categories = useCategories();
@@ -28,7 +29,7 @@ export function Nav() {
   const [showCategoriesList_sm_md, setShowCategoriesList_sm_md] =
     useState(false);
   const [showCategoriesList_lg, setShowCategoriesList_lg] = useState(false);
-
+  const [activeCategoryId, setActiveCategoryId] = useState(null);
   const dispatch = useDispatch();
 
   const handleOpenNavMenu = (event) => {
@@ -202,11 +203,11 @@ export function Nav() {
           display: {
             xs: "none",
             md: "flex",
-            justifyContent: "center",
-            gap: "30px",
+            justifyContent: "start",
           },
         }}
       >
+        {/* categories select */}
         <div
           className="list-container"
           onMouseEnter={() => {
@@ -216,8 +217,13 @@ export function Nav() {
             setShowCategoriesList_lg(false);
           }}
         >
-          <Button className="show-categories-btn">
-            Categories
+          <Button
+            variant="contained"
+            className="show-categories-btn d-flex gap-4"
+          >
+            <span className="d-flex align-items-center gap-1">
+              <MenuIcon /> Categories
+            </span>
             {showCategoriesList_lg ? (
               <KeyboardArrowUpIcon />
             ) : (
@@ -236,36 +242,52 @@ export function Nav() {
             {Array.isArray(categories) &&
               categories.map((c) => {
                 return (
-                  <li key={c.id}>
-                    <Link
-                      onClick={() => {
-                        handleCategoryClick(c);
-                        setShowCategoriesList_lg(false);
-                      }}
-                      to={`/products/${c.name}`}
+                  <Link
+                    onClick={(e) => {
+                      handleCategoryClick(c);
+                      setShowCategoriesList_lg(false);
+                      setActiveCategoryId(c.id);
+                    }}
+                    to={`/products/${c.name}`}
+                    style={{
+                      pointerEvents:
+                        activeCategoryId === c.id ? "none" : "auto",
+                    }}
+                  >
+                    <li
+                      className={`d-flex gap-2 my-1 ${
+                        activeCategoryId === c.id ? "active" : ""
+                      }`}
+                      key={c.id}
                     >
+                      <KeyboardArrowRightIcon />
                       {c.name}
-                    </Link>
-                  </li>
+                    </li>
+                  </Link>
                 );
               })}
           </ul>
         </div>
-        <Link>
-          <Button className="link">New Products</Button>
-        </Link>
-        <Link>
-          <Button className="link">% Promotions</Button>
-        </Link>
-        <Link>
-          <Button className="link">Contact Us</Button>
-        </Link>
+        {/* ======= */}
+        {/* links */}
+        <div className="links d-flex justify-content-center align-items-center gap-4 flex-grow-1">
+          <Link>
+            <Button className="link">New Products</Button>
+          </Link>
+          <Link>
+            <Button className="link">% Promotions</Button>
+          </Link>
+          <Link>
+            <Button className="link">Contact Us</Button>
+          </Link>
 
-        <Link>
-          <Button className="link">Location</Button>
-        </Link>
+          <Link>
+            <Button className="link">Location</Button>
+          </Link>
+        </div>
+        {/* ======= */}
       </Box>
-      {/* ================ */}
+      {/* ================================== */}
     </div>
   );
 }

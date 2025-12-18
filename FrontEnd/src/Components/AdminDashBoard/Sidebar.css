@@ -58,7 +58,10 @@
   color: var(--text-3);
 }
 .dashboard-sidebar .list .item:hover {
-  background-color: var(--bg-5);
+  background-color: var(--gray-200);
+}
+.dark .dashboard-sidebar .list .item:hover {
+  background-color: var(--gray-800);
 }
 .dashboard-sidebar .list .active {
   color: var(--main-color);

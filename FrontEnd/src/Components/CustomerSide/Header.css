@@ -1,11 +1,10 @@
 .header {
-  /* background-color: #1e1e1e; */
   /* background: linear-gradient(to left, #0a151a, #203a43, #2c5364); */
   /* background: linear-gradient(to left, #2c3e50, #242323); */
   z-index: 2;
   width: 100%;
   margin-bottom: 40px;
-  box-shadow: 0px 0px 5px gray;
+  /* box-shadow: 0px 0px 5px gray; */
 }
 .header .content {
   display: flex;

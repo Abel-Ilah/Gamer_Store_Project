@@ -12,8 +12,8 @@ import { Incentives } from "./Incentives";
 export function Home() {
   return (
     <div id="home-page" style={{ minHeight: "100vh" }}>
-      <HeroSection />
       <Container maxWidth="xl">
+        <HeroSection />
         <DiscountedProductsQuickLinks />
         <ProductsOfXCategory />
         <MixedProductsQuickLinks />

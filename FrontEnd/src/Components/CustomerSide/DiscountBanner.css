@@ -2,7 +2,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #fdd3d3;
+  /* background-color: #fdd3d3; */
+  background: linear-gradient(
+    253deg,
+    rgba(253, 29, 29, 0.3) 0%,
+    rgba(253, 211, 211, 0.8) 80%,
+    rgba(253, 29, 29, 0.3) 100%
+  );
+
   padding: 1rem 2rem;
   margin-top: 1.5rem;
   flex-wrap: wrap;

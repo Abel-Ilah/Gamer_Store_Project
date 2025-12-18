@@ -1,15 +1,15 @@
-.account-box {
-  display: flex;
-  align-items: center;
-  text-align: center;
+.account-cmp .avatar {
+  width: 32px;
+  height: 32px;
+  font-size: "10px";
+  color: "white";
+  background-color: var(--gray-400);
 }
-.account-menu .menu-item {
-  padding: 10px;
-  min-width: 200px;
+#account-menu {
+  padding: 5px;
+  border: 1px solid var(--gray-300);
+  border-radius: 5px;
 }
-.account-menu .menu-item .wish-list {
-  color: red;
-}
-.account-menu .menu-item:hover {
-  background-color: rgb(211, 208, 208);
+#account-menu .MuiButtonBase-root {
+  border-radius: 5px;
 }

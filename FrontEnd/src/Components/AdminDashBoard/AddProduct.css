@@ -1,0 +1,166 @@
+.add-product-page {
+  text-align: start;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-4);
+  padding: var(--space-3);
+  width: 100%;
+}
+.dark .add-product-page {
+  background-color: var(--bg-card);
+}
+.add-product-page .product-id {
+  color: var(--text-4);
+  font-weight: bold;
+}
+.add-product-page .add-product-title {
+  color: var(--text-2);
+  font-weight: bold;
+  margin-bottom: var(--space-5);
+}
+.add-product-page form .left-box,
+.add-product-page form .right-box {
+  flex-basis: 400px;
+  flex-grow: 1;
+}
+.add-product-page form .price-wraper {
+  position: relative;
+  width: fit-content;
+  flex-basis: 170px;
+}
+.add-product-page form .price-wraper .input {
+  width: 100%;
+}
+.add-product-page form .quantity {
+  flex-basis: 150px;
+  flex-grow: 1;
+}
+.add-product-page
+  form
+  .price-wraper
+  .add-product-page
+  form
+  .price-wraper
+  .input
+  .MuiInputBase-input {
+  padding-right: 50px !important;
+}
+.add-product-page form .price-wraper .currency {
+  position: absolute;
+  right: 0%;
+  top: 0;
+  border-left: 2px solid var(--gray-300);
+  height: 100%;
+  width: 45px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-4);
+  font-weight: bold;
+  font-size: 0.9rem;
+  z-index: 11;
+}
+.dark .add-product-page form .price-wraper .currency {
+  border-left: 2px solid var(--gray-600);
+}
+
+.add-product-page form .product-details {
+  padding: var(--space-2);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-3);
+}
+.dark .add-product-page form .product-details {
+  border: 1px solid var(--gray-600);
+}
+.add-product-page form .product-details .details-title {
+  color: var(--text-4);
+}
+.add-product-page form .product-details .item {
+  border: 1px solid var(--gray-300);
+  padding: var(--space-1);
+  border-radius: var(--radius-1);
+}
+.dark .add-product-page form .product-details .item {
+  border-color: var(--gray-600);
+}
+.add-product-page form .product-details .input {
+  flex-grow: 1;
+  flex-basis: 150px;
+}
+.add-product-page form .product-details button {
+  background-color: var(--main-color);
+  text-transform: capitalize;
+  font-weight: bold;
+  border-radius: var(--radius-2);
+  box-shadow: none;
+  transition: var(--main-tr);
+}
+.add-product-page form .product-details button:hover {
+  background-color: var(--red-500);
+}
+
+.add-product-page form .description {
+  width: 100%;
+  resize: none;
+  display: block;
+  border-radius: var(--radius-2);
+  padding: 10px;
+  outline: none;
+  color: var(--text-2);
+  border: 1px solid var(--gray-300);
+  background: none;
+}
+.dark .add-product-page form .description {
+  border-color: var(--gray-600);
+}
+
+.add-product-page form .product-image .drop-zone {
+  border: 2px dashed var(--gray-400);
+  padding: var(--space-4);
+  text-align: center;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+}
+.add-product-page form .product-image .text {
+  color: var(--text-4);
+  margin: 0;
+}
+.add-product-page form .clear-btn {
+  background: none;
+}
+.add-product-page form .product-image .clear-btn svg {
+  width: 30px;
+  height: 30px;
+}
+.add-product-page form .product-image .clear-btn svg.enabled {
+  color: var(--red-500);
+}
+.add-product-page form .product-image .clear-btn svg.disabled {
+  color: var(--gray-400);
+}
+.dark .add-product-page form .product-image .clear-btn svg.disabled {
+  color: var(--gray-300);
+}
+.add-product-page form .save-wraper {
+  text-align: right;
+}
+.add-product-page form .save-btn {
+  border-radius: var(--radius-1);
+  background-color: transparent;
+  color: var(--gray-400);
+  box-shadow: none;
+  border: 1px solid var(--gray-400);
+  font-weight: bold;
+  transition: var(--main-tr);
+}
+.add-product-page form .save-btn:hover {
+  background-color: var(--main-color);
+  color: white;
+  border-color: var(--main-color);
+}
+.add-product-page input[type="number"]::-webkit-outer-spin-button,
+.add-product-page input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

@@ -1,21 +1,29 @@
 .hero-section {
-  background-color: var(--section-color);
+  /* background: linear-gradient(135deg, #eef3ff, #fdeaf2); */
+
+  height: fit-content;
   width: 100%;
-  min-height: 100vh;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin-bottom: 30px;
-  padding-top: 150px;
-  padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+.hero-section .hero-inner {
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(32, 153, 186, 0.33) 0%,
+    rgba(87, 199, 133, 0.25) 100%
+  );
+  padding: 20px 0;
+}
 .hero-section .content .hs-product {
   display: flex !important;
   flex-flow: row-reverse wrap;
   align-items: center;
   position: relative;
+  width: 100%;
 }
 .hero-section .content .hs-product .info {
   text-align: start;
@@ -151,7 +159,7 @@
   font-size: 40px;
 }
 .hero-section .arrow:hover {
-  color: rgba(146, 38, 146, 0.979);
+  color: var(--main-color);
 }
 .hero-section .next {
   right: 0;

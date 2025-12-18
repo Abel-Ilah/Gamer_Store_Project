@@ -1,12 +1,12 @@
 import "./Search.css";
 import React, { useEffect, useRef, useState } from "react";
-import { Select, MenuItem, TextField, Button, colors } from "@mui/material";
+import { Select, MenuItem, TextField, Button } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useCategories } from "../../contexts/CategoriesProvider";
 import { useDispatch } from "react-redux";
 import { searchForProducts } from "../../features/products/productsSlice";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export function Search() {
   const Categories = useCategories();
@@ -42,7 +42,7 @@ export function Search() {
   }, [productsState, isNewSearch]);
 
   const lastSearchRef = useRef({ categoryName: "", searchText: "" });
-  const navigate = useNavigate();
+
   //handlers :
   const handleCategoryChange = (event) => {
     if (event.target.value !== selectedcategory) {
@@ -179,78 +179,79 @@ export function Search() {
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <div className="search-cmp">
-        <Select
-          className="select"
-          variant="standard"
-          disableUnderline
-          value={selectedcategory}
-          onChange={(e) => {
-            handleCategoryChange(e);
-          }}
-          onClick={() => {
-            searchText && searchText.length >= 3
-              ? setOpen(true)
-              : setOpen(false);
-          }}
-          size="small"
-          MenuProps={{
-            getContentAnchorEl: null,
-            anchorOrigin: {
-              vertical: "bottom",
-              horizontal: "left",
-            },
-            transformOrigin: {
-              vertical: "top",
-              horizontal: "left",
-            },
-            PaperProps: {
-              style: {
-                width: "auto",
-                minWidth: "150px",
+        <form>
+          <TextField
+            className="search-text"
+            variant="standard"
+            InputProps={{
+              disableUnderline: true,
+            }}
+            value={searchText}
+            onChange={(e) => {
+              handleTextChange(e);
+            }}
+            size="small"
+            placeholder="Search for products..."
+            onFocus={() => {
+              searchText && searchText.length >= 3
+                ? setOpen(true)
+                : setOpen(false);
+            }}
+          />
+
+          <Select
+            className="select"
+            variant="standard"
+            disableUnderline
+            value={selectedcategory}
+            onChange={(e) => {
+              handleCategoryChange(e);
+            }}
+            onClick={() => {
+              searchText && searchText.length >= 3
+                ? setOpen(true)
+                : setOpen(false);
+            }}
+            size="small"
+            MenuProps={{
+              getContentAnchorEl: null,
+              anchorOrigin: {
+                vertical: "bottom",
+                horizontal: "left",
               },
-            },
-          }}
-        >
-          <MenuItem key={0} value="all">
-            All
-          </MenuItem>
-          {Array.isArray(Categories) &&
-            Categories.map((c) => {
-              return (
-                <MenuItem value={c.name} key={c.id}>
-                  {c.name}
-                </MenuItem>
-              );
-            })}
-        </Select>
+              transformOrigin: {
+                vertical: "top",
+                horizontal: "left",
+              },
+              PaperProps: {
+                id: "select-menu-paper",
+              },
+            }}
+          >
+            <MenuItem key={0} value="all">
+              All
+            </MenuItem>
+            {Array.isArray(Categories) &&
+              Categories.map((c) => {
+                return (
+                  <MenuItem value={c.name} key={c.id}>
+                    {c.name}
+                  </MenuItem>
+                );
+              })}
+          </Select>
 
-        <TextField
-          className="search-text"
-          variant="standard"
-          InputProps={{
-            disableUnderline: true,
-          }}
-          value={searchText}
-          onChange={(e) => {
-            handleTextChange(e);
-          }}
-          size="small"
-          placeholder="Search for products..."
-          onFocus={() => {
-            searchText && searchText.length >= 3
-              ? setOpen(true)
-              : setOpen(false);
-          }}
-        />
-
-        <Button
-          className="search-btn"
-          variant="contained"
-          onClick={(e) => handleSearchBtnClick(e)}
-        >
-          <SearchIcon />
-        </Button>
-
+          <Button
+            className="search-btn"
+            variant="contained"
+            onClick={(e) => {
+              e.preventDefault();
+              handleSearchBtnClick(e);
+            }}
+          >
+            <SearchIcon />
+          </Button>
+        </form>
         {open &&
           (productsState.loading ||
             productsState.success ||

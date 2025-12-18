@@ -46,7 +46,7 @@ export function AccountMenu() {
   };
 
   return (
-    <Box className="account">
+    <Box className="account-cmp">
       <Box className="account-box">
         <Tooltip title="Menu">
           <IconButton
@@ -56,51 +56,20 @@ export function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar
-              sx={{
-                width: "32px",
-                height: "32px",
-                fontSize: "10px",
-                color: "white",
-                background: "gray",
-              }}
-            ></Avatar>
+            <Avatar className="avatar"></Avatar>
           </IconButton>
         </Tooltip>
       </Box>
       <Menu
         className="account-menu"
         anchorEl={anchorEl}
-        id="account-menu"
         open={open}
         onClose={handleClose}
         onClick={handleClose}
         slotProps={{
           paper: {
+            id: "account-menu",
             elevation: 0,
-            sx: {
-              overflow: "visible",
-              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-              mt: 1.5,
-              "& .MuiAvatar-root": {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              "&::before": {
-                content: '""',
-                display: "block",
-                position: "absolute",
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: "background.paper",
-                transform: "translateY(-50%) rotate(45deg)",
-                zIndex: 0,
-              },
-            },
           },
         }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
@@ -109,7 +78,7 @@ export function AccountMenu() {
         {!currentUser && (
           <div>
             <Link to={"/signup/"}>
-              <MenuItem className="menu-item" onClick={handleClose}>
+              <MenuItem onClick={handleClose}>
                 <ListItemIcon>
                   <PersonAdd fontSize="medium" />
                 </ListItemIcon>
@@ -130,7 +99,7 @@ export function AccountMenu() {
         <div>
           {currentUser && (
             <Link to={"/orders-history/"}>
-              <MenuItem className="menu-item" onClick={handleClose}>
+              <MenuItem onClick={handleClose}>
                 <ListItemIcon>
                   <HistoryOutlinedIcon fontSize="medium" />
                 </ListItemIcon>
@@ -140,7 +109,7 @@ export function AccountMenu() {
           )}
 
           <Link to={"/wishlist/"} style={{ display: isXs ? "unset" : "none" }}>
-            <MenuItem className="menu-item" onClick={handleClose}>
+            <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <FavoriteIcon className="wish-list" fontSize="medium" />
               </ListItemIcon>
@@ -148,7 +117,7 @@ export function AccountMenu() {
             </MenuItem>
           </Link>
           <Link to={"/compare/"} style={{ display: isXs ? "unset" : "none" }}>
-            <MenuItem className="menu-item" onClick={handleClose}>
+            <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <LoopIcon fontSize="medium" />
               </ListItemIcon>
@@ -158,7 +127,6 @@ export function AccountMenu() {
 
           {currentUser && (
             <MenuItem
-              className="menu-item"
               onClick={() => {
                 handleLogout();
                 handleClose();

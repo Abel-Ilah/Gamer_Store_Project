@@ -78,15 +78,21 @@
   display: flex;
   background-color: var(--bg-1);
   height: 100vh;
-}
-.dashboard .main {
-  flex-grow: 1;
-  height: 100%;
+  width: 100%;
 }
 
+.dashboard .main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+}
 .dashboard .main .content {
   padding: var(--space-4);
   height: 100%;
+  width: 100%;
   overflow-y: auto;
   background-color: var(--gray-100);
 }

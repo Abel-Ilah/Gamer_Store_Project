@@ -176,7 +176,7 @@ const lastComments = [
 
 export function DashboardHomePage() {
   return (
-    <main className="dashboard-home-page">
+    <main className="dashboard-home-page  ">
       {/* general statistics */}
       <div className="row  mb-3 g-3">
         <div className="col-12 col-md-6  col-xl-4">
@@ -209,8 +209,14 @@ export function DashboardHomePage() {
       </div>
       {/* ====================== */}
       {/* top products and stock status */}
-      <section className="section d-flex flex-wrap flex-xl-nowrap  gap-3 mb-3">
-        <div className="top-products-table flex-grow-1">
+      <section
+        className="section d-flex flex-wrap flex-xl-nowrap  gap-3 mb-3"
+        style={{ minWidth: 0, width: "100%" }}
+      >
+        <div
+          className="top-products-table flex-grow-1"
+          style={{ overflowX: "auto" }}
+        >
           <h4 className="cards-title">Top Products</h4>
           <TableContainer className="table-container">
             <Table aria-label="table">
@@ -261,7 +267,10 @@ export function DashboardHomePage() {
           </TableContainer>
         </div>
 
-        <div className="restock flex-grow-1">
+        <div
+          className="restock flex-grow-1"
+          style={{ minWidth: 0, overflowX: "auto" }}
+        >
           <h4 className="cards-title">Restock</h4>
           <TableContainer className="table-container">
             <Table aria-label="table">

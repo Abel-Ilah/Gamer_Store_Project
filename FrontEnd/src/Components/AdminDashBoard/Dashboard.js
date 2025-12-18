@@ -1,4 +1,8 @@
 import "./Dashboard.css";
+import "./styles/StyledScrollbar.css";
+import "./styles/StyledTextInput.css";
+import "./styles/StyledSelect.css";
+import "./styles/StyledInputErrors.css";
 import { Sidebar } from "./Sidebar";
 import { DashboardHeader } from "./DashboardHeader";
 import { useState } from "react";
@@ -13,20 +17,14 @@ export function Dashboard() {
   return (
     <main className={`dashboard ${darkMode ? "dark" : ""}`}>
       <Sidebar isSidebarFixed={isSidebarFixed} />
-      <main
-        className="main"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <main className="main">
         <DashboardHeader
           toggleSidebar={() => {
             setIsSidebarFixed(!isSidebarFixed);
           }}
           isSidebarFixed={isSidebarFixed}
         />
-        <section className="content">
+        <section className="content styled-scrollbar">
           <Outlet />
         </section>
       </main>

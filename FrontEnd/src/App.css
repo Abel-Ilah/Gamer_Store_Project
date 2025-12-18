@@ -44,6 +44,12 @@
   --tr-2: all 0.4s;
   /* =========== */
   --main-shadow: 0 8px 25px rgba(58, 123, 213, 0.2);
+
+  /* background: linear-gradient(
+    65deg,
+    rgba(19, 163, 207, 1) 0%,
+    rgba(81, 176, 94, 1) 100%
+  ); */
 }
 
 body.dark {

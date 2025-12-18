@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import TuneIcon from "@mui/icons-material/Tune";
+import AddIcon from "@mui/icons-material/Add";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Link } from "react-router-dom";
 import { useCategories } from "../../contexts/CategoriesProvider";
@@ -96,7 +97,7 @@ export function ProductsFilter({ activeCategory }) {
   }, []);
 
   return (
-    <>
+    <div className="filter-cmp">
       {/* show filter btn  */}
       <div
         className="show-filter-btn"
@@ -140,35 +141,20 @@ export function ProductsFilter({ activeCategory }) {
             x
           </Button>
         </div>
+        {/* price filter */}
         <div className="price-filter">
-          <h4
-            style={{
-              fontWeight: "bold",
-              fontSize: "20px",
-              textDecoration: "underline",
-            }}
-          >
-            Price
-          </h4>
-          <div style={{ textAlign: "start", width: "fit-content" }}>
-            <span style={{ fontWeight: "bold" }}>
-              {range[0].toLocaleString()} {settings.currrency}
-            </span>
-            <span style={{ fontWeight: "bold" }}> - </span>
-            <span style={{ fontWeight: "bold" }}>
+          <h4 className="f-title">Price</h4>
+          <div>
+            <span className="range d-flex justify-content-between">
+              <span>
+                {range[0].toLocaleString()} {settings.currrency}
+              </span>
+              <span>--</span>
               {range[1].toLocaleString()} {settings.currrency}
             </span>
           </div>
-          <Box
-            sx={{
-              textAlign: "start",
-              display: "flex",
-              gap: "10px",
-              width: "fit-content",
-            }}
-          >
+          <Box>
             <Slider
-              sx={{ width: "200px" }}
               getAriaLabel={() => "Minimum distance"}
               value={range}
               onChange={handleRangeChange}
@@ -177,25 +163,21 @@ export function ProductsFilter({ activeCategory }) {
               disableSwap
               max={50000}
             />
-            <Button
-              style={{ position: "relative", top: "-18px" }}
-              variant="outlined"
-              onClick={handleFilterByPrice}
-            >
-              Go
-            </Button>
+            <div className="d-flex justify-content-end mb-1">
+              <Button
+                id="filter-price-btn"
+                variant="outlined"
+                onClick={handleFilterByPrice}
+              >
+                Go
+              </Button>
+            </div>
           </Box>
         </div>
-        <div className="categories-filter">
-          <h4
-            style={{
-              fontWeight: "bold",
-              fontSize: "20px",
-              textDecoration: "underline",
-            }}
-          >
-            Categories
-          </h4>
+        {/* ========== */}
+        {/* categories filter */}
+        <div className="categories-filter mt-1">
+          <h4 className="f-title">Categories</h4>
           <ul>
             {categories.map((c) => {
               return (
@@ -212,14 +194,18 @@ export function ProductsFilter({ activeCategory }) {
                       activeCategory === c.name ? "category active" : "category"
                     }
                   >
-                    {c.name}
+                    <span className="d-flex justify-content-between">
+                      {c.name}
+                      <span>+</span>
+                    </span>
                   </li>
                 </Link>
               );
             })}
           </ul>
         </div>
+        {/* ========== */}
       </div>
-    </>
+    </div>
   );
 }

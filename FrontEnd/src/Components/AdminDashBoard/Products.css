@@ -1,19 +1,23 @@
+/* ==== left filter ==== */
 .all-products-section {
   text-align: start;
   background-color: white;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-4);
   padding: var(--space-3);
-  max-width: 100%;
+  width: 100%;
   color: var(--text-2);
 }
 .dark .all-products-section {
   background-color: var(--bg-card);
 }
-.all-products-section > header {
+.all-products-section > header,
+.all-products-section #products-filters {
   border-bottom: 1px solid var(--gray-200);
+  padding-bottom: var(--space-2);
 }
-.dark .all-products-section > header {
+.dark .all-products-section > header,
+.dark .all-products-section #products-filters {
   border-color: var(--gray-700);
 }
 .all-products-section > header .products-section-title {
@@ -27,7 +31,7 @@
   text-transform: capitalize;
   font-size: 1rem;
   border-radius: var(--radius-2);
-  padding: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   transition: var(--main-tr);
 }
 .all-products-section > header #add-product-btn:hover {
@@ -37,18 +41,23 @@
 .all-products-section #products-filters .search-productname {
   position: relative;
   width: fit-content;
+  min-width: 200px;
 }
 
 #products-filters .search-productname .input .MuiInputBase-input {
   padding-right: var(--space-5);
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
   color: var(--text-2);
 }
-#products-filters .search-productname .input .MuiOutlinedInput-root {
+#products-filters .search-productname .input .MuiOutlinedInput-root,
+#products-filters .custom-select .MuiOutlinedInput-root fieldset {
   border-radius: var(--radius-2);
-  border: 1px solid var(--gray-300);
+  border: 1px solid var(--gray-300) !important;
 }
-.dark #products-filters .search-productname .input .MuiOutlinedInput-root {
-  border: 1px solid var(--gray-600);
+.dark #products-filters .search-productname .input .MuiOutlinedInput-root,
+.dark #products-filters .custom-select .MuiOutlinedInput-root fieldset {
+  border: 1px solid var(--gray-600) !important;
 }
 .all-products-section #products-filters .search-productname .search-btn {
   position: absolute;
@@ -61,3 +70,176 @@
 .all-products-section #products-filters .search-productname .search-btn:hover {
   color: var(--main-color);
 }
+
+.all-products-section
+  #products-filters
+  .custom-select
+  .MuiOutlinedInput-root
+  fieldset {
+  border: 1px solid gray;
+}
+
+.all-products-section #products-filters .custom-select {
+  min-width: 100px;
+  max-width: 200px;
+}
+.all-products-section #products-filters .custom-select .MuiSelect-select {
+  padding: var(--space-2);
+}
+
+.all-products-section .custom-select .select,
+.all-products-section .custom-select .label,
+.all-products-section .custom-select .select .MuiSelect-icon {
+  color: var(--text-3);
+}
+
+/* ==== right filter ==== */
+
+.all-products-section #products-filters .right-filter {
+  position: relative;
+}
+.all-products-section #products-filters .right-filter .f-btn {
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-2);
+  text-transform: capitalize;
+  font-weight: bold;
+  background-color: white;
+  color: var(--text-4);
+  box-shadow: none;
+  padding: var(--space-2);
+  width: 100px;
+}
+.dark .all-products-section #products-filters .right-filter .f-btn {
+  border-color: var(--gray-600);
+  background-color: var(--bg-card);
+  color: var(--gray-200);
+}
+.all-products-section #products-filters .right-filter .f-list {
+  margin-top: var(--space-1);
+  position: absolute;
+  z-index: 10;
+  border: 1px solid var(--gray-300);
+  right: 0%;
+  border-radius: var(--space-2);
+  background-color: var(--bg-1);
+  width: fit-content;
+  min-width: 250px;
+  padding: var(--space-1);
+}
+.dark .all-products-section #products-filters .right-filter .f-list {
+  border-color: var(--gray-600);
+  background-color: var(--bg-1);
+  color: var(--gray-200);
+}
+.all-products-section .right-filter .f-list .option-btn {
+  border-radius: var(--radius-1);
+  color: var(--text-3);
+}
+.all-products-section .right-filter .f-list .option-btn:hover {
+  background-color: var(--gray-200);
+}
+.dark .all-products-section .right-filter .f-list .option-btn:hover {
+  background-color: var(--gray-600);
+}
+.all-products-section .right-filter .f-list .option-btn svg {
+  color: var(--text-3);
+}
+.all-products-section .right-filter .f-list .option-btn svg.star {
+  color: orange;
+}
+@media (max-width: 600px) {
+  .all-products-section #products-filters .right-filter .f-list {
+    left: 0%;
+  }
+}
+
+/* =============== */
+
+/* ====== table : ====== */
+.all-products-section .products-table {
+  margin-top: var(--space-4);
+  overflow-x: auto;
+  width: 100%;
+  flex-basis: 100%;
+}
+
+.all-products-section .products-table .p-image {
+  width: 50px;
+  height: 50px;
+  padding: var(--space-1);
+  object-position: center;
+  background-color: var(--gray-200);
+  border-radius: var(--radius-2);
+}
+.dark .all-products-section .products-table .p-image {
+  background-color: var(--gray-700);
+}
+.all-products-section .products-table .p-image img {
+  width: 100%;
+  object-fit: contain;
+  aspect-ratio: 1/1;
+}
+.all-products-section .products-table .name {
+  color: var(--text-2);
+  margin-bottom: var(--space-1);
+  max-width: 250px;
+  min-width: 200px;
+  font-weight: bold;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+}
+.all-products-section .products-table td .stock {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-2);
+  font-weight: bold;
+  text-transform: capitalize;
+}
+.all-products-section .products-table td .stock.out-of-stock {
+  background-color: color-mix(in oklab, var(--red-600) 20%, transparent);
+  color: var(--red-600);
+}
+.all-products-section .products-table td .stock.low-stock {
+  color: #664d03;
+  background-color: #fff3cd;
+}
+.all-products-section .products-table td .stock.in-stock {
+  color: var(--green-500);
+  background-color: color-mix(in oklab, var(--green-500) 10%, transparent);
+}
+.all-products-section .products-table td button {
+  background-color: none;
+  background: none;
+}
+.all-products-section .products-table td .icon.delete {
+  color: var(--red-600);
+}
+.all-products-section .products-table td .icon.edit {
+  color: var(--green-500);
+}
+.all-products-section .products-table td .icon.show {
+  color: var(--main-color);
+}
+
+/* ================= */
+/*====== pagination : ====== */
+
+.all-products-section .products-pagination {
+  margin-top: var(--space-3);
+}
+.all-products-section .products-pagination li button {
+  color: white;
+  background-color: var(--main-color);
+  font-weight: bold;
+}
+.all-products-section .products-pagination li div {
+  color: var(--text-2);
+}
+.all-products-section
+  .products-pagination
+  .MuiPaginationItem-root.Mui-selected {
+  background-color: var(--green-400);
+}
+/* =========================*/

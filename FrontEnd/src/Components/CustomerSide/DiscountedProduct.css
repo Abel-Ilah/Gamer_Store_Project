@@ -1,6 +1,11 @@
 .product-discounted {
-  background-color: #ffeaea;
+  /* background-color: #ffeaea; */
   width: 100%;
+  background: linear-gradient(
+    203deg,
+    rgba(250, 52, 52, 0.17) 58%,
+    rgba(255, 234, 234, 0.42) 100%
+  );
 }
 .product-discounted .content {
   display: flex;
@@ -43,9 +48,10 @@
   font-weight: normal;
 }
 .product-discounted .content .info button {
-  border-radius: 10px;
+  border-radius: 7px;
   color: white;
-  background-color: rgb(78, 124, 224);
+  background-color: var(--main-color);
+
   font-weight: bold;
   text-transform: capitalize;
   border: none;

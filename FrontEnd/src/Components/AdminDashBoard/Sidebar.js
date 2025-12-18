@@ -116,7 +116,10 @@ export function Sidebar({ isSidebarFixed }) {
                   activeBtn === "new-product" ? "active" : ""
                 }`}
                 sx={{ pl: 4 }}
-                onClick={() => handleActiveBtn("new-product")}
+                onClick={() => {
+                  handleActiveBtn("new-product");
+                  navigate("/admin/products/add");
+                }}
               >
                 <ListItemIcon>
                   <KeyboardArrowRightOutlinedIcon />
@@ -129,55 +132,23 @@ export function Sidebar({ isSidebarFixed }) {
         {/* ========== */}
 
         {/* categories */}
+
         <ListItemButton
           className={`item categories ${
             openSection === "categories" ? "active" : ""
           }`}
-          onClick={() => handleOpenSection("categories")}
+          onClick={() => {
+            handleActiveBtn("categories");
+            handleOpenSection("categories");
+            navigate("/admin/categories");
+          }}
         >
           <ListItemIcon>
             <CategoryOutlinedIcon />
           </ListItemIcon>
           <ListItemText primary={expand ? "Categories" : ""} />
-          {expand &&
-            (openSection === "categories" ? <ExpandLess /> : <ExpandMore />)}
         </ListItemButton>
 
-        {expand && (
-          <Collapse
-            in={openSection === "categories"}
-            timeout="auto"
-            unmountOnExit
-          >
-            <List component="div" disablePadding>
-              <ListItemButton
-                className={`item all-categories ${
-                  activeBtn === "all-categories" ? "active" : ""
-                }`}
-                sx={{ pl: 4 }}
-                onClick={() => handleActiveBtn("all-categories")}
-              >
-                <ListItemIcon>
-                  <KeyboardArrowRightOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary={expand ? "All Categories" : ""} />
-              </ListItemButton>
-
-              <ListItemButton
-                className={`item new-category ${
-                  activeBtn === "new-category" ? "active" : ""
-                }`}
-                sx={{ pl: 4 }}
-                onClick={() => handleActiveBtn("new-category")}
-              >
-                <ListItemIcon>
-                  <KeyboardArrowRightOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary={expand ? "New Category" : ""} />
-              </ListItemButton>
-            </List>
-          </Collapse>
-        )}
         {/* ========== */}
 
         {/* orders */}

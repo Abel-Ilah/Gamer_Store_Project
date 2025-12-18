@@ -1,0 +1,24 @@
+.styled-input .MuiInputBase-input {
+  padding: var(--space-2);
+  color: var(--text-2);
+}
+.styled-input .MuiOutlinedInput-root {
+  border-radius: var(--radius-2);
+  border: 1px solid var(--gray-300);
+}
+.dark .styled-input .MuiOutlinedInput-root {
+  border: 1px solid var(--gray-600);
+}
+
+.styled-input .MuiOutlinedInput-root fieldset {
+  border-color: transparent;
+}
+
+.styled-input .MuiOutlinedInput-root:hover fieldset {
+  border-color: transparent;
+}
+
+.styled-input .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: transparent;
+  box-shadow: none;
+}

@@ -41,6 +41,8 @@ import { Profile } from "./Components/AdminDashBoard/Profile";
 import { DashboardHomePage } from "./Components/AdminDashBoard/DashboardHomePage";
 import { Analytics } from "./Components/AdminDashBoard/Analytics";
 import { Products } from "./Components/AdminDashBoard/Products";
+import { AddNewProduct } from "./Components/AdminDashBoard/AddProduct";
+import { Categories } from "./Components/AdminDashBoard/Categories";
 function App() {
   const dispatch = useDispatch();
   const { user, ready: isUserReady } = useSelector((state) => state.user);
@@ -131,6 +133,9 @@ function App() {
           <Route path="/admin/" element={<Dashboard />}>
             <Route index element={<DashboardHomePage />} />
             <Route path="products" element={<Products />} />
+            <Route path="products/add" element={<AddNewProduct />} />
+            <Route path="categories" element={<Categories />} />{" "}
+            {/* <Route path="categories/add" element={<Categories />} /> */}
             <Route path="profile" element={<Profile />} />
             <Route path="analytics" element={<Analytics />} />
           </Route>
