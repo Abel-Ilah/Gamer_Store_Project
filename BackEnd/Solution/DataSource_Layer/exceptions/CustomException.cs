@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataSource.exceptions
 {
-    public class ObjectNotFoundException:Exception
+    public class CustomException:Exception
     {
-        public ObjectNotFoundException(string message)
-      : base(message) { }
+        public CustomException(string message)
+        :base(message)
+        { }
     }
 }

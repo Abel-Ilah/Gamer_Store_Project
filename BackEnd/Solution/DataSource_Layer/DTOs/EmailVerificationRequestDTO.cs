@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace DataSource.DTOs
 {
-    public class VerificationDTO
+    public class EmailVerificationRequestDTO
     {
         public string Email { get; set; } = "";
-
         public string Code { get; set; } = "";
 
     }

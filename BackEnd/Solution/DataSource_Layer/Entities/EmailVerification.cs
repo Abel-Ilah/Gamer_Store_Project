@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace DataSource.Entities;
 
-public partial class VerificationCode
+public partial class EmailVerification
 {
     public int Id { get; set; }
 
     public int UserId { get; set; }
-
+     
     public string Code { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }

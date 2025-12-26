@@ -13,51 +13,63 @@ namespace DataSource.Repositories
 {
     public class EmailVerificationRepository
     {
-       private readonly AppDbContext _context;
-       
-        public EmailVerificationRepository (AppDbContext context)
+        private readonly AppDbContext _context;
+
+        public EmailVerificationRepository(AppDbContext context)
         {
             _context = context;
         }
-      
-        public async Task<int>AddAsync(VerificationCode emailConfirmationCode)
+
+        public async Task<int> AddAsync(EmailVerification newVerification)
         {
+            bool exists = await _context.Users
+            .AnyAsync(u => u.Id == newVerification.UserId);
+
+            if (!exists)
+                throw new NotFoundException("user not found");
+            
+
+            bool isConfirmed = await _context.Users
+                .Where(u => u.Id == newVerification.UserId)
+                .Select(u => u.IsEmailConfirmed)
+                .FirstAsync();
+
+            if(isConfirmed) throw new BadRequestException("this email has already confirmed");
+
             var LastHour = DateTime.Now.AddHours(-1);
-            var TotalCodesSentLastHour = await _context.VerificationCodes
+            var TotalCodesSentLastHour = await _context.EmailsVerifications
                                            .AsNoTracking()
-                                           .Where(c => c.UserId == emailConfirmationCode.UserId && c.ExpiresAt >= LastHour)
+                                           .Where(c => c.UserId == newVerification.UserId && c.ExpiresAt >= LastHour)
                                            .CountAsync();
-            if (TotalCodesSentLastHour >= 3) throw new Exception("You've requested too many codes. Please wait a few minutes before trying again");
+            if (TotalCodesSentLastHour >= 3) throw new BadRequestException("You've requested too many codes. Please wait a few minutes before trying again");
 
 
-            var activeConfirmationCodes = await _context.VerificationCodes
-                .Where(c =>c.UserId == emailConfirmationCode.UserId && !c.IsUsed).ToListAsync();
+            var activeConfirmationCodes = await _context.EmailsVerifications
+                .Where(c => c.UserId == newVerification.UserId && !c.IsUsed).ToListAsync();
 
-            if(activeConfirmationCodes!=null && activeConfirmationCodes.Count > 0)
+            if (activeConfirmationCodes != null && activeConfirmationCodes.Count > 0)
             {
                 foreach (var code in activeConfirmationCodes)
                 {
                     code.IsUsed = true;
                 }
             }
-           _context.VerificationCodes.Add(emailConfirmationCode);
-           await _context.SaveChangesAsync();
-           return emailConfirmationCode.Id;
+            _context.EmailsVerifications.Add(newVerification);
+            await _context.SaveChangesAsync();
+            return newVerification.Id;
         }
-      
 
-        public async Task<bool> VerifyEmailAsync(VerificationDTO verification)
+        public async Task<bool> VerifyAsync(int userId,string code)
         {
             var now = DateTime.Now;
 
-            var activeEmailConfirmation = await _context.VerificationCodes
-                .Include(e => e.User)
+            var activeEmailConfirmation = await _context.EmailsVerifications.Include(e=>e.User)
                 .OrderByDescending(e => e.CreatedAt)
-                .SingleOrDefaultAsync(e => e.User.Email == verification.Email 
-                                        && e.Code.ToLower() == verification.Code.ToLower());
+                .SingleOrDefaultAsync(e => e.UserId == userId
+                                        && e.Code.Trim() == code.Trim());
 
             if (activeEmailConfirmation == null)
-                throw new ObjectNotFoundException("invalid verification code");
+                throw new NotFoundException("invalid verification code");
 
             if (activeEmailConfirmation.ExpiresAt < now)
                 throw new VerificationCodeException("verification code has expired.");
@@ -65,16 +77,15 @@ namespace DataSource.Repositories
             if (activeEmailConfirmation.IsUsed)
                 throw new VerificationCodeException("verification code has been used.");
 
-            
-                activeEmailConfirmation.User.IsEmailConfirmed = true;
-                activeEmailConfirmation.IsUsed = true;
-                await _context.SaveChangesAsync();
-                return true;
-            
-          
+
+            activeEmailConfirmation.User.IsEmailConfirmed = true;
+            activeEmailConfirmation.IsUsed = true;
+            await _context.SaveChangesAsync();
+            return true;
+
+
         }
 
 
-
-    }  
+    }
 }

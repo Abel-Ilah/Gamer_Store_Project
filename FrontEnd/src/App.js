@@ -1,4 +1,5 @@
 import "./App.css";
+import "./Components/CustomerSide/Shared.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Header } from "./Components/CustomerSide/Header";
@@ -43,6 +44,7 @@ import { Analytics } from "./Components/AdminDashBoard/Analytics";
 import { Products } from "./Components/AdminDashBoard/Products";
 import { AddNewProduct } from "./Components/AdminDashBoard/AddProduct";
 import { Categories } from "./Components/AdminDashBoard/Categories";
+import { CustomerProfile } from "./Components/CustomerSide/CustomerProfile";
 function App() {
   const dispatch = useDispatch();
   const { user, ready: isUserReady } = useSelector((state) => state.user);
@@ -116,6 +118,8 @@ function App() {
 
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/orders-history" element={<OrdersHistory />} />
+          <Route path="/profile" element={<CustomerProfile />} />
+
           <Route path="*" element={<NotFoundPage />} />
 
           <Route path="/account/password/forgot" element={<ForgotPassword />} />

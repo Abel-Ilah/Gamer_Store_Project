@@ -1,0 +1,94 @@
+.profile-info p {
+  margin: 0px;
+}
+.profile-info > * {
+  border: 1px solid var(--gray-300);
+  border-radius: 10px;
+  padding: 15px;
+}
+.profile-info header .left {
+  text-align: left;
+}
+.profile-info header .left .avatar {
+  width: 80px;
+  height: 80px;
+}
+.profile-info header .left .details .name {
+  color: var(--gray-700);
+}
+.profile-info header .left .details .user-type {
+  color: var(--gray-500);
+}
+.profile-info header .right .delete-btn,
+.profile-info .personal-info .edit-btn {
+  border-radius: 10px;
+  border: 1px solid var(--gray-300);
+  color: var(--gray-500);
+  font-weight: bold;
+  text-transform: capitalize;
+  background: none;
+}
+.profile-info header .right .edit-btn:hover {
+  border-color: var(--gray-400);
+}
+
+.profile-info .section-title {
+  color: var(--gray-700);
+  font-weight: bold;
+}
+.profile-info .personal-info .edit-btn {
+  width: 100%;
+}
+.profile-info .item .label {
+  color: var(--gray-400);
+  font-size: 14px;
+  font-weight: bold;
+}
+.profile-info .item .value {
+  color: var(--gray-700);
+  font-weight: bold;
+}
+.profile-info .item.item.email .value {
+  word-break: break-all;
+}
+.profile-info .login-info .item.email .icon.verified {
+  color: var(--green-500);
+}
+.profile-info .login-info .item.email .icon.unverified {
+  color: orangered;
+}
+.profile-info .login-info .item .button {
+  border-radius: 10px;
+  text-transform: capitalize;
+  font-weight: bold;
+  color: var(--green-600);
+  padding: 0px;
+  background: none;
+  box-shadow: none;
+}
+.profile-info .login-info .item .button.change-password {
+  color: var(--main-color);
+}
+.profile-info .login-info .item .button.MuiButton-root {
+  background-color: transparent;
+}
+
+/* Hover */
+.profile-info .login-info .item .button.MuiButton-root:hover {
+  background-color: transparent;
+}
+
+/* Active (mouse click) */
+.profile-info .login-info .item .button.MuiButton-root:active {
+  background-color: transparent;
+}
+
+/* Focus (keyboard + mouse) */
+.profile-info .login-info .item .button.MuiButton-root.Mui-focusVisible {
+  background-color: transparent;
+}
+
+/* Remove touch ripple element */
+.profile-info .login-info .item .button.MuiButton-root .MuiTouchRipple-root {
+  display: none;
+}

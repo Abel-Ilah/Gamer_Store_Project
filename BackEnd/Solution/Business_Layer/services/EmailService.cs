@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Services.classes;
+using Services.Interfaces;
 
 namespace Services.services
 {
@@ -39,5 +40,8 @@ namespace Services.services
 
             await client.SendMailAsync(mailMessage);
         }
+
+
+
     }
 }

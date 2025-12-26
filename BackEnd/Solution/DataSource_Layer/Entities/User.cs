@@ -32,7 +32,7 @@ public partial class User
 
     public virtual ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
 
-    public virtual ICollection<VerificationCode> VerificationCodes { get; set; } = new List<VerificationCode>();
+    public virtual ICollection<EmailVerification> VerificationCodes { get; set; } = new List<EmailVerification>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 

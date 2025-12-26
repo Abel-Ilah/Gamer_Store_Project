@@ -7,20 +7,20 @@
   justify-content: start;
   align-items: center;
   gap: 10px;
-  border-bottom: 2px solid rgb(194, 193, 193);
+  border-bottom: 2px solid var(--gray-300);
   margin-bottom: 20px;
 }
 .shared .head .icon {
   width: 40px;
   height: 40px;
-  color: rgb(194, 193, 193);
+  color: var(--gray-400);
 }
 .shared .head .s-title {
   font-size: 2rem;
   font-weight: bold;
-  color: #c2c1c1;
+  color: var(--gray-400);
+  margin: 0px;
 }
-
 .shared .empty {
   background-color: #f6fbff;
   color: gray;

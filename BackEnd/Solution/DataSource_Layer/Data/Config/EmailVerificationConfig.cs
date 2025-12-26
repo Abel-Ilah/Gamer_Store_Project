@@ -9,12 +9,12 @@ namespace DataSource.Data.Config
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-    public class VerificationCodeConfig : IEntityTypeConfiguration<VerificationCode>
+    public class EmailVerificationConfig : IEntityTypeConfiguration<EmailVerification>
     {
-        public void Configure(EntityTypeBuilder<VerificationCode> entity)
+        public void Configure(EntityTypeBuilder<EmailVerification> entity)
         {
            
-            entity.ToTable("VerificationCodes");
+            entity.ToTable("EmailsVerifications");
 
            
             entity.HasKey(e => e.Id)

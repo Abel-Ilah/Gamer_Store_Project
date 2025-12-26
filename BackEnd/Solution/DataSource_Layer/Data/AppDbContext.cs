@@ -24,7 +24,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Discount> Discounts { get; set; }
 
-    public virtual DbSet<VerificationCode> VerificationCodes { get; set; }
+    public virtual DbSet<EmailVerification> EmailsVerifications { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 

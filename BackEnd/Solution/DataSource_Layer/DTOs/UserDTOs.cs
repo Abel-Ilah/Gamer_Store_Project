@@ -11,6 +11,7 @@ namespace DataSource.DTOs
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
         public bool IsEmailConfirmed { get; set; }
+        public DateTime CreatedAt { get; set; }
 
     }
     public class UserWriteDTO
@@ -28,10 +29,7 @@ namespace DataSource.DTOs
         public string? PhoneNumber { get; set; }
 
         public string? Address { get; set; } = null!;
-        
-        public bool IsEmailConfirmed { get; set; }
+
     }
-    public  class AdminReadDTO:UserReadDTO {}
-    public  class AdminWriteDTO:UserWriteDTO
-    { public byte Permissions { get; set; } }
+  
 }

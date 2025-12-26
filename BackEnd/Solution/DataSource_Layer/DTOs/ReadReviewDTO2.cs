@@ -13,7 +13,7 @@ namespace DataSource.DTOs
         public int Rating { get; set; } = 5;
         public string? Comment { get; set; }
         public DateTime CreatedAt { get; set; }
-        public ShortProductDTO Product { get; set; }
+        public ShortProductDTO Product { get; set; } = null!;
         public string UserName { get; set; } = null!;
     }
 }
