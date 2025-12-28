@@ -22,15 +22,15 @@ export function WishListBadge() {
   const [itemsCount, setItemsCount] = useState(0);
   const dispatch = useDispatch();
   const { wishlist } = useSelector((state) => state.wishlist);
-  const { user } = useSelector((state) => state.user);
+  const { customer } = useSelector((state) => state.customerAuth);
 
   const location = useLocation();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) setItemsCount(100);
-  }, [user, dispatch]);
+    if (!customer) setItemsCount(100);
+  }, [customer, dispatch]);
 
   useEffect(() => {
     if (wishlist && wishlist.length > 0) {

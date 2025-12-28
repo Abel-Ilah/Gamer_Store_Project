@@ -36,7 +36,7 @@ let last60Days = new Date(Date.now() - 30 * 86400000)
   .split("T")[0];
 
 export function Product({ Product: product, showRating = false }) {
-  const { user } = useSelector((state) => state.user);
+  const { customer: user } = useSelector((state) => state.customerAuth);
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { compare } = useSelector((state) => state.compare);

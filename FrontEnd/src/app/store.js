@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "../features/users/UserSlice";
-import emailVerificationReducer from "../features/emailVerification/EmailVerificationSlice";
+import customerReducer from "../features/auth/CustomerAuthSlice";
 import cartReducer from "../features/cart/CartSlice";
 import productsReducer from "../features/products/productsSlice";
 import snackbarReducer from "../features/snackbar/SnackbarSlice";
@@ -13,9 +12,8 @@ import themeReducer from "../features/theme/ThemeSlice";
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
-    emailVerification: emailVerificationReducer,
     cart: cartReducer,
+    customerAuth: customerReducer,
     products: productsReducer,
     snackbar: snackbarReducer,
     order: orderReducer,

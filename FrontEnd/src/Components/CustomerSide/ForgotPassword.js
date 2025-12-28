@@ -11,8 +11,8 @@ import EmailIcon from "@mui/icons-material/Email";
 
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { sendResetPasswordToken } from "../../features/emailVerification/EmailVerificationSlice";
 import { useNavigate } from "react-router-dom";
+import { sendResetPasswordToken } from "../../features/security/securitySlice";
 
 export function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -21,21 +21,6 @@ export function ForgotPassword() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  function sendResetToken() {
-    if (isValidEmail()) {
-      setLoading(true);
-      dispatch(sendResetPasswordToken(email))
-        .unwrap()
-        .then(() => {
-          setLoading(false);
-          navigate("/account/password/forgot/token-sent");
-        })
-        .catch((err) => {
-          setLoading(false);
-          setError(err);
-        });
-    }
-  }
 
   const isValidEmail = () => {
     setError(null);
@@ -49,6 +34,22 @@ export function ForgotPassword() {
     }
     return true;
   };
+
+  function sendResetToken() {
+    if (!isValidEmail()) return;
+    setLoading(true);
+    dispatch(sendResetPasswordToken({ email, role: "customer" }))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+        navigate("/account/password/forgot/token-sent");
+      })
+      .catch((err) => {
+        setLoading(false);
+        setError(err);
+      });
+  }
+
   return (
     <div className="forgot-password-page">
       <Container maxWidth="xl">

@@ -10,8 +10,9 @@ import {
 import { useState } from "react";
 import LockIcon from "@mui/icons-material/Lock";
 import { useDispatch } from "react-redux";
-import { createNewPassword } from "../../features/emailVerification/EmailVerificationSlice";
+
 import { useNavigate, useParams } from "react-router-dom";
+import { createNewPassword } from "../../features/security/securitySlice";
 
 export function NewPassword() {
   const [password, setPassword] = useState({ password1: "", password2: "" });
@@ -21,7 +22,6 @@ export function NewPassword() {
   const [createBtnDisabled, setCreateBtnDisabled] = useState(false);
 
   const { token } = useParams();
-  console.log("token: ", token);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ export function NewPassword() {
         .unwrap()
         .then((_) => {
           setLoading(false);
-          localStorage.removeItem("login");
+          localStorage.removeItem("customer-login");
           localStorage.setItem("hasCart", true);
           localStorage.setItem("hasWishlist", true);
           localStorage.setItem("hasComparelist", true);

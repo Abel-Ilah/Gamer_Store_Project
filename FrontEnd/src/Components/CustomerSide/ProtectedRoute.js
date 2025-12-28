@@ -7,8 +7,8 @@ export function ProtectedRoute({
   requireLogout = false,
   requireCart = false,
 }) {
-  const { user, ready: isUserReady } = useSelector((state) => state.user);
-  const { cart, ready: isCartReady } = useSelector((state) => state.cart);
+  // const { user, ready: isUserReady } = useSelector((state) => state.user);
+  // const { cart, ready: isCartReady } = useSelector((state) => state.cart);
 
   // if ((requireLogin && !isUserReady) || (requireCart && !isCartReady)) {
   //   return <LoadingPage />;

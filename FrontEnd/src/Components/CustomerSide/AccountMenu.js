@@ -16,12 +16,12 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import { Link, useNavigate } from "react-router-dom";
 
-import { logout } from "../../features/users/UserSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCartState } from "../../features/cart/CartSlice";
+import { customerLogout } from "../../features/auth/CustomerAuthSlice";
 
 export function AccountMenu() {
-  const { user: currentUser } = useSelector((state) => state.user);
+  const { customer } = useSelector((state) => state.customerAuth);
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -36,12 +36,9 @@ export function AccountMenu() {
     setAnchorEl(null);
   };
   const handleLogout = () => {
-    dispatch(logout());
-    var login = JSON.parse(localStorage.getItem("login"));
-    login.autoLogin = false;
-    localStorage.setItem("login", JSON.stringify(login));
+    dispatch(customerLogout());
     dispatch(clearCartState());
-    sessionStorage.removeItem("currentUser");
+    handleClose();
     navigate("/login");
   };
 
@@ -75,7 +72,7 @@ export function AccountMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {!currentUser && (
+        {!customer && (
           <div>
             <Link to={"/signup/"}>
               <MenuItem onClick={handleClose}>
@@ -97,7 +94,7 @@ export function AccountMenu() {
         )}
 
         <div>
-          {currentUser && (
+          {customer && (
             <Link to={"/orders-history/"}>
               <MenuItem onClick={handleClose}>
                 <ListItemIcon>
@@ -125,13 +122,8 @@ export function AccountMenu() {
             </MenuItem>
           </Link>
 
-          {currentUser && (
-            <MenuItem
-              onClick={() => {
-                handleLogout();
-                handleClose();
-              }}
-            >
+          {customer && (
+            <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <Logout fontSize="medium" />
               </ListItemIcon>

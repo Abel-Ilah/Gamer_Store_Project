@@ -37,7 +37,7 @@ export function Review({ review }) {
       ? { rating: review.rating, comment: review.comment }
       : { rating: 0, comment: "" }
   );
-  const { user } = useSelector((state) => state.user);
+  const { customer } = useSelector((state) => state.customerAuth);
 
   const [open, setOpen] = useState(false);
 
@@ -156,7 +156,7 @@ export function Review({ review }) {
             readOnly
           />
         </div>
-        {user && user.id === review.userId && (
+        {customer && customer.id === review.userId && (
           <div className="btns-wraper">
             {(updateLoading || deleteReviewLoading) && (
               <div className="loading">

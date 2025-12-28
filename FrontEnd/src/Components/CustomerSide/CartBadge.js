@@ -21,13 +21,13 @@ export function CartBadge() {
   const [itemsCount, setItemsCount] = useState(0);
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.cart);
-  const { user } = useSelector((state) => state.user);
+  const { customer } = useSelector((state) => state.customerAuth);
 
   const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!user) setItemsCount(0);
-  }, [user, dispatch]);
+    if (!customer) setItemsCount(0);
+  }, [customer, dispatch]);
 
   useEffect(() => {
     if (cart && cart.length > 0) {

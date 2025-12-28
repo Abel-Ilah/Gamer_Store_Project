@@ -17,7 +17,7 @@ import {
 
 export function AddReview({ productId }) {
   const [inputs, setInputs] = useState({ rate: 0, comment: "" });
-  const { user } = useSelector((state) => state.user);
+  const { customer: user } = useSelector((state) => state.customerAuth);
 
   const [reviewState, setReviewState] = useState({
     loading: false,

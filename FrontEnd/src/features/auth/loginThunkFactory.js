@@ -10,12 +10,12 @@ export const createLoginThunk = (sliceName, role) =>
     `${sliceName}/login`,
     async ({ email, password }, { rejectWithValue }) => {
       try {
-        const res = await axios.post("/api/auth/login", {
+        const res = await axios.post("http://localhost:5268/api/auth/login", {
           email,
           password,
           role,
         });
-        return res.data; // { user, token, role }
+        return res.data;
       } catch (err) {
         return rejectWithValue(err.response?.data || err.message);
       }

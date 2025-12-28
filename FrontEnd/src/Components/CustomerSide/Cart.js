@@ -24,7 +24,6 @@ export function Cart() {
   const [slidesToShow, setSlidesToShow] = useState(6);
   const [quantityError, setQuantityError] = useState(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const theme = useTheme();
 
   const isXs = useMediaQuery(theme.breakpoints.only("xs"));

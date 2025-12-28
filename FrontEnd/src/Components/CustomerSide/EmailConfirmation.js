@@ -8,35 +8,41 @@ import LockIcon from "@mui/icons-material/Lock";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  SendNewConfirmationCode,
-  verifyEmail,
-} from "../../features/emailVerification/EmailVerificationSlice";
+
 import { Link, useNavigate } from "react-router-dom";
 import {
   SEVERITY_SUCCESS,
   showMessage,
 } from "../../features/snackbar/SnackbarSlice";
 import CircularProgress from "@mui/material/CircularProgress";
-import { markUserEmailStateAsVerified } from "../../features/users/UserSlice";
+import {
+  SendEmailVerificationCode,
+  verifyEmail,
+} from "../../features/security/securitySlice";
+import { markCustomerEmailAsVerified } from "../../features/auth/CustomerAuthSlice";
 
-export function EmailConfirmation() {
+export function EmailConfirmation({ userType = "customer", navigateTo = "/" }) {
   const [verificationCode, setverificationCode] = useState("");
-
-  const { user } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // const user = useSelector((state) =>
+  //   userType === "customer" ? state.customerAuth.customer : null
+  // );
+  const { customer: user } = useSelector((state) => state.customerAuth);
 
   const [error, setError] = useState(null);
   const [resendLoading, setResendLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
 
-  function handleResendVerification({ email, purpose }) {
-    if (user) {
+  function handleResendVerification() {
+    if (user && !user.isEmailConfirmed) {
       setResendLoading(true);
       setError(null);
-      dispatch(SendNewConfirmationCode(user.email))
+      dispatch(
+        SendEmailVerificationCode({ userId: user.id, email: user.email })
+      )
         .unwrap()
         .then(() => {
           setResendLoading(false);
@@ -56,21 +62,30 @@ export function EmailConfirmation() {
   }
 
   function handleVerifyEmail() {
+    if (!user) {
+      setError("no active user found");
+      return;
+    }
+    if (user.isEmailConfirmed) {
+      setError("email is already verified");
+      return;
+    }
+
     setVerifyLoading(true);
     setError(null);
-    const verification = { email: user.email, code: verificationCode };
-    dispatch(verifyEmail(verification))
+
+    dispatch(verifyEmail({ userId: user.id, code: verificationCode }))
       .unwrap()
       .then(() => {
         setVerifyLoading(false);
-        dispatch(markUserEmailStateAsVerified());
+        dispatch(markCustomerEmailAsVerified());
         dispatch(
           showMessage({
             message: "Email has been verified successfully",
             severity: SEVERITY_SUCCESS,
           })
         );
-        navigate("/");
+        navigate(navigateTo);
       })
       .catch((err) => {
         setVerifyLoading(false);

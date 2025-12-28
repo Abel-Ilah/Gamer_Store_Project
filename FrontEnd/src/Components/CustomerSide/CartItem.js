@@ -5,7 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import settings from "../../appsettings.json";
 import {
   UpdateItemQuantity,
@@ -30,7 +30,7 @@ export function CartItem({ item }) {
     operation: null,
   });
   const [reduceOpacity, setReduceOpacity] = useState(false);
-
+  const { customer } = useSelector((state) => state.customerAuth);
   useEffect(() => {
     if (item?.product.quantityInStock < item.quantity) {
       setStatus({
@@ -58,6 +58,7 @@ export function CartItem({ item }) {
       });
     };
   }, []);
+
   const dispatch = useDispatch();
 
   function calculatePrice(price, discountValue = 0) {
@@ -68,8 +69,7 @@ export function CartItem({ item }) {
   }
 
   function increaseQunatityByOne() {
-    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    if (currentUser) {
+    if (customer) {
       setStatus({
         loading: true,
         success: false,
@@ -115,19 +115,19 @@ export function CartItem({ item }) {
             operation: UPDATE_ITEM,
           });
         });
-    } else {
-      dispatch(
-        updateItemQuantityLocal({
-          itemId: item.id,
-          quantity: item.quantity + 1,
-        })
-      );
+      return;
     }
+
+    dispatch(
+      updateItemQuantityLocal({
+        itemId: item.id,
+        quantity: item.quantity + 1,
+      })
+    );
   }
 
   function decreaseQunatityByOne() {
-    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    if (currentUser) {
+    if (customer) {
       setStatus({
         loading: true,
         success: false,
@@ -173,14 +173,14 @@ export function CartItem({ item }) {
             operation: UPDATE_ITEM,
           });
         });
-    } else {
-      dispatch(
-        updateItemQuantityLocal({
-          itemId: item.id,
-          quantity: item.quantity - 1,
-        })
-      );
+      return;
     }
+    dispatch(
+      updateItemQuantityLocal({
+        itemId: item.id,
+        quantity: item.quantity - 1,
+      })
+    );
   }
 
   function deleteItem() {

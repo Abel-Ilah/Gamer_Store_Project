@@ -4,23 +4,19 @@ import Button from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Container from "@mui/material/Container";
-import {
-  showMessage,
-  SEVERITY_SUCCESS,
-  SEVERITY_WARNING,
-} from "../../features/snackbar/SnackbarSlice";
+
 import { useDispatch } from "react-redux";
-import { AddNewUser, clearUserStatus } from "../../features/users/UserSlice";
-import {
-  SendNewConfirmationCode,
-  CONFIRM_EMAIL,
-} from "../../features/emailVerification/EmailVerificationSlice";
+import { addNewCustomer } from "../../features/customer/customerSlice";
 import CircularProgress from "@mui/material/CircularProgress";
+import {
+  autoLoginAsCustomer,
+  saveCustomerLoginInfo,
+} from "../../features/auth/CustomerAuthSlice";
 
 export function SignUp() {
-  const [NewUser, setNewUser] = useState({
+  const [customerInputs, setCustomerInputs] = useState({
     firstName: "",
     lastName: "",
     email: "",
@@ -35,94 +31,62 @@ export function SignUp() {
   const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    return () => {
-      dispatch(clearUserStatus());
-    };
-  }, []);
-
   const [passowrdVisible, setPasswordVisible] = useState(true);
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState([]);
 
-  const validate = () => {
-    const newErrors = {};
+  const validateInputs = () => {
+    const newErrors = [];
 
-    if (!NewUser.firstName.trim()) {
-      newErrors.firstName = "First name is required !";
+    if (!customerInputs.firstName.trim()) {
+      newErrors.push("First name is required !");
     }
 
-    if (!NewUser.lastName.trim()) {
-      newErrors.lastName = "Last name is required !";
+    if (!customerInputs.lastName.trim()) {
+      newErrors.push("Last name is required !");
     }
 
-    if (!NewUser.email) {
-      newErrors.email = "Email is required !";
-    } else if (!/^\S+@\S+\.\S+$/.test(NewUser.email)) {
-      newErrors.email = "Email is not valid !";
+    if (!customerInputs.email) {
+      newErrors.push("Email is required !");
+    } else if (!/^\S+@\S+\.\S+$/.test(customerInputs.email)) {
+      newErrors.push("Email is not valid !");
     }
 
-    if (!NewUser.password) {
-      newErrors.password = "Password is required !";
-    } else if (NewUser.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
+    if (!customerInputs.password) {
+      newErrors.push("Password is required !");
+    } else if (customerInputs.password.length < 8) {
+      newErrors.push("Password must be at least 8 characters");
     }
     if (
-      NewUser.phoneNumber &&
-      /^\+?[0-9\s\-().]{7,15}$/.test(NewUser.phoneNumber) === false
+      customerInputs.phoneNumber &&
+      /^\+?[0-9\s\-().]{7,15}$/.test(customerInputs.phoneNumber) === false
     ) {
-      newErrors.phoneNumber = "phone Number is not valid !";
+      newErrors.push("phone Number is not valid !");
     }
 
-    return newErrors;
+    setErrors(newErrors);
+    return newErrors.length === 0;
   };
 
   function handleSubmit() {
-    const errors = validate();
-    setErrors(errors);
-    if (Object.keys(errors).length === 0) {
-      setLoading(true);
-      dispatch(AddNewUser(NewUser))
-        .unwrap()
-        .then((addedUser) => {
-          setDisabled(true);
-          localStorage.setItem(
-            "login",
-            JSON.stringify({
-              email: addedUser.email,
-              password: addedUser.password,
-              autoLogin: true,
-            })
-          );
-          dispatch(SendNewConfirmationCode(addedUser.email))
-            .unwrap()
-            .then(() => {
-              setLoading(false);
-              dispatch(
-                showMessage({
-                  message: "Your account has been successfully created.",
-                  severity: SEVERITY_SUCCESS,
-                })
-              );
-              navigate("/verify-email");
-            })
-            .catch(() => {
-              setLoading(false);
-              dispatch(
-                showMessage({
-                  message:
-                    "Your account was created, but we couldn't send the verification code due to a server issue. Please try again later.",
-                  severity: SEVERITY_WARNING,
-                })
-              );
-              navigate("/");
-            });
-        })
-        .catch((err) => {
-          setLoading(false);
-          setErrors({ email: err });
-        });
+    if (!validateInputs()) {
+      return;
     }
+    setLoading(true);
+
+    dispatch(addNewCustomer(customerInputs))
+      .unwrap()
+      .then((addedCustomer) => {
+        setDisabled(true);
+        dispatch(autoLoginAsCustomer({ customer: addedCustomer, token: null }));
+        saveCustomerLoginInfo(customerInputs.email, customerInputs.password);
+        setLoading(false);
+        navigate("/account/verify-email");
+      })
+      .catch((err) => {
+        setLoading(false);
+        setErrors([err]);
+      });
   }
 
   return (
@@ -131,9 +95,9 @@ export function SignUp() {
         <div className="form-wraper">
           <form className="form">
             <h3 className="form-title">Sing Up</h3>
-            {Object.keys(errors).length > 0 && (
-              <div className="errors" onClick={() => setErrors({})}>
-                {Object.values(errors).map((er, i) => (
+            {errors.length > 0 && (
+              <div className="errors">
+                {errors.map((er, i) => (
                   <span key={i} className="text">
                     - {er}
                   </span>
@@ -144,9 +108,12 @@ export function SignUp() {
               className="input"
               label="FirstName"
               variant="standard"
-              value={NewUser.firstName}
+              value={customerInputs.firstName}
               onChange={(e) => {
-                setNewUser({ ...NewUser, firstName: e.target.value });
+                setCustomerInputs({
+                  ...customerInputs,
+                  firstName: e.target.value,
+                });
               }}
               autoFocus
               required
@@ -155,9 +122,12 @@ export function SignUp() {
               className="input"
               label="LastName"
               variant="standard"
-              value={NewUser.lastName}
+              value={customerInputs.lastName}
               onChange={(e) => {
-                setNewUser({ ...NewUser, lastName: e.target.value });
+                setCustomerInputs({
+                  ...customerInputs,
+                  lastName: e.target.value,
+                });
               }}
               required
             />
@@ -165,11 +135,11 @@ export function SignUp() {
               className="input"
               label="Email"
               variant="standard"
-              value={NewUser.email}
+              value={customerInputs.email}
               type="email"
               required
               onChange={(e) => {
-                setNewUser({ ...NewUser, email: e.target.value });
+                setCustomerInputs({ ...customerInputs, email: e.target.value });
               }}
             />
             <div className="password-box">
@@ -180,9 +150,12 @@ export function SignUp() {
                 type={passowrdVisible ? "text" : "password"}
                 autoComplete="current-password"
                 variant="standard"
-                value={NewUser.password}
+                value={customerInputs.password}
                 onChange={(e) => {
-                  setNewUser({ ...NewUser, password: e.target.value });
+                  setCustomerInputs({
+                    ...customerInputs,
+                    password: e.target.value,
+                  });
                 }}
                 required
               />
@@ -213,10 +186,12 @@ export function SignUp() {
               className="input"
               label="Phone Number (optional)"
               variant="standard"
-              value={NewUser.phoneNumber ? NewUser.phoneNumber : ""}
+              value={
+                customerInputs.phoneNumber ? customerInputs.phoneNumber : ""
+              }
               onChange={(e) => {
-                setNewUser({
-                  ...NewUser,
+                setCustomerInputs({
+                  ...customerInputs,
                   phoneNumber: e.target.value !== "" ? e.target.value : null,
                 });
               }}
@@ -225,10 +200,10 @@ export function SignUp() {
               className="input"
               label="Address (optional)"
               variant="standard"
-              value={NewUser.address ? NewUser.address : ""}
+              value={customerInputs.address ? customerInputs.address : ""}
               onChange={(e) => {
-                setNewUser({
-                  ...NewUser,
+                setCustomerInputs({
+                  ...customerInputs,
                   address: e.target.value !== "" ? e.target.value : null,
                 });
               }}

@@ -21,7 +21,6 @@ import {
 } from "../../features/products/productsSlice";
 import settings from "../../appsettings.json";
 import { setTitle } from "../../features/productsPageTItle/ProductsPageTitleSlice";
-import { set } from "lodash";
 
 export function Nav() {
   const categories = useCategories();

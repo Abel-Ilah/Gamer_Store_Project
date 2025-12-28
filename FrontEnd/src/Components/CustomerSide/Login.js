@@ -8,23 +8,25 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Container from "@mui/material/Container";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  GetCurrentUser,
-  clearUserStatus,
-} from "../../features/users/UserSlice";
-import { SendNewConfirmationCode } from "../../features/emailVerification/EmailVerificationSlice";
+
+import { SendEmailVerificationCode } from "../../features/security/securitySlice";
 import {
   SEVERITY_ERROR,
   showMessage,
 } from "../../features/snackbar/SnackbarSlice";
 import CircularProgress from "@mui/material/CircularProgress";
 import Divider from "@mui/material/Divider";
+import {
+  getSavedCustomerLoginInfo,
+  loginAsCustomer,
+  saveCustomerLoginInfo,
+} from "../../features/auth/CustomerAuthSlice";
 
 export function Login() {
   const [login, setLogin] = useState(() => {
-    var savedLogin = JSON.parse(localStorage.getItem("login"));
+    var savedLogin = getSavedCustomerLoginInfo();
     return savedLogin
       ? savedLogin
       : { email: "", password: "", autoLogin: false };
@@ -32,75 +34,69 @@ export function Login() {
 
   const [loginDisabled, setLoginDisabled] = useState(false);
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState([]);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    return () => {
-      dispatch(clearUserStatus());
-    };
-  }, []);
-
   const [loading, setLoading] = useState(false);
 
-  const validate = () => {
-    const newErrors = {};
+  const validateInputs = () => {
+    const newErrors = [];
     if (!login.email) {
-      newErrors.email = "Email is required!";
+      newErrors.push("Email is required!");
     } else if (!/^\S+@\S+\.\S+$/.test(login.email)) {
-      newErrors.email = "Email format is invalid!";
+      newErrors.push("Email format is invalid!");
     }
-
     if (!login.password) {
-      newErrors.password = "Password is required!";
+      newErrors.push("Password is required!");
     }
-
-    return newErrors;
+    setErrors(newErrors);
+    return newErrors.length === 0;
   };
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const validationErrors = validate();
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length === 0) {
-      setLoading(true);
-      dispatch(GetCurrentUser({ email: login.email, password: login.password }))
-        .unwrap()
-        .then((user) => {
-          setLoginDisabled(true);
-          localStorage.setItem(
-            "login",
-            JSON.stringify({ ...login, autoLogin: true })
-          );
-          if (user.isEmailConfirmed) {
-            setLoading(false);
-            navigate("/");
-          } else {
-            dispatch(SendNewConfirmationCode(user.email))
-              .unwrap()
-              .then(() => {
-                setLoading(false);
-                navigate("/verify-email");
-              })
-              .catch((err) => {
-                setLoading(false);
-                dispatch(
-                  showMessage({
-                    message: err,
-                    severity: SEVERITY_ERROR,
-                  })
-                );
-                navigate("/");
-              });
-          }
-        })
-        .catch((err) => {
+    if (!validateInputs()) return;
+
+    setLoading(true);
+    dispatch(loginAsCustomer({ email: login.email, password: login.password }))
+      .unwrap()
+      .then((customer) => {
+        console.log(customer);
+        setLoginDisabled(true);
+        saveCustomerLoginInfo(login.email, login.password);
+        if (customer.isEmailConfirmed) {
           setLoading(false);
-          setErrors({ general: err });
-        });
-    }
+          navigate("/");
+        } else {
+          dispatch(
+            SendEmailVerificationCode({
+              userId: customer.id,
+              email: customer.email,
+            })
+          )
+            .unwrap()
+            .then(() => {
+              setLoading(false);
+              navigate("/account/verify-email");
+            })
+            .catch((err) => {
+              setLoading(false);
+              dispatch(
+                showMessage({
+                  message: err,
+                  severity: SEVERITY_ERROR,
+                })
+              );
+              navigate("/");
+            });
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        setErrors({ general: err });
+      });
   };
 
   return (

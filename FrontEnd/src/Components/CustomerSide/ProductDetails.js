@@ -54,7 +54,7 @@ export function ProductDetails() {
     operation: null,
   });
 
-  const { user } = useSelector((state) => state.user);
+  const { customer: user } = useSelector((state) => state.customerAuth);
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
 

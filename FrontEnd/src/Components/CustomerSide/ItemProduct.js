@@ -28,7 +28,7 @@ import {
 
 // itemType = "wihslist" or "comparelist"; important to handle delete click
 export function ItemProduct({ item, itemType = "wishlist" }) {
-  const { user } = useSelector((state) => state.user);
+  const { customer } = useSelector((state) => state.customerAuth);
   const { cart } = useSelector((state) => state.cart);
 
   const [addStatus, setAddStatus] = useState({
@@ -58,7 +58,7 @@ export function ItemProduct({ item, itemType = "wishlist" }) {
   }
 
   function handleAddToCart() {
-    if (user) {
+    if (customer) {
       setAddStatus({
         loading: true,
         error: null,
@@ -66,7 +66,7 @@ export function ItemProduct({ item, itemType = "wishlist" }) {
       });
       dispatch(
         AddNewItem({
-          userId: user ? user.id : null,
+          userId: customer ? customer.id : null,
           productId: item.product.id,
           quantity: 1,
         })
@@ -108,19 +108,20 @@ export function ItemProduct({ item, itemType = "wishlist" }) {
             })
           );
         });
-    } else {
-      const newItem = {
-        id: crypto.randomUUID(),
-        userId: null,
-        product: item.product,
-        quantity: 1,
-      };
-      dispatch(AddNewItemLocal(newItem));
+      return;
     }
+    // local add to wishlist/comparelist when no user is logged in:
+    const newItem = {
+      id: crypto.randomUUID(),
+      userId: null,
+      product: item.product,
+      quantity: 1,
+    };
+    dispatch(AddNewItemLocal(newItem));
   }
 
   function handleDeleteWishlistItem() {
-    if (user) {
+    if (customer) {
       setDeleteStatus({
         loading: true,
         success: false,
@@ -159,19 +160,20 @@ export function ItemProduct({ item, itemType = "wishlist" }) {
             })
           );
         });
-    } else {
-      dispatch(deleteWishlistItemLocal(item.id));
-      dispatch(
-        showMessage({
-          message: `Item has been deleted`,
-          severity: SEVERITY_SUCCESS,
-        })
-      );
+      return;
     }
+    // local delete when no user is logged in:
+    dispatch(deleteWishlistItemLocal(item.id));
+    dispatch(
+      showMessage({
+        message: `Item has been deleted`,
+        severity: SEVERITY_SUCCESS,
+      })
+    );
   }
 
   function handleDeleteComparelistItem() {
-    if (user) {
+    if (customer) {
       setDeleteStatus({
         loading: true,
         success: false,
@@ -210,15 +212,16 @@ export function ItemProduct({ item, itemType = "wishlist" }) {
             })
           );
         });
-    } else {
-      dispatch(deleteComparelistItemLocal(item.id));
-      dispatch(
-        showMessage({
-          message: `Item has been deleted`,
-          severity: SEVERITY_SUCCESS,
-        })
-      );
+      return;
     }
+    // local delete when no user is logged in:
+    dispatch(deleteComparelistItemLocal(item.id));
+    dispatch(
+      showMessage({
+        message: `Item has been deleted`,
+        severity: SEVERITY_SUCCESS,
+      })
+    );
   }
 
   function handleDelete() {

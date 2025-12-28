@@ -21,13 +21,13 @@ export function CompareBadge() {
   const [itemsCount, setItemsCount] = useState(0);
   const dispatch = useDispatch();
   const { compare } = useSelector((state) => state.compare);
-  const { user } = useSelector((state) => state.user);
+  const { customer } = useSelector((state) => state.customerAuth);
 
   const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!user) setItemsCount(0);
-  }, [user, dispatch]);
+    if (!customer) setItemsCount(0);
+  }, [customer, dispatch]);
 
   useEffect(() => {
     if (compare) {
