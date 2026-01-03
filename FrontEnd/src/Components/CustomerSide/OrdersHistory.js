@@ -29,7 +29,7 @@ const OrdersHistory = () => {
     error: null,
   });
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const { customer } = useSelector((state) => state.customerAuth);
 
   function getProductImage(url, transform = "w_150,c_fill,q_auto,f_auto") {
     return url.length > 0
@@ -40,9 +40,9 @@ const OrdersHistory = () => {
   useEffect(() => {
     let isMounted = true;
 
-    if (user) {
+    if (customer) {
       setOrdersState({ orders: null, loading: true, error: null });
-      dispatch(GetUserOrders(user.id))
+      dispatch(GetUserOrders(customer.id))
         .unwrap()
         .then((res) => {
           if (isMounted)
@@ -59,7 +59,7 @@ const OrdersHistory = () => {
     return () => {
       isMounted = false;
     };
-  }, [user, dispatch]);
+  }, [customer, dispatch]);
 
   const chipColor = (status) => {
     const s = String(status ?? "").toLowerCase();

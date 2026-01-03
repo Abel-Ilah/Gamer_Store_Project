@@ -38,6 +38,8 @@ namespace DataSource.Data.Config
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasDefaultValue("customer");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValueSql("((0))");
         }
     }
 }

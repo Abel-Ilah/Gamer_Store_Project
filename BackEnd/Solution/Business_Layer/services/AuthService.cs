@@ -23,8 +23,8 @@ namespace Services.services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Address = user.Address,
-                PhoneNumber = user.PhoneNumber,
+                Address = user.Address !=null ?user.Address:"",
+                PhoneNumber = user.PhoneNumber != null ? user.PhoneNumber : "",
                 CreatedAt = user.CreatedAt,
                 IsEmailConfirmed = user.IsEmailConfirmed,
             };

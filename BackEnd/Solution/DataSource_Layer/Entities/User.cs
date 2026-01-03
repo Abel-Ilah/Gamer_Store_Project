@@ -26,6 +26,8 @@ public partial class User
 
     public bool IsEmailConfirmed { get; set; }
 
+    public bool IsDeleted { get; set; } = false;
+
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
     
     public virtual ICollection<CompareItem> CompareItems { get; set; } = new List<CompareItem>();

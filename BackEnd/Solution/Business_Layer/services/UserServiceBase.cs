@@ -45,14 +45,6 @@ namespace Services.services
             };
         }
 
-        public async Task<int> GetIdAsync(string email)
-        {
-            if (!Validations.IsValidEmailFormat(email))
-                throw new InvalidEmailFormatException("Invalid email format.");
-
-            return await _userRepository.GetUserId(email, Role);
-        }
-
         public async Task<int> AddAsync(UserWriteDTO userDto)
         {
             if (await _userRepository.IsEmailExistsAsync(userDto.Email))
@@ -78,6 +70,20 @@ namespace Services.services
                 await _emailVerificationService.AddAsync(userId,user.Email);
            }
             return userId;
+        }
+
+        public async Task<bool> UpdatePersonalInfo(PersonalInfoDTO info)
+        {
+            return await _userRepository.UpdatePersonalInfoAsync(info);
+        }
+
+        public async Task<bool> ChangePasswordAsync(NewPsswordDTO obj)
+        {
+            return await _userRepository.ChangePasswordAsync(obj);
+        }
+        public async Task<bool>DeleteAsync(int id)
+        {
+            return await _userRepository.DeleteAsync(id);
         }
 
 

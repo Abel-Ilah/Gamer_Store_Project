@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import {
+  changePasswordThunk,
+  updatePersonalInfoThunk,
+} from "../SharedThunks/sharedThunks";
 
 export const addNewCustomer = createAsyncThunk(
   "customer/add",
@@ -18,6 +22,10 @@ export const addNewCustomer = createAsyncThunk(
     }
   }
 );
+
+export const updateCustomerPersonalInfo = updatePersonalInfoThunk("customer");
+
+export const changeCustomerPassword = changePasswordThunk("customer");
 
 const initialState = {
   loading: false,

@@ -1,9 +1,10 @@
 .styled-input-errors {
   background-color: #ffe6e6;
-  padding: var(--space-3);
+  padding: var(--space-2) !important;
 }
 .styled-input-errors > * {
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
   color: var(--red-700);
   font-weight: bold;
+  text-align: start;
 }

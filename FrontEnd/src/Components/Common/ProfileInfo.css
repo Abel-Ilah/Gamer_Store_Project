@@ -28,10 +28,15 @@
   text-transform: capitalize;
   background: none;
 }
+.profile-info .personal-info .edit-btn {
+  min-width: 85px;
+}
 .profile-info header .right .edit-btn:hover {
   border-color: var(--gray-400);
 }
-
+.profile-info header .right .delete-btn {
+  min-width: 160px;
+}
 .profile-info .section-title {
   color: var(--gray-700);
   font-weight: bold;
@@ -68,27 +73,139 @@
 }
 .profile-info .login-info .item .button.change-password {
   color: var(--main-color);
+  width: 130px;
 }
 .profile-info .login-info .item .button.MuiButton-root {
   background-color: transparent;
 }
 
-/* Hover */
 .profile-info .login-info .item .button.MuiButton-root:hover {
   background-color: transparent;
 }
 
-/* Active (mouse click) */
 .profile-info .login-info .item .button.MuiButton-root:active {
   background-color: transparent;
 }
 
-/* Focus (keyboard + mouse) */
 .profile-info .login-info .item .button.MuiButton-root.Mui-focusVisible {
   background-color: transparent;
 }
 
-/* Remove touch ripple element */
 .profile-info .login-info .item .button.MuiButton-root .MuiTouchRipple-root {
   display: none;
 }
+
+/* common styles */
+
+.profile-info .dialog-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border: none;
+}
+.profile-info .dialog-wrapper .dialog {
+  max-width: 380px;
+  background: white;
+  width: 100%;
+  padding: var(--space-3);
+  border-radius: var(--radius-2);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  animation: dialogScale 0.3s ease-in-out;
+}
+.profile-info .dialog .title {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--main-color);
+  text-decoration: underline;
+}
+.profile-info .dialog button {
+  width: 105px;
+}
+.profile-info .dialog button.update {
+  background-color: var(--main-color);
+  transition: var(--main-tr);
+}
+.profile-info .dialog button.update:hover {
+  background-color: var(--green-500);
+}
+/* =========== */
+
+/*===== delete account confirmation dialog =====*/
+
+.profile-info .delete-dialog {
+  max-width: 380px;
+}
+.profile-info .delete-dialog .title {
+  color: var(--gray-600);
+  text-decoration: none;
+}
+.profile-info .delete-dialog .icon {
+  padding: 10px;
+  border-radius: 50%;
+  box-sizing: content-box;
+  font-size: 36px;
+  color: var(--red-500);
+  background-color: var(--red-100);
+}
+
+.profile-info .delete-dialog .message {
+  font-size: 14px;
+  color: var(--gray-500);
+}
+
+.profile-info .actions button {
+  padding: 8px 15px;
+  border-radius: 8px;
+  box-shadow: none;
+  text-transform: capitalize;
+  font-weight: bold;
+}
+.profile-info .actions button.cancel {
+  border: 1px solid var(--main-color);
+  color: var(--main-color);
+  background: none;
+}
+.profile-info .actions button.cancel:hover {
+  background-color: var(--gray-100);
+}
+.profile-info .delete-dialog .actions .delete {
+  background-color: var(--red-600);
+}
+
+@keyframes dialogScale {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===================== */
+
+/*===== update personal info dialog =====*/
+
+.profile-info .update-dialog {
+  max-width: 500px;
+}
+
+.profile-info .update-form {
+  display: block;
+}
+
+/* ================= */
+
+/*===== change password dialog:  =====*/
+
+.profile-info .change-password-dialog .password-strength {
+  padding: 0px var(--space-3);
+  border-radius: var(--radius-2);
+  height: 7px;
+}
+/* ================= */

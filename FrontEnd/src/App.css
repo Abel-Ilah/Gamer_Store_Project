@@ -1,4 +1,20 @@
 :root {
+  /* ============ commun vars ========== */
+
+  --radius-1: 5px;
+  --radius-2: 10px;
+  --radius-3: 15px;
+  --radius-4: 20px;
+  --radius-5: 30px;
+
+  --space-1: 5px;
+  --space-2: 10px;
+  --space-3: 20px;
+  --space-4: 30px;
+  --space-5: 40px;
+
+  /* ============================= */
+
   /* colors */
   --main-color: #2196f3;
   --primary-color: #585858;

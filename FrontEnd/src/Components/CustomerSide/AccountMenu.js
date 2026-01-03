@@ -15,7 +15,7 @@ import LoopIcon from "@mui/icons-material/Loop";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import { Link, useNavigate } from "react-router-dom";
-
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCartState } from "../../features/cart/CartSlice";
 import { customerLogout } from "../../features/auth/CustomerAuthSlice";
@@ -95,14 +95,24 @@ export function AccountMenu() {
 
         <div>
           {customer && (
-            <Link to={"/orders-history/"}>
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <HistoryOutlinedIcon fontSize="medium" />
-                </ListItemIcon>
-                Orders History
-              </MenuItem>
-            </Link>
+            <>
+              <Link to={"/profile"}>
+                <MenuItem onClick={handleClose}>
+                  <ListItemIcon>
+                    <AccountCircleIcon fontSize="medium" />
+                  </ListItemIcon>
+                  Profile
+                </MenuItem>
+              </Link>
+              <Link to={"/orders-history/"}>
+                <MenuItem onClick={handleClose}>
+                  <ListItemIcon>
+                    <HistoryOutlinedIcon fontSize="medium" />
+                  </ListItemIcon>
+                  Orders History
+                </MenuItem>
+              </Link>
+            </>
           )}
 
           <Link to={"/wishlist/"} style={{ display: isXs ? "unset" : "none" }}>

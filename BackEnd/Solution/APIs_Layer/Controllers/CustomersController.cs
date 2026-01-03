@@ -38,6 +38,7 @@ namespace APIs.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserReadDTO>>AddCustomerAsync(UserWriteDTO customer)
         {
             try
@@ -64,10 +65,94 @@ namespace APIs.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"error : {ex.Message}");
+                return StatusCode(500, $"error : {ex.Message}");
             }
         }
 
+        [HttpDelete("delete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> DeleteCustomerAsync(int id)
+        {
+            if(id <= 0) return BadRequest("Invalid customer id.");
+            try
+            {
+                await _customerService.DeleteAsync(id);
+                return Ok($"Customer deleted successfully.");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [HttpPut("update-personal-info")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> UpdatePerosonalInfoAsync(PersonalInfoDTO info)
+        {
+            if (info == null) return BadRequest("object is empty");
+            if (info.Id <= 0) return BadRequest("Invalid UserId.");
+            if (string.IsNullOrEmpty(info.FirstName)) return BadRequest("FirstName is required");
+            if (string.IsNullOrEmpty(info.LastName)) return BadRequest("LastName is required");
+
+            try
+            {
+               bool IsUpdated =  await _customerService.UpdatePersonalInfo(info);
+                return IsUpdated? Ok("Info Updated successfully."): StatusCode(500, "something went wrong");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+
+        [HttpPut("change-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> ChangePasswordAsync(NewPsswordDTO obj)
+        {
+            if (obj == null) return BadRequest("Invalid request data.");
+            if (obj.UserId <= 0) return BadRequest("Invalid UserId");
+            if (string.IsNullOrEmpty(obj.CurrentPassword)) return BadRequest("Current password is required");
+            if (string.IsNullOrEmpty(obj.NewPassword)) return BadRequest("New password is required");
+            if (obj.CurrentPassword == obj.NewPassword) return BadRequest("The new password must be different from the current password");
+            if (obj.NewPassword.Length <= 6) return BadRequest("The new password must be longer than 6 characters.");
+
+            try
+            {
+                bool isChanged = await _customerService.ChangePasswordAsync(obj);
+                return isChanged ? Ok() : StatusCode(500, "something went wrong");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            } 
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            } catch (Exception ex)
+            {
+                return StatusCode(500,ex.Message);
+            }
+           
+        }
 
     }
 }

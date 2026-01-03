@@ -22,7 +22,7 @@ namespace DataSource.Repositories
         public async Task<User?> Login(LoginRequestDTO credentials)
         {
             var user = await _context.Users.AsNoTracking()
-            .SingleOrDefaultAsync(u => u.Email == credentials.Email && u.Password == credentials.Password && u.Role.ToLower().Trim() == credentials.Role.ToLower().Trim());
+            .SingleOrDefaultAsync(u => !u.IsDeleted && u.Email == credentials.Email && u.Password == credentials.Password && u.Role.ToLower().Trim() == credentials.Role.ToLower().Trim());
             return user;
         }
 

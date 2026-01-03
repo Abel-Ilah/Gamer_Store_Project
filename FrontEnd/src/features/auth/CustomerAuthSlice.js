@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createLoginThunk, CUSTOMER } from "./loginThunkFactory";
+import { createDeleteUserThunk } from "../SharedThunks/sharedThunks";
 
 export const loginAsCustomer = createLoginThunk("customerAuth", CUSTOMER);
+
+export const deleteAccount = createDeleteUserThunk("customerAuth");
 
 const initialState = {
   customer: null,
@@ -11,6 +14,7 @@ const initialState = {
   error: null,
   isAuthReady: false,
 };
+
 const customerAuthSlice = createSlice({
   name: "customerAuth",
   initialState,
@@ -20,6 +24,14 @@ const customerAuthSlice = createSlice({
       state.token = action.payload.token;
       state.isAuthenticated = true;
       state.isAuthReady = true;
+    },
+    updateSavedLoginInfoLocallyForCustomer: (_, action) => {
+      let savedLogin = localStorage.getItem("customer-login");
+      if (savedLogin) {
+        savedLogin = JSON.parse(savedLogin);
+        savedLogin.password = action.payload;
+        localStorage.setItem("customer-login", JSON.stringify(savedLogin));
+      }
     },
     customerLogout: (state) => {
       state.customer = null;
@@ -46,8 +58,16 @@ const customerAuthSlice = createSlice({
     markCustomerAuthAsReady: (state) => {
       state.isAuthReady = true;
     },
+    updateCustomerPersonalInfoLocally: (state, action) => {
+      const info = action.payload;
+      state.customer.firstName = info.firstName;
+      state.customer.lastName = info.lastName;
+      state.customer.phoneNumber = info.phoneNumber;
+      state.customer.address = info.address;
+    },
   },
   extraReducers: (builder) => {
+    // Customer Login
     builder
       .addCase(loginAsCustomer.pending, (state) => {
         state.loading = true;
@@ -56,7 +76,6 @@ const customerAuthSlice = createSlice({
         state.token = null;
         state.isAuthenticated = false;
         state.isAuthReady = false;
-        console.log("customer login pending...");
       })
       .addCase(loginAsCustomer.fulfilled, (state, action) => {
         state.loading = false;
@@ -64,7 +83,6 @@ const customerAuthSlice = createSlice({
         state.customer = action.payload;
         state.isAuthenticated = true;
         state.isAuthReady = true;
-        console.log("customer logged in: ", action.payload);
       })
       .addCase(loginAsCustomer.rejected, (state, action) => {
         state.loading = false;
@@ -72,6 +90,24 @@ const customerAuthSlice = createSlice({
         state.customer = null;
         state.isAuthenticated = false;
         state.isAuthReady = true;
+      });
+    // Delete Customer Account (self deletion)
+    builder
+      .addCase(deleteAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAccount.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+        state.customer = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        state.isAuthReady = true;
+      })
+      .addCase(deleteAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
@@ -85,8 +121,6 @@ export const getSavedCustomerLoginInfo = () => {
   }
 };
 export const saveCustomerLoginInfo = (email, password) => {
-  console.log("saving customer login info to localStorage");
-  console.log("email:", email, "password:", password);
   localStorage.setItem(
     "customer-login",
     JSON.stringify({
@@ -96,11 +130,14 @@ export const saveCustomerLoginInfo = (email, password) => {
     })
   );
 };
+
 export const {
   customerLogout,
   autoLoginAsCustomer,
   markCustomerEmailAsVerified,
   markCustomerAuthAsReady,
+  updateCustomerPersonalInfoLocally,
+  updateSavedLoginInfoLocallyForCustomer,
 } = customerAuthSlice.actions;
 
 export const selectCustomer = (state) => state.customerAuth.customer;
