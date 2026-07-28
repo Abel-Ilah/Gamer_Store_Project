@@ -61,7 +61,7 @@ export function Cart() {
           return (
             calculateProductPrice(
               item.product.price,
-              item.product.discountValue
+              item.product.discountValue,
             ) *
               item.quantity +
             acc

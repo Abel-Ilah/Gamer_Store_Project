@@ -8,12 +8,14 @@ import reviewReducer from "../features/review/reviewSlice";
 import wishlistReducer from "../features/wishlist/WishlistSlice";
 import compareReducer from "../features/Compare/CompareSlice";
 import ProudctsPageTitleReducer from "../features/productsPageTItle/ProductsPageTitleSlice";
+import filterReducer from "../features/productsFilter/filterSlice";
 import themeReducer from "../features/theme/ThemeSlice";
 
 export const store = configureStore({
   reducer: {
     cart: cartReducer,
     customerAuth: customerReducer,
+    filter: filterReducer,
     products: productsReducer,
     snackbar: snackbarReducer,
     order: orderReducer,

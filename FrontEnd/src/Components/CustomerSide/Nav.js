@@ -1,7 +1,7 @@
 import "./Nav.css";
 import { useState } from "react";
 import { useCategories } from "../../contexts/CategoriesProvider";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 //mui components:
 import IconButton from "@mui/material/IconButton";
@@ -15,15 +15,21 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import {
-  GET_PRODUCTS_BY_CATEGORY,
-  getFilteredProducts,
-} from "../../features/products/productsSlice";
-import settings from "../../appsettings.json";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import LocalGroceryStoreOutlinedIcon from "@mui/icons-material/LocalGroceryStoreOutlined";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import HeadsetMicOutlinedIcon from "@mui/icons-material/HeadsetMicOutlined";
+import { GET_PRODUCTS_BY_CATEGORY } from "../../features/products/productsSlice";
 import { setTitle } from "../../features/productsPageTItle/ProductsPageTitleSlice";
+import {
+  GET_ALL_PRODUCTS,
+  GET_DISCOUNTED_PRODUCTS,
+  setFilterTag,
+} from "../../features/productsFilter/filterSlice";
 
 export function Nav() {
   const categories = useCategories();
+  //active page :(categorie/home/shop/deals/contact)
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [showCategoriesList_sm_md, setShowCategoriesList_sm_md] =
     useState(false);
@@ -40,33 +46,48 @@ export function Nav() {
   };
 
   const handleCategoryClick = (category) => {
-    const filter = {
-      tag: {
-        name: GET_PRODUCTS_BY_CATEGORY,
-        value: category.id,
-      },
-      price: {
-        min: 1,
-        max: 10000000,
-      },
-      page: {
-        number: 1,
-        size: settings.productsPageSize,
-      },
-    };
-    dispatch(getFilteredProducts(filter));
+    dispatch(
+      setFilterTag({ name: GET_PRODUCTS_BY_CATEGORY, value: category.id })
+    );
     dispatch(setTitle(category.name || "Products"));
   };
+  function handleShopClick() {
+    dispatch(
+      setFilterTag({
+        name: GET_ALL_PRODUCTS,
+        value: GET_ALL_PRODUCTS,
+      })
+    );
+    dispatch(setTitle("All Products"));
+    navigate("/products");
+    console.log("clicked...");
+  }
+  function handleDealsClick() {
+    dispatch(
+      setFilterTag({
+        name: GET_DISCOUNTED_PRODUCTS,
+        value: GET_DISCOUNTED_PRODUCTS,
+      })
+    );
+    dispatch(setTitle("Discounts"));
+
+    navigate("/products/discounts");
+  }
+  function handleHomeCLick() {
+    navigate("/");
+    console.log("clicked...");
+  }
+  function handleContactCLick() {
+    // navigate("/contact");
+  }
+  const navigate = useNavigate();
+
+  const location = useLocation();
 
   return (
     <div className="nav">
       {/* in small screens  (screen <= md)*/}
-      <Box
-        sx={{
-          flexGrow: 1,
-          display: { xs: "flex", md: "none" },
-        }}
-      >
+      <Box className="f-dlex flex-grow-1 d-md-none">
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -78,6 +99,7 @@ export function Nav() {
           <MenuIcon sx={{ color: "gray", fontSize: "40px" }} />
         </IconButton>
         <Menu
+          className="d-block d-md-none"
           id="menu-appbar"
           anchorEl={anchorElNav}
           anchorOrigin={{
@@ -91,9 +113,6 @@ export function Nav() {
           }}
           open={Boolean(anchorElNav)}
           onClose={handleCloseNavMenu}
-          sx={{
-            display: { xs: "block", md: "none" },
-          }}
           PaperProps={{
             sx: {
               // minWidth: "80vw",
@@ -195,17 +214,7 @@ export function Nav() {
       </Box>
       {/* ================ */}
       {/* in large screens (screen >= lg) */}
-      <Box
-        className="content-lg"
-        sx={{
-          flexGrow: 1,
-          display: {
-            xs: "none",
-            md: "flex",
-            justifyContent: "start",
-          },
-        }}
-      >
+      <Box className="content-lg d-none d-md-flex gap-4 align-items-center flex-grow-md-1 w-100">
         {/* categories select */}
         <div
           className="list-container"
@@ -269,20 +278,41 @@ export function Nav() {
         </div>
         {/* ======= */}
         {/* links */}
-        <div className="links d-flex justify-content-center align-items-center gap-4 flex-grow-1">
-          <Link>
-            <Button className="link">New Products</Button>
-          </Link>
-          <Link>
-            <Button className="link">% Promotions</Button>
-          </Link>
-          <Link>
-            <Button className="link">Contact Us</Button>
-          </Link>
-
-          <Link>
-            <Button className="link">Location</Button>
-          </Link>
+        <div className="links d-flex justify-content-center align-items-center  gap-4 flex-grow-1">
+          <Button
+            className={`link ${location.pathname === "/" ? "active" : ""}`}
+            startIcon={<HomeOutlinedIcon />}
+            onClick={handleHomeCLick}
+          >
+            Home
+          </Button>
+          <Button
+            className={`link ${
+              location.pathname === "/products" ? "active" : ""
+            }`}
+            startIcon={<LocalGroceryStoreOutlinedIcon />}
+            onClick={handleShopClick}
+          >
+            Shop
+          </Button>
+          <Button
+            className={`link ${
+              location.pathname === "/products/discounts" ? "active" : ""
+            }`}
+            startIcon={<LocalOfferOutlinedIcon />}
+            onClick={handleDealsClick}
+          >
+            Deals
+          </Button>
+          <Button
+            className={`link ${
+              location.pathname === "/contact" ? "active" : ""
+            }`}
+            startIcon={<HeadsetMicOutlinedIcon />}
+            onClick={handleContactCLick}
+          >
+            Contact
+          </Button>
         </div>
         {/* ======= */}
       </Box>

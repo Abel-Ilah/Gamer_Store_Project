@@ -1,0 +1,25 @@
+.top-reviews-container .slick-track {
+  display: flex !important;
+  margin-bottom: 15px;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  align-items: stretch;
+}
+
+.top-reviews-container .slick-slide {
+  display: flex !important;
+  height: auto !important;
+}
+
+.top-reviews-container .slick-slide > div {
+  display: flex;
+  width: 100%;
+}
+
+.top-reviews-container .slick-slide > div {
+  padding: 0 5px;
+}
+
+.top-reviews-container .slick-list {
+  margin: 0 -5px;
+}

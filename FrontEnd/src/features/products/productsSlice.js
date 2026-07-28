@@ -40,29 +40,14 @@ export const getFilteredProducts = createAsyncThunk(
       default:
         url = `http://localhost:5268/api/products?pageNumber=${page.number}&pageSize=${page.size}&minPrice=${price.min}&maxPrice=${price.max}`;
     }
-    if (url) {
-      sessionStorage.setItem("filter", JSON.stringify(filter));
-    }
+
     try {
       const res = await axios.get(url, { signal: controller.signal });
-
-      // cache the result in session storage
-      var cachedProducts = JSON.parse(sessionStorage.getItem("cachedProducts"));
-      if (cachedProducts && cachedProducts.length > 0) {
-        if (cachedProducts.length > 100) {
-          cachedProducts.shift();
-        }
-        cachedProducts.unshift(JSON.stringify({ filter, result: res }));
-      } else {
-        cachedProducts = [{ filter, result: res }];
-      }
-      sessionStorage.setItem("cachedProducts", JSON.stringify(cachedProducts));
-
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 // get products with no filter :
@@ -73,13 +58,13 @@ export const getMixedProducts = createAsyncThunk(
     try {
       const res = await axios.get(
         `http://localhost:5268/api/products/All?pageSize=${productsCount}`,
-        { signal: controller.signal }
+        { signal: controller.signal },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 export const getBestSellers = createAsyncThunk(
@@ -88,13 +73,13 @@ export const getBestSellers = createAsyncThunk(
     try {
       const res = await axios.get(
         `http://localhost:5268/api/products/best-sellers?pageSize=${productsCount}`,
-        { signal: controller.signal }
+        { signal: controller.signal },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 export const getNewProducts = createAsyncThunk(
@@ -103,13 +88,13 @@ export const getNewProducts = createAsyncThunk(
     try {
       const res = await axios.get(
         `http://localhost:5268/api/products/new-products?pageSize=${productsCount}`,
-        { signal: controller.signal }
+        { signal: controller.signal },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 export const getDiscountedProducts = createAsyncThunk(
@@ -118,13 +103,13 @@ export const getDiscountedProducts = createAsyncThunk(
     try {
       const res = await axios.get(
         `http://localhost:5268/api/products/discounts?pageSize=${productsCount}`,
-        { signal: controller.signal }
+        { signal: controller.signal },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 export const getProductsByCategoryId = createAsyncThunk(
@@ -133,14 +118,13 @@ export const getProductsByCategoryId = createAsyncThunk(
     try {
       const res = await axios.get(
         `http://localhost:5268/api/products/category?categoryId=${categoryId}&pageSize=${productsCount}`,
-        { signal: controller.signal }
+        { signal: controller.signal },
       );
       return res.data;
     } catch (error) {
-      console.log("errrrr : ", error.response?.data || error.message);
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 export const searchForProducts = createAsyncThunk(
@@ -149,13 +133,13 @@ export const searchForProducts = createAsyncThunk(
     try {
       const res = await axios.get(
         `http://localhost:5268/api/products/search?name=${name}&categoryId=${categoryId}`,
-        { signal: controller.signal }
+        { signal: controller.signal },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 export const getHeroSectionProducts = createAsyncThunk(
@@ -164,13 +148,13 @@ export const getHeroSectionProducts = createAsyncThunk(
     try {
       const res = await axios.get(
         `http://localhost:5268/api/products/hero-section`,
-        { signal: controller.signal }
+        { signal: controller.signal },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 const initialState = {
@@ -196,7 +180,6 @@ export const productsSlice = createSlice({
       state.success = true;
       state.error = null;
       state.data = action.payload;
-      console.log("data", state.data);
     });
     builder.addCase(getFilteredProducts.rejected, (state, action) => {
       state.loading = false;

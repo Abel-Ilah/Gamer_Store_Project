@@ -12,8 +12,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import Pagination from "@mui/material/Pagination";
 import { ProductsFilter } from "./ProductsFilter";
 import { ProductsSkeleton } from "./ProductsSkeleton";
-import { useLocation, useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import settings from "../../appsettings.json";
 import { setTitle } from "../../features/productsPageTItle/ProductsPageTitleSlice";
@@ -25,97 +24,55 @@ import {
   GET_TOP_RATED_PRODUCTS,
   getFilteredProducts,
 } from "../../features/products/productsSlice";
-import { useEffect, useState } from "react";
+import {
+  setPageNumber,
+  setFilterTag,
+} from "../../features/productsFilter/filterSlice";
+import { useEffect, useMemo, useState } from "react";
 import { PaginationItem, useTheme, useMediaQuery } from "@mui/material";
-
 let pageSize = settings.productsPageSize;
+
 export function FilteredProducts() {
-  const { categoryName: selectedCategory } = useParams();
-  const [showProductsRating, setShowProductsRating] = useState(false);
-  const [CurrentPage, setCurrentPage] = useState(() => {
-    const storedFilter = JSON.parse(sessionStorage.getItem("filter"));
-    if (storedFilter) {
-      return storedFilter.page.number || 1;
-    }
+  const filter = useSelector((state) => state.filter);
+
+  const CurrentPage = useMemo(() => {
+    if (filter) return filter.page.number || 1;
     return 1;
-  });
+  }, [filter]);
 
   const [totalPages, setTotalPages] = useState(1);
   const { title } = useSelector((state) => state.title);
   const { data, loading, error } = useSelector((state) => state.products);
 
-  const locaiton = useLocation();
   const dispatch = useDispatch();
-  const theme = useTheme();
 
-  const isMobile = useMediaQuery(theme.breakpoints.only("xs"));
-
-  function handleFastFilterBtnsClick(tag, event) {
-    const filter = {
-      tag,
-      price: {
-        min: 1,
-        max: 10000000,
-      },
-      page: {
-        number: 1,
-        size: settings.productsPageSize,
-      },
-    };
-    dispatch(getFilteredProducts(filter))
-      .unwrap()
-      .then()
-      .catch((err) => {});
+  function handleFastFilterBtnsClick(event) {
     if (event) {
-      dispatch(
-        setTitle(event.currentTarget.getAttribute("data") || "Products")
-      );
+      let data = event.currentTarget.getAttribute("data") || GET_ALL_PRODUCTS;
+      dispatch(setFilterTag({ name: data, value: data }));
+      let title = event.currentTarget.getAttribute("title") || "Products";
+      dispatch(setTitle(title));
     }
   }
 
   const handlePageChange = (_, value) => {
-    setCurrentPage(value);
-    const filter = JSON.parse(sessionStorage.getItem("filter"));
-    if (filter) {
-      filter.page.number = value;
-      dispatch(getFilteredProducts(filter));
-    }
+    dispatch(setPageNumber(value));
+    window.scrollTo(0, 0);
   };
 
-  useEffect(
-    (_) => {
-      if (data && data.totalProducts > 0) {
-        setTotalPages(Math.ceil(data.totalProducts / pageSize));
-      }
-    },
-    [data]
-  );
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.only("xs"));
+  const navigate = useNavigate();
 
   useEffect(() => {
-    let filter = JSON.parse(sessionStorage.getItem("filter"));
-    if (!filter) {
-      filter = {
-        tag: {
-          name: GET_ALL_PRODUCTS,
-          value: GET_ALL_PRODUCTS,
-        },
-        price: {
-          min: 1,
-          max: 100000,
-        },
-        page: {
-          number: 1,
-          size: settings.productsPageSize,
-        },
-      };
+    if (data && data.totalProducts > 0) {
+      setTotalPages(Math.ceil(data.totalProducts / pageSize));
     }
-    dispatch(getFilteredProducts(filter));
-  }, []);
+  }, [data]);
 
   useEffect(() => {
-    setShowProductsRating(locaiton.pathname.includes("top-rated"));
-    setCurrentPage(1);
-  }, [locaiton.pathname]);
+    dispatch(getFilteredProducts(filter)).unwrap().then().catch();
+  }, [filter, dispatch]);
 
   return (
     <Container maxWidth="xl">
@@ -124,85 +81,62 @@ export function FilteredProducts() {
           <StorefrontIcon className="icon" />
           <h2 className="s-title">{title}</h2>
         </div>
-        <div className="content">
-          <ProductsFilter activeCategory={selectedCategory} />
+        <div className="content d-flex flex-column flex-md-row gap-3 ">
+          <ProductsFilter />
           <div style={{ flexGrow: 1 }}>
             <div className="fast-filter">
-              <Link to={"/products/new-products"}>
-                <Button
-                  variant="outlined"
-                  data="New Products"
-                  onClick={(e) =>
-                    handleFastFilterBtnsClick(
-                      {
-                        name: GET_NEW_PRODUCTS,
-                        value: GET_NEW_PRODUCTS,
-                      },
-                      e
-                    )
-                  }
-                >
-                  <VerifiedIcon style={{ color: "green" }} />
-                  New Products
-                </Button>
-              </Link>
-              <Link to={"/products/discounted-products"}>
-                <Button
-                  data="Discounted Products"
-                  variant="outlined"
-                  onClick={(e) =>
-                    handleFastFilterBtnsClick(
-                      {
-                        name: GET_DISCOUNTED_PRODUCTS,
-                        value: GET_DISCOUNTED_PRODUCTS,
-                      },
-                      e
-                    )
-                  }
-                >
-                  <DiscountIcon style={{ color: "red" }} />
-                  Discounts
-                </Button>
-              </Link>
-              <Link to={"/products/best-sellers"}>
-                <Button
-                  data="Best Sellers"
-                  variant="outlined"
-                  onClick={(e) =>
-                    handleFastFilterBtnsClick(
-                      {
-                        name: GET_BEST_SELLERS,
-                        value: GET_BEST_SELLERS,
-                      },
-                      e
-                    )
-                  }
-                >
-                  <ShoppingCartIcon style={{ color: "teal" }} />
-                  Best Sellers
-                </Button>
-              </Link>
-              <Link to={"/products/top-rated"}>
-                <Button
-                  data="Top Rated"
-                  variant="outlined"
-                  onClick={(e) => {
-                    handleFastFilterBtnsClick(
-                      {
-                        name: GET_TOP_RATED_PRODUCTS,
-                        value: GET_TOP_RATED_PRODUCTS,
-                      },
-                      e
-                    );
-                    setShowProductsRating(true);
-                  }}
-                >
-                  <StarIcon style={{ color: "orange" }} />
-                  Top Rated
-                </Button>
-              </Link>
-            </div>
+              <Button
+                variant="outlined"
+                data={GET_NEW_PRODUCTS}
+                title="New Products"
+                onClick={(e) => {
+                  handleFastFilterBtnsClick(e);
+                  navigate("/products/new-products");
+                }}
+              >
+                <VerifiedIcon style={{ color: "green" }} />
+                New Products
+              </Button>
 
+              <Button
+                data={GET_DISCOUNTED_PRODUCTS}
+                title="Discounts"
+                variant="outlined"
+                onClick={(e) => {
+                  handleFastFilterBtnsClick(e);
+                  navigate("/products/discounts");
+                }}
+              >
+                <DiscountIcon style={{ color: "red" }} />
+                Discounts
+              </Button>
+
+              <Button
+                data={GET_BEST_SELLERS}
+                title="Best Sellers"
+                variant="outlined"
+                onClick={(e) => {
+                  handleFastFilterBtnsClick(e);
+                  navigate("/products/best-sellers");
+                }}
+              >
+                <ShoppingCartIcon style={{ color: "teal" }} />
+                Best Sellers
+              </Button>
+
+              <Button
+                data={GET_TOP_RATED_PRODUCTS}
+                title="Top Rated"
+                variant="outlined"
+                onClick={(e) => {
+                  handleFastFilterBtnsClick(e);
+                  navigate("/products/top-rated");
+                }}
+              >
+                <StarIcon style={{ color: "orange" }} />
+                Top Rated
+              </Button>
+            </div>
             {loading && (
               <>
                 <ProductsSkeleton />
@@ -214,7 +148,9 @@ export function FilteredProducts() {
                 <div className="products">
                   <ProductsGrid
                     products={data.products}
-                    showRating={showProductsRating}
+                    showRating={
+                      filter && filter.tag.name === GET_TOP_RATED_PRODUCTS
+                    }
                   />
                 </div>
                 {totalPages > 1 && (

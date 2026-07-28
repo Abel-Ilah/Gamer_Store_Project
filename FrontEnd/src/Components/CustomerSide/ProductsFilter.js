@@ -1,38 +1,37 @@
 import "./ProductsFilter.css";
-import { useState, useEffect } from "react";
-import { useMediaQuery } from "@mui/material";
+import { useState } from "react";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import TuneIcon from "@mui/icons-material/Tune";
-import AddIcon from "@mui/icons-material/Add";
+import FormatIndentDecreaseOutlinedIcon from "@mui/icons-material/FormatIndentDecreaseOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Link } from "react-router-dom";
 import { useCategories } from "../../contexts/CategoriesProvider";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import settings from "../../appsettings.json";
-import {
-  GET_ALL_PRODUCTS,
-  GET_PRODUCTS_BY_CATEGORY,
-  getFilteredProducts,
-} from "../../features/products/productsSlice";
+import { GET_PRODUCTS_BY_CATEGORY } from "../../features/products/productsSlice";
 import { setTitle } from "../../features/productsPageTItle/ProductsPageTitleSlice";
+import {
+  setFilterTag,
+  setPriceRange,
+} from "../../features/productsFilter/filterSlice";
+import { IconButton } from "@mui/material";
 
 function valuetext(value) {
   return `${value}°C`;
 }
 const minDistance = 100;
 
-export function ProductsFilter({ activeCategory }) {
+export function ProductsFilter() {
+  const { tag, price } = useSelector((state) => state.filter);
   const categories = useCategories();
-  const [showFilterOnMediumScreens, setShowFilterOnMediumScreens] =
-    useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+
+  const [range, setRange] = useState([price.min, price.max]);
 
   const dispatch = useDispatch();
 
-  const [range, setRange] = useState([1, 100000]);
-
-  const handleRangeChange = (event, newValue, activeThumb) => {
+  const handleRangeChange = (_, newValue, activeThumb) => {
     if (activeThumb === 0) {
       setRange([Math.min(newValue[0], range[1] - minDistance), range[1]]);
     } else {
@@ -43,103 +42,50 @@ export function ProductsFilter({ activeCategory }) {
   const handleCategoryClick = (category) => {
     const defaultRange = [1, 100000];
     setRange(defaultRange);
-    const filter = {
-      tag: {
-        name: GET_PRODUCTS_BY_CATEGORY,
-        value: category.id,
-      },
-      price: {
-        min: defaultRange[0],
-        max: defaultRange[1],
-      },
-      page: {
-        number: 1,
-        size: settings.productsPageSize,
-      },
-    };
-    dispatch(getFilteredProducts(filter));
-
+    dispatch(
+      setFilterTag({ name: GET_PRODUCTS_BY_CATEGORY, value: category.id })
+    );
     dispatch(setTitle(category.name || "Products"));
   };
 
   const handleFilterByPrice = () => {
-    const filter = JSON.parse(sessionStorage.getItem("filter"));
-    if (!filter) {
-      filter = {
-        tag: {
-          name: GET_ALL_PRODUCTS,
-          value: GET_ALL_PRODUCTS,
-        },
-        price: {
-          min: 1,
-          max: 10000000,
-        },
-        page: {
-          number: 1,
-          size: settings.productsPageSize,
-        },
-      };
-    }
-    filter.price = { min: range[0], max: range[1] };
-
-    dispatch(getFilteredProducts(filter));
+    dispatch(setPriceRange({ min: range[0], max: range[1] }));
+    setShowFilter(false);
   };
-
-  const isMobile = useMediaQuery("(max-width:944px)");
-
-  useEffect(() => {
-    const filter = JSON.parse(sessionStorage.getItem("filter"));
-    if (filter) {
-      const { price } = filter;
-      setRange([price.min, price.max]);
-      console.log([price.min, price.max]);
-    }
-  }, []);
 
   return (
     <div className="filter-cmp">
       {/* show filter btn  */}
-      <div
-        className="show-filter-btn"
+      <Button
+        className="show-filter-btn d-flex justify-content-between align-items-center d-md-none"
+        endIcon={
+          <KeyboardArrowDownIcon
+            style={{ color: "teal", fontWeight: "bold" }}
+          />
+        }
         onClick={() => {
-          setShowFilterOnMediumScreens(true);
+          setShowFilter(true);
         }}
       >
-        <span
-          style={{
-            color: "teal",
-            fontWeight: "bold",
-            display: "flex",
-            gap: "5px",
-          }}
-        >
-          <TuneIcon /> Filter
+        <span className="d-flex gap-2 align-items-center">
+          <TuneIcon />
+          Filter
         </span>
-
-        <KeyboardArrowDownIcon style={{ color: "teal", fontWeight: "bold" }} />
-      </div>
+      </Button>
       {/*===================*/}
 
       <div
-        className="filter-container"
-        style={{
-          display: showFilterOnMediumScreens | !isMobile ? "block" : "none",
-        }}
+        className={`filter-container ${showFilter ? "" : "d-none"} d-md-block`}
       >
-        <div
-          className="close-btn-filter-wraper"
-          style={{ display: "flex", justifyContent: "end" }}
-        >
-          {" "}
-          <Button
-            variant="contained"
+        <div className="d-flex d-md-none justify-content-end">
+          <IconButton
             className="close-filter-btn"
             onClick={() => {
-              setShowFilterOnMediumScreens(false);
+              setShowFilter(false);
             }}
           >
-            x
-          </Button>
+            <FormatIndentDecreaseOutlinedIcon />
+          </IconButton>
         </div>
         {/* price filter */}
         <div className="price-filter">
@@ -153,26 +99,31 @@ export function ProductsFilter({ activeCategory }) {
               {range[1].toLocaleString()} {settings.currrency}
             </span>
           </div>
-          <Box>
-            <Slider
-              getAriaLabel={() => "Minimum distance"}
-              value={range}
-              onChange={handleRangeChange}
-              valueLabelDisplay="auto"
-              getAriaValueText={valuetext}
-              disableSwap
-              max={50000}
-            />
+          <div>
+            <div>
+              <Slider
+                getAriaLabel={() => "Minimum distance"}
+                value={range}
+                onChange={handleRangeChange}
+                valueLabelDisplay="auto"
+                getAriaValueText={valuetext}
+                disableSwap
+                min={1}
+                max={100_000}
+              />
+            </div>
+
             <div className="d-flex justify-content-end mb-1">
               <Button
                 id="filter-price-btn"
                 variant="outlined"
                 onClick={handleFilterByPrice}
+                disabled={range[0] === price.min && range[1] === price.max}
               >
                 Go
               </Button>
             </div>
-          </Box>
+          </div>
         </div>
         {/* ========== */}
         {/* categories filter */}
@@ -186,13 +137,16 @@ export function ProductsFilter({ activeCategory }) {
                   to={`/products/${c.name}`}
                   onClick={() => {
                     handleCategoryClick(c);
-                    setShowFilterOnMediumScreens(false);
+                    setShowFilter(false);
                   }}
                 >
                   <li
-                    className={
-                      activeCategory === c.name ? "category active" : "category"
-                    }
+                    className={`category ${
+                      tag.name === GET_PRODUCTS_BY_CATEGORY &&
+                      tag.value === c.id
+                        ? "active"
+                        : ""
+                    }`}
                   >
                     <span className="d-flex justify-content-between">
                       {c.name}

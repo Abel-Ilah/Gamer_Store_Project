@@ -1,38 +1,34 @@
-import Title from "./Title";
 import { HorizontalScroll } from "./HorizontalScroll";
 import { Product } from "./Product";
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
-import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
   GET_PRODUCTS_BY_CATEGORY,
-  getFilteredProducts,
   getProductsByCategoryId,
 } from "../../features/products/productsSlice";
+import { setFilterTag } from "../../features/productsFilter/filterSlice";
 import { useEffect, useMemo, useState } from "react";
-import settings from "../../appsettings.json";
 import { useCategories } from "../../contexts/CategoriesProvider";
 import { setTitle } from "../../features/productsPageTItle/ProductsPageTitleSlice";
-export function ProductsOfXCategory() {
+import { ProductsListHeader } from "./customItems/ProductsListHeader";
+
+export function ProductsOfXCategory({ category_name = "laptops" }) {
   const [productsState, setProductsState] = useState({
     loading: false,
     products: null,
     error: null,
   });
-
   const dispatch = useDispatch();
   const categories = useCategories();
 
-  const randomCategory = useMemo(() => {
-    if (categories && categories.length > 0) {
-      const randomIndex = Math.floor(Math.random() * categories.length);
-      const randomCategory = categories[randomIndex];
-      return randomCategory;
-    }
-  }, [categories]);
+  const selectedCategory = useMemo(() => {
+    const randomCategory = categories.find(
+      (category) => category.name.toLowerCase() === category_name.toLowerCase(),
+    );
+    return randomCategory;
+  }, [categories, category_name]);
 
   useEffect(() => {
-    if (randomCategory) {
+    if (selectedCategory) {
       setProductsState({ loading: true, products: null, error: null });
 
       let cachedProducts = JSON.parse(sessionStorage.getItem("10Products"));
@@ -40,7 +36,7 @@ export function ProductsOfXCategory() {
         const cachedSearch = cachedProducts.find(
           (storedSearch) =>
             storedSearch.category &&
-            storedSearch.category.id === randomCategory.id
+            storedSearch.category.id === selectedCategory.id,
         );
 
         if (cachedSearch) {
@@ -55,15 +51,15 @@ export function ProductsOfXCategory() {
       dispatch(
         getProductsByCategoryId({
           productsCount: 10,
-          categoryId: randomCategory.id,
-        })
+          categoryId: selectedCategory.id,
+        }),
       )
         .unwrap()
         .then((res) => {
           setProductsState({ loading: false, products: res, error: null });
           const newSearch = {
             products: res,
-            category: randomCategory,
+            category: selectedCategory,
             tag: GET_PRODUCTS_BY_CATEGORY,
           };
           cachedProducts = cachedProducts
@@ -75,41 +71,33 @@ export function ProductsOfXCategory() {
           setProductsState({ loading: false, products: null, error: err });
         });
     }
-  }, [randomCategory, dispatch]);
+  }, [selectedCategory, dispatch]);
 
   function handleSeeAllClick() {
-    const filter = {
-      tag: {
-        name: GET_PRODUCTS_BY_CATEGORY,
-        value: randomCategory.id,
-      },
-      price: {
-        min: 1,
-        max: 10000000,
-      },
-      page: {
-        number: 1,
-        size: settings.productsPageSize,
-      },
-    };
-    dispatch(getFilteredProducts(filter));
-    dispatch(setTitle(randomCategory?.name || "Products"));
+    const tag = { name: GET_PRODUCTS_BY_CATEGORY, value: selectedCategory.id };
+    dispatch(setFilterTag(tag));
+    dispatch(setTitle(selectedCategory?.name || "Products"));
   }
 
-  return productsState.products ? (
+  return selectedCategory && productsState.products ? (
     <>
-      <Title title={randomCategory.name} />
-      <div className="see-all-btn-wraper">
+      {/* <Title title={selectedCategory.name} /> */}
+      {/* <div className="see-all-btn-wraper">
         <Link
-          to={`/products/${randomCategory.name}`}
+          to={`/products/${selectedCategory.name}`}
           onClick={handleSeeAllClick}
         >
-          <button className="see-all-btn" variant="text">
+          <span className="see-all-btn" variant="text">
             {" "}
             See All <ArrowRightAltIcon />
-          </button>
+          </span>
         </Link>
-      </div>
+      </div> */}
+      <ProductsListHeader
+        title={selectedCategory.name}
+        seeAllLink={`/products/${selectedCategory.name}`}
+        onSeeAllClick={handleSeeAllClick}
+      />
       <HorizontalScroll>
         {productsState.products.map((p) => {
           return <Product Product={p} key={p.id} />;

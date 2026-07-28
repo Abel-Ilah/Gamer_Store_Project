@@ -2,6 +2,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Arrows.css";
+import "./TopReviews.css";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import { useMediaQuery, useTheme } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { getTopReviews } from "../../features/review/reviewSlice";
 import { ReviewCard } from "./ReviewCard";
-import Title from "./Title";
+import { ProductsListHeader } from "./customItems/ProductsListHeader";
 
 export function TopReviews() {
   const [reviewsState, setReviewsState] = useState({
@@ -28,41 +29,26 @@ export function TopReviews() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isXs) {
-      setSlides({ slidesToScroll: 1, slidesToShow: 1 });
-    } else if (isSm) {
-      if (reviewsState.reviews && reviewsState.reviews.length > 0) {
-        if (reviewsState.reviews.length > 2) {
-          setSlides({ slidesToScroll: 2, slidesToShow: 2 });
-        } else {
-          setSlides({
-            slidesToScroll: 0,
-            slidesToShow: reviewsState.reviews.length,
-          });
-        }
+    if (reviewsState.reviews && reviewsState.reviews.length > 0) {
+      if (isXs) {
+        setSlides({ slidesToScroll: 1, slidesToShow: 1 });
+      } else if (isSm) {
+        setSlides({
+          slidesToScroll: 2,
+          slidesToShow: Math.min(2, reviewsState.reviews.length),
+        });
+      } else if (isMd) {
+        setSlides({
+          slidesToScroll: 3,
+          slidesToShow: Math.min(3, reviewsState.reviews.length),
+        });
+      } else if (isLgOrUp) {
+        setSlides({
+          slidesToScroll: 4,
+          slidesToShow: Math.min(4, reviewsState.reviews.length),
+        });
       }
-    } else if (isMd) {
-      if (reviewsState.reviews && reviewsState.reviews.length > 0) {
-        if (reviewsState.reviews.length > 3) {
-          setSlides({ slidesToScroll: 3, slidesToShow: 3 });
-        } else {
-          setSlides({
-            slidesToScroll: 0,
-            slidesToShow: reviewsState.reviews.length,
-          });
-        }
-      }
-    } else if (isLgOrUp) {
-      if (reviewsState.reviews && reviewsState.reviews.length > 0) {
-        if (reviewsState.reviews.length > 5) {
-          setSlides({ slidesToScroll: 2, slidesToShow: 5 });
-        } else {
-          setSlides({
-            slidesToScroll: 0,
-            slidesToShow: reviewsState.reviews.length,
-          });
-        }
-      }
+    } else {
     }
   }, [isMd, isSm, isXs, isLgOrUp, reviewsState.reviews]);
 
@@ -94,7 +80,8 @@ export function TopReviews() {
 
   const settings = {
     dots: false,
-    infinite: reviewsState.reviews && reviewsState.reviews.length > 1,
+    infinite:
+      reviewsState.reviews && reviewsState.reviews.length > slides.slidesToShow,
     speed: 500,
     slidesToShow: slides.slidesToShow,
     slidesToScroll: slides.slidesToScroll,
@@ -103,6 +90,7 @@ export function TopReviews() {
     autoplaySpeed: 3000,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    centermode: false,
   };
 
   function NextArrow(props) {
@@ -125,17 +113,17 @@ export function TopReviews() {
   return (
     reviewsState.reviews &&
     reviewsState.reviews.length > 0 && (
-      <div className="py-3">
-        <Title title={"Top Reviews"} />
+      <div className="top-reviews-container">
+        <ProductsListHeader title="Top Reviews" />
         <div
-          className="slider mt-4"
+          className="slider"
           onMouseEnter={() =>
             setShowArrows(
               reviewsState.reviews &&
                 ((isXs && reviewsState.reviews.length > 1) ||
                   (isSm && reviewsState.reviews.length > 2) ||
                   (isMd && reviewsState.reviews.length > 3) ||
-                  (isLgOrUp && reviewsState.reviews.length > 5))
+                  (isLgOrUp && reviewsState.reviews.length > 5)),
             )
           }
           onMouseLeave={() => setShowArrows(false)}
@@ -143,7 +131,7 @@ export function TopReviews() {
           <Slider {...settings}>
             {reviewsState.reviews.map((r) => (
               <div key={r.id} style={{ height: "100%" }}>
-                <div style={{ margin: "0 5px", height: "100%" }}>
+                <div style={{ height: "100%" }}>
                   <ReviewCard review={r} />
                 </div>
               </div>

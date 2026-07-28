@@ -1,10 +1,10 @@
 .review-card {
   margin-top: 10px;
-  border: 2px solid var(--gray-200);
-  background-color: var(--gray-100);
+  border: 1px solid var(--gray-300);
+  background-color: var(--gray-50);
   border-radius: 10px;
   padding-top: 10px;
-  height: 350px;
+  height: 100%;
   display: flex;
   flex-flow: column nowrap;
   position: relative;
@@ -20,9 +20,6 @@
   padding: 0 15px;
 }
 
-.review-card:hover .linked-product {
-  border-top-color: rgb(175, 175, 175);
-}
 .review-card .info {
   padding: 0;
   gap: 10px;
@@ -31,15 +28,15 @@
 }
 .review-card .avatar {
   position: absolute;
-  top: -10.7px;
-  left: -10.6px;
+  top: -9.7px;
+  left: -9.6px;
   z-index: 2;
   padding: 0px;
   border-radius: 50%;
   background-color: white;
-  border: 2px solid transparent;
-  border-right-color: var(--gray-200);
-  border-bottom-color: var(--gray-200);
+  border: 1px solid transparent;
+  border-right-color: var(--gray-300);
+  border-bottom-color: var(--gray-300);
 }
 .review-card .avatar img {
   width: 55px;

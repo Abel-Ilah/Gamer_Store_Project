@@ -1,4 +1,5 @@
 import "./App.css";
+import "./Components/CustomerSide/Styles.css";
 import "./Components/CustomerSide/Shared.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -35,7 +36,9 @@ import { AddNewProduct } from "./Components/AdminDashBoard/AddProduct";
 import { Categories } from "./Components/AdminDashBoard/Categories";
 import { CustomerProfile } from "./Components/CustomerSide/CustomerProfile";
 import CustomerLayout from "./Components/CustomerSide/CustomerLayout";
-
+import FAQs from "./Components/CustomerSide/FAQs";
+import ContactUs from "./Components/CustomerSide/ContactUs";
+import AboutUs from "./Components/CustomerSide/AboutUs";
 function App() {
   const location = useLocation();
   const showLayout = useMemo(() => {
@@ -55,10 +58,7 @@ function App() {
               <Route path="new-products" element={<FilteredProducts />} />
               <Route path="best-sellers" element={<FilteredProducts />} />
               <Route path="top-rated" element={<FilteredProducts />} />
-              <Route
-                path="discounted-products"
-                element={<FilteredProducts />}
-              />
+              <Route path="discounts" element={<FilteredProducts />} />
               <Route path=":categoryName" element={<FilteredProducts />} />
             </Route>
             <Route path="/product/:id" element={<ProductDetails />} />
@@ -67,6 +67,17 @@ function App() {
               <Route
                 path="/account/verify-email"
                 element={<EmailConfirmation key={location.pathname} />}
+              />
+            </Route>
+            <Route element={<ProtectedRoute requireLogin />}>
+              <Route
+                path="/profile/verify-email"
+                element={
+                  <EmailConfirmation
+                    key={location.pathname}
+                    navigateTo="/profile"
+                  />
+                }
               />
             </Route>
 
@@ -86,6 +97,10 @@ function App() {
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
             <Route path="/orders-history" element={<OrdersHistory />} />
             <Route path="/profile" element={<CustomerProfile />} />
+
+            <Route path="/FAQs" element={<FAQs />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/about-us" element={<AboutUs />} />
 
             <Route path="*" element={<NotFoundPage />} />
 

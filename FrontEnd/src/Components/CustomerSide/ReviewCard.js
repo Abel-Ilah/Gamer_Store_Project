@@ -10,7 +10,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
+import EastIcon from "@mui/icons-material/East";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -45,7 +46,7 @@ export function ReviewCard({ review }) {
 
   function addCloudinaryTransform(
     url,
-    transform = "w_50,c_fill,q_auto,f_auto"
+    transform = "w_50,c_fill,q_auto,f_auto",
   ) {
     return url.length > 0
       ? url.replace("/upload/", `/upload/${transform}/`)
@@ -78,7 +79,7 @@ export function ReviewCard({ review }) {
         {/*=== see more  ===*/}
         <div style={{ display: showSeeMore ? "block" : "none" }}>
           <Button className="see-more" variant="text" onClick={handleClickOpen}>
-            see more <ArrowRightAltIcon />
+            read more <KeyboardArrowRightIcon />
           </Button>
           <BootstrapDialog
             onClose={handleClose}

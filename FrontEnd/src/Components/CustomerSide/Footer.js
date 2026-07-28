@@ -1,69 +1,158 @@
 import "./Footer.css";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
 import Container from "@mui/material/Container";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
+import EmailIcon from "@mui/icons-material/Email";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
+import { Link } from "react-router-dom";
+import {
+  GET_ALL_PRODUCTS,
+  GET_BEST_SELLERS,
+  GET_DISCOUNTED_PRODUCTS,
+  GET_NEW_PRODUCTS,
+} from "../../features/products/productsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilterTag } from "../../features/productsFilter/filterSlice";
+import { setTitle } from "../../features/productsPageTItle/ProductsPageTitleSlice";
 
 export function Footer() {
+  const dispatch = useDispatch();
+  // const select = useSelector();
+  const { customer } = useSelector((state) => state.customerAuth);
+  function handleNewArrivalsClick() {
+    const tag = { name: GET_NEW_PRODUCTS, value: GET_NEW_PRODUCTS };
+    dispatch(setFilterTag(tag));
+    dispatch(setTitle("New Products"));
+  }
+  function handleBestSellersClick() {
+    const tag = { name: GET_BEST_SELLERS, value: GET_BEST_SELLERS };
+    dispatch(setFilterTag(tag));
+    dispatch(setTitle("Best Sellers"));
+  }
+  function handleDiscountsClick() {
+    const tag = {
+      name: GET_DISCOUNTED_PRODUCTS,
+      value: GET_DISCOUNTED_PRODUCTS,
+    };
+    dispatch(setFilterTag(tag));
+    dispatch(setTitle("Deals"));
+  }
+  function handleCategoriesClick() {
+    const tag = {
+      name: GET_ALL_PRODUCTS,
+      value: GET_ALL_PRODUCTS,
+    };
+    dispatch(setFilterTag(tag));
+    dispatch(setTitle("All Products"));
+  }
   return (
-    <Box className="footer" style={{ backgroundColor: "#1e1e1e" }}>
+    <div className="footer">
       <Container maxWidth="xl">
-        <Grid container spacing={1}>
-          <Grid size={{ lg: 5, md: 5, sm: 12, xs: 12 }}>
-            <div className="info">
-              <img className="logo" src="assets/store-logo.png" alt="logo" />
-              <div className="social-media">
-                <h5 className="title"> social media :</h5>
-                <Box sx={{ display: "flex", gap: 2, marginTop: "10px" }}>
-                  <IconButton
-                    style={{ padding: "0" }}
-                    href="https://facebook.com"
-                    target="_blank"
-                  >
-                    <FacebookIcon className="icon facebook" />
-                  </IconButton>
-                  <IconButton
-                    style={{ padding: "0" }}
-                    href="https://instagram.com"
-                    target="_blank"
-                  >
-                    <InstagramIcon className="icon instagram" />
-                  </IconButton>
-                  <IconButton
-                    style={{ padding: "0" }}
-                    href="https://twitter.com"
-                    target="_blank"
-                  >
-                    <TwitterIcon className="icon twitter" />
-                  </IconButton>
-                  <IconButton
-                    style={{ padding: "0" }}
-                    href="https://youtube.com"
-                    target="_blank"
-                  >
-                    <YouTubeIcon className="icon youtube" />
-                  </IconButton>
-                </Box>
-              </div>
+        <div className="row g-4 text-start">
+          <div className="col-12 col-sm-6 col-md-5 col-lg-4">
+            <div className="item info">
+              <h4 className="col-title">Info</h4>
+              <ul>
+                <li>
+                  <LocalPhoneIcon /> +212601836964
+                </li>
+
+                <li style={{ textTransform: "lowercase" }}>
+                  <EmailIcon /> gamerstore@gmail.com
+                </li>
+
+                <li>
+                  <LocationOnIcon /> morocco, agadir city, alhoda
+                </li>
+
+                <li>
+                  <AccessTimeFilledIcon /> Store Open 24/7
+                </li>
+              </ul>
             </div>
-          </Grid>
-          {/* <Grid size={{ lg: 7, md: 7, sm: 12, xs: 12 }}>
-            {" "}
-            <div
-              style={{
-                minWidth: "400px",
-                width: "100%",
-                height: "200px",
-                background: "green",
-              }}
-            ></div>
-          </Grid> */}
-        </Grid>
+          </div>
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div className="item">
+              {" "}
+              <h4 className="col-title">Shop</h4>
+              <ul>
+                <Link
+                  onClick={handleNewArrivalsClick}
+                  to="/products/new-products"
+                >
+                  <li>new arrivals</li>
+                </Link>
+                <Link
+                  onClick={handleBestSellersClick}
+                  to="/products/best-sellers"
+                >
+                  <li>best sellers</li>
+                </Link>
+                <Link onClick={handleDiscountsClick} to="/products/discounts">
+                  <li>discounts</li>
+                </Link>
+                <Link onClick={handleCategoriesClick} to="/products">
+                  <li>categories</li>
+                </Link>
+              </ul>
+            </div>
+          </div>
+          <div className="col-12 col-sm-6 col-md-3 col-lg-3">
+            <div className="item">
+              {" "}
+              <h4 className="col-title">Services</h4>
+              <ul>
+                <Link to={"/FAQs"}>
+                  <li>FAQs</li>
+                </Link>
+                <Link to={"/contact-us"}>
+                  <li>Contact Us</li>
+                </Link>
+                <Link to={"/about-us"}>
+                  <li>About Us</li>
+                </Link>
+              </ul>
+            </div>
+          </div>
+          <div className="col-12 col-sm-6 col-md-12 col-lg-2">
+            <div className="item">
+              {" "}
+              <h4 className="col-title">Account</h4>
+              <ul>
+                {!customer && (
+                  <Link to={"/login"}>
+                    <li>Login/register</li>
+                  </Link>
+                )}
+                {customer && (
+                  <Link to={"/profile"}>
+                    <li>My Account</li>
+                  </Link>
+                )}
+                <Link to={"/orders-history"}>
+                  <li>Order History</li>
+                </Link>
+                <Link to="/cart">
+                  <li>Cart</li>
+                </Link>
+              </ul>
+            </div>
+          </div>
+          <div className="col-12">
+            <div className="copyright">
+              <p>
+                {" "}
+                © Copyright {new Date().getFullYear()} - Abdoux. All Right
+                Reserved
+              </p>
+            </div>
+          </div>
+        </div>
       </Container>
-    </Box>
+    </div>
   );
 }

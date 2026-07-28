@@ -1,4 +1,5 @@
 ﻿using DataSource.Data;
+using DataSource.DTOs;
 using DataSource.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,10 @@ namespace DataSource.Repositories
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _context.Categories.ToListAsync();
+        }
+        public async Task<IEnumerable<Category>> GetFeaturedCategoriesAsync()
+        {
+            return await _context.Categories.Where(c=>c.IsFeatured).ToListAsync();
         }
 
         public async Task<Category?> GetByIdAsync(int id)

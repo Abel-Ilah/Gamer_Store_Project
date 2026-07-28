@@ -33,7 +33,7 @@ const months = Array.from({ length: 12 }, (_, i) =>
 
 export function Checkout() {
   const { cart } = useSelector((state) => state.cart);
-  const { user } = useSelector((state) => state.user);
+  const { customer: user } = useSelector((state) => state.customerAuth);
   const [expand, setExpand] = useState(true);
 
   const dispatch = useDispatch();

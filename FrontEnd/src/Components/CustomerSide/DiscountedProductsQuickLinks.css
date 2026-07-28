@@ -1,0 +1,7 @@
+.discounted-slider .slick-slide > div {
+  padding: 0 5px;
+}
+
+.discounted-slider .slick-list {
+  margin: 0 -5px;
+}

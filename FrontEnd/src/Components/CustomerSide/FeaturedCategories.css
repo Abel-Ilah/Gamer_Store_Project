@@ -1,0 +1,48 @@
+.featured-categories .content {
+  background-color: var(--gray-100);
+  padding: var(--space-5) var(--space-3);
+}
+
+.featured-categories .slider .slick-slide > div {
+  padding: 0 5px;
+}
+
+.featured-categories .slider .slick-list {
+  margin: 0 -5px;
+}
+
+.featured-categories .slider {
+  position: relative;
+}
+
+.featured-categories .slider .arrow {
+  position: absolute;
+  background-color: var(--gray-400);
+  color: white;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 1;
+  width: 50px;
+  height: 70px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.featured-categories .slider .arrow svg {
+  font-size: 30px;
+}
+.featured-categories .slider .next {
+  right: 5px;
+}
+.featured-categories .slider .prev {
+  left: 5px;
+}
+.featured-categories .slider .arrow:hover {
+  background-color: var(--primary-color);
+}
+.featured-categories .slider .prev svg {
+  margin-left: 10px;
+}

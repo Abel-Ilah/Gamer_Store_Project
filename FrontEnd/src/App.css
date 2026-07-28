@@ -114,42 +114,6 @@ a {
   }
 }
 
-/* see all btn : */
-.see-all-btn-wraper {
-  display: flex;
-  justify-content: flex-end;
-}
-.see-all-btn {
-  color: rgb(163, 163, 163);
-  background-color: white;
-  border: 1px solid rgb(163, 163, 163);
-  border-radius: 25px;
-  font-weight: bold;
-  transition: all 0.3s;
-  margin-right: 6.5px;
-  margin-bottom: 10.5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 8px;
-  text-transform: uppercase;
-}
-.see-all-btn:hover {
-  color: white;
-  background-color: red;
-  border: 1px solid red;
-}
-@media (max-width: 450px) {
-  .see-all-btn-wraper {
-    justify-content: center;
-  }
-  .see-all-btn {
-    margin-right: 0;
-  }
-}
-/*===== see all btn  =====*/
-
 /* btn effect  */
 
 .btn-effect {

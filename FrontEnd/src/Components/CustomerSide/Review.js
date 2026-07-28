@@ -19,14 +19,11 @@ import {
 import IconButton from "@mui/material/IconButton";
 
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
-import { redirect } from "react-router-dom";
 
 export function Review({ review }) {
   const dispatch = useDispatch();
@@ -35,7 +32,7 @@ export function Review({ review }) {
   const [inputs, setInputs] = useState(
     review
       ? { rating: review.rating, comment: review.comment }
-      : { rating: 0, comment: "" }
+      : { rating: 0, comment: "" },
   );
   const { customer } = useSelector((state) => state.customerAuth);
 

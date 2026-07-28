@@ -9,6 +9,7 @@ public partial class Category
     public string Name { get; set; } = null!;
 
     public string ImagePath { get; set; } = "";
+    public bool IsFeatured { get; set; } = false;
 
     public virtual ICollection<CategoriesDiscount> CategoriesDiscounts { get; set; } = new List<CategoriesDiscount>();
 

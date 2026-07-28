@@ -8,6 +8,7 @@ namespace Services.services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using DataSource.DTOs;
     using DataSource.Entities;
     using DataSource.Repositories;
 
@@ -25,6 +26,11 @@ namespace Services.services
             return await _categoryRepository.GetAllAsync();
         }
 
+        public async Task<IEnumerable<CategoryDTO>> GetFeaturedCategoriesAsync()
+        {
+            var categories = await _categoryRepository.GetFeaturedCategoriesAsync();
+            return categories.Select(c=>new CategoryDTO { Id=c.Id, Name=c.Name,imagePath =c.ImagePath ,IsFeatured=c.IsFeatured}).ToList();
+        }
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
             return await _categoryRepository.GetByIdAsync(id);

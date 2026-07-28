@@ -1,6 +1,5 @@
 import "./AccountMenu.css";
 import React from "react";
-import { useMediaQuery, useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
@@ -25,8 +24,6 @@ export function AccountMenu() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isXs = useMediaQuery(theme.breakpoints.only("xs"));
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -115,7 +112,7 @@ export function AccountMenu() {
             </>
           )}
 
-          <Link to={"/wishlist/"} style={{ display: isXs ? "unset" : "none" }}>
+          <Link to={"/wishlist/"} className="d-unset d-lg-none">
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <FavoriteIcon className="wish-list" fontSize="medium" />
@@ -123,7 +120,7 @@ export function AccountMenu() {
               Wish List
             </MenuItem>
           </Link>
-          <Link to={"/compare/"} style={{ display: isXs ? "unset" : "none" }}>
+          <Link to={"/compare/"} className="d-unset d-lg-none">
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <LoopIcon fontSize="medium" />

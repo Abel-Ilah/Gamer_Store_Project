@@ -1,4 +1,3 @@
-import Title from "./Title";
 import { HorizontalScroll } from "./HorizontalScroll";
 import { Product } from "./Product";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
@@ -7,12 +6,11 @@ import { useDispatch } from "react-redux";
 import {
   getBestSellers,
   GET_BEST_SELLERS,
-  getFilteredProducts,
 } from "../../features/products/productsSlice";
 import { useEffect, useState } from "react";
-import settings from "../../appsettings.json";
 import { setTitle } from "../../features/productsPageTItle/ProductsPageTitleSlice";
-
+import { setFilterTag } from "../../features/productsFilter/filterSlice";
+import { ProductsListHeader } from "./customItems/ProductsListHeader";
 export function BestSellersQuickLinks() {
   const [productsState, setProductsState] = useState({
     loading: false,
@@ -28,7 +26,7 @@ export function BestSellersQuickLinks() {
     if (cachedProducts && cachedProducts.length > 0) {
       const cachedSearch = cachedProducts.find(
         (storedSearch) =>
-          storedSearch.tag && storedSearch.tag === GET_BEST_SELLERS
+          storedSearch.tag && storedSearch.tag === GET_BEST_SELLERS,
       );
 
       if (cachedSearch) {
@@ -59,35 +57,18 @@ export function BestSellersQuickLinks() {
   }, []);
 
   function handleSeeAllClick() {
-    const filter = {
-      tag: {
-        name: GET_BEST_SELLERS,
-        value: GET_BEST_SELLERS,
-      },
-      price: {
-        min: 1,
-        max: 10000000,
-      },
-      page: {
-        number: 1,
-        size: settings.productsPageSize,
-      },
-    };
-    dispatch(getFilteredProducts(filter));
+    const tag = { name: GET_BEST_SELLERS, value: GET_BEST_SELLERS };
+    dispatch(setFilterTag(tag));
     dispatch(setTitle("Best Sellers"));
   }
-
+  console.log("best sellers : ", productsState.products);
   return productsState.products ? (
-    <div className="py-4">
-      <Title title="Best Sellers" />
-      <div className="see-all-btn-wraper">
-        <Link to={"/products/best-sellers"} onClick={handleSeeAllClick}>
-          <button className="see-all-btn" variant="text">
-            {" "}
-            See All <ArrowRightAltIcon />
-          </button>
-        </Link>
-      </div>
+    <div>
+      <ProductsListHeader
+        title="Best Sellers"
+        onSeeAllClick={handleSeeAllClick}
+        seeAllLink="/products/best-sellers"
+      />
       <HorizontalScroll>
         {productsState.products.map((p) => {
           return <Product Product={p} key={p.id} />;

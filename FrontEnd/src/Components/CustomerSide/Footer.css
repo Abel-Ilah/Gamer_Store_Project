@@ -1,32 +1,31 @@
 .footer {
-  background-color: #1e1e1e;
-  padding: 40px 0;
+  background-color: var(--gray-700);
+  padding: calc(var(--space-5) * 2) 0 var(--space-3);
   color: white;
 }
-.footer .info {
-  text-align: start;
+
+.footer .item.info li {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
 }
-.footer .info .logo {
-  width: 150px;
+.footer .item.info li svg {
+  font-size: 1.3rem;
 }
-.footer .info .social-media .title {
+.footer ul li {
+  margin: var(--space-2) 0;
+  font-size: 1rem;
+  color: var(--gray-200);
   text-transform: capitalize;
-  text-decoration: underline;
-  display: inline-block;
 }
-.footer .info .social-media .icon {
-  font-size: 40px;
+.footer .item:not(.info) li:hover {
   color: white;
 }
-.footer .info .social-media .youtube:hover {
-  color: red;
+.footer .copyright {
+  text-align: start;
+  margin: calc(var(--space-4) * 2) 0px var(--space-2);
+  border-top: 1px solid var(--gray-500);
 }
-.footer .info .social-media .facebook:hover {
-  color: rgb(21, 143, 243);
-}
-.footer .info .social-media .twitter:hover {
-  color: rgb(21, 143, 243);
-}
-.footer .info .social-media .instagram:hover {
-  color: rgb(231, 31, 98);
+.footer .copyright p {
+  margin: var(--space-1) 0;
 }

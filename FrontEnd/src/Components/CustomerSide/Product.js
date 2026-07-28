@@ -4,8 +4,7 @@ import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LoopIcon from "@mui/icons-material/Loop";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -89,7 +88,7 @@ export function Product({ Product: product, showRating = false }) {
 
   function addCloudinaryTransform(
     url,
-    transform = "w_350,c_fill,q_auto,f_auto"
+    transform = "w_350,c_fill,q_auto,f_auto",
   ) {
     return url.length > 0
       ? url.replace("/upload/", `/upload/${transform}/`)
@@ -109,7 +108,7 @@ export function Product({ Product: product, showRating = false }) {
           userId: user ? user.id : null,
           productId: product.id,
           quantity: 1,
-        })
+        }),
       )
         .unwrap()
         .then((res) => {
@@ -131,7 +130,7 @@ export function Product({ Product: product, showRating = false }) {
             showMessage({
               message: "Done! The product has been added to your cart.",
               severity: SEVERITY_SUCCESS,
-            })
+            }),
           );
         })
         .catch((err) => {
@@ -145,7 +144,7 @@ export function Product({ Product: product, showRating = false }) {
             showMessage({
               message: err,
               severity: SEVERITY_ERROR,
-            })
+            }),
           );
         });
     } else {
@@ -171,7 +170,7 @@ export function Product({ Product: product, showRating = false }) {
         addNewWishlistItem({
           userId: user.id,
           productId: product.id,
-        })
+        }),
       )
         .unwrap()
         .then((res) => {
@@ -192,7 +191,7 @@ export function Product({ Product: product, showRating = false }) {
             showMessage({
               message: "Done! The product has been added to your wishlist.",
               severity: SEVERITY_SUCCESS,
-            })
+            }),
           );
         })
         .catch((err) => {
@@ -206,7 +205,7 @@ export function Product({ Product: product, showRating = false }) {
             showMessage({
               message: err,
               severity: SEVERITY_ERROR,
-            })
+            }),
           );
         });
     } else {
@@ -231,7 +230,7 @@ export function Product({ Product: product, showRating = false }) {
         addNewComparelistItem({
           userId: user.id,
           productId: product.id,
-        })
+        }),
       )
         .unwrap()
         .then((res) => {
@@ -252,7 +251,7 @@ export function Product({ Product: product, showRating = false }) {
             showMessage({
               message: "Done! The product has been added to your compare list.",
               severity: SEVERITY_SUCCESS,
-            })
+            }),
           );
         })
         .catch((err) => {
@@ -266,7 +265,7 @@ export function Product({ Product: product, showRating = false }) {
             showMessage({
               message: err,
               severity: SEVERITY_ERROR,
-            })
+            }),
           );
         });
     } else {
@@ -288,8 +287,8 @@ export function Product({ Product: product, showRating = false }) {
           gap: "5px",
           width: "fit-content",
           position: "absolute",
-          top: "2px",
-          left: "2px",
+          top: "4px",
+          left: "4px",
         }}
       >
         {product.discountValue > 0 && (
@@ -307,6 +306,24 @@ export function Product({ Product: product, showRating = false }) {
           }}
         />
         <div className="cta-btns">
+          {/* button : add to wish list */}
+          <IconButton
+            onClick={handleAddToWishlist}
+            disabled={wishlistItemStatus.loading || isProductInWishlist}
+            loading={wishlistItemStatus.loading}
+            loadingIndicator={
+              <CircularProgress size={25} sx={{ color: "white" }} />
+            }
+          >
+            <FavoriteBorderIcon
+              className={isProductInWishlist ? "in-wishlist" : ""}
+              style={{
+                display: wishlistItemStatus.loading ? "none" : "inline-flex",
+              }}
+            />
+          </IconButton>
+
+          {/* button : add to compare list */}
           <IconButton
             onClick={handleAddToComparelist}
             loading={comparelistItemStatus.loading}
@@ -316,30 +333,9 @@ export function Product({ Product: product, showRating = false }) {
             disabled={comparelistItemStatus.loading || isProductInComparelist}
           >
             <LoopIcon
+              className={isProductInComparelist ? "in-comparelist" : ""}
               style={{
                 display: comparelistItemStatus.loading ? "none" : "inline-flex",
-                color: isProductInComparelist ? "#AEEA00" : "white",
-                fontWeight: "bold",
-              }}
-            />
-          </IconButton>
-
-          <IconButton>
-            <VisibilityIcon />
-          </IconButton>
-
-          <IconButton
-            onClick={handleAddToWishlist}
-            disabled={wishlistItemStatus.loading || isProductInWishlist}
-            loading={wishlistItemStatus.loading}
-            loadingIndicator={
-              <CircularProgress size={25} sx={{ color: "white" }} />
-            }
-          >
-            <FavoriteIcon
-              style={{
-                display: wishlistItemStatus.loading ? "none" : "inline-flex",
-                color: isProductInWishlist ? "#AEEA00" : "white",
               }}
             />
           </IconButton>
@@ -360,7 +356,7 @@ export function Product({ Product: product, showRating = false }) {
           />
         )}
         <span className="price">
-          {calculatePrice(product.price, product.discountValue)}{" "}
+          {calculatePrice(product.price, product.discountValue)}
           {settings.currrency}
         </span>
 
@@ -369,6 +365,7 @@ export function Product({ Product: product, showRating = false }) {
             fontSize: "1rem",
             fontWeight: "bold",
             textAlign: "start",
+            textTransform: "lowercase",
             color: product.quantityInStock >= 1 ? "green" : "orange",
             margin: 0,
           }}
@@ -383,11 +380,9 @@ export function Product({ Product: product, showRating = false }) {
           </div>
         )}
         <Button
-          className="add-to-cart-btn btn-effect"
+          className={`add-to-cart-btn btn-effect ${product.quantityInStock === 0 && "disabled"}`}
           style={{
             display: isProductInCart ? "none" : "block",
-            pointerEvents: product.quantityInStock === 0 ? "none" : "auto",
-            backgroundColor: product.quantityInStock === 0 ? "gray" : "auto",
           }}
           variant="contained"
           onClick={() => {

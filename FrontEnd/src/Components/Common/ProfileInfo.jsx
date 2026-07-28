@@ -28,6 +28,7 @@ import {
   changeCustomerPassword,
   updateCustomerPersonalInfo,
 } from "../../features/customer/customerSlice";
+import { SendEmailVerificationCode } from "../../features/security/securitySlice";
 
 export function ProfileInfo({ user, userRole = "customer" }) {
   // delete account  logic:
@@ -152,6 +153,26 @@ export function ProfileInfo({ user, userRole = "customer" }) {
   }
   // ==============================
 
+  // verify email logic :
+  const [sendEmailVerificationInProgress, setSendEmailVerificationInProgress] =
+    useState(false);
+
+  function handleVerifyEmail() {
+    if (!user || user.isEmailConfirmed) return;
+    setSendEmailVerificationInProgress(true);
+    dispatch(SendEmailVerificationCode({ userId: user.id, email: user.email }))
+      .unwrap()
+      .then(() => {
+        navigate("/profile/verify-email");
+      })
+      .catch((err) =>
+        dispatch(showMessage({ message: err, severity: SEVERITY_ERROR }))
+      )
+      .finally(() => setSendEmailVerificationInProgress(false));
+  }
+
+  // ==============================
+
   // change password logic :
   const [openChangePasswordDialog, setOpenChangePasswordDialog] =
     useState(false);
@@ -246,7 +267,10 @@ export function ProfileInfo({ user, userRole = "customer" }) {
 
   function disableAllBtns() {
     return (
-      deleteInProgress || updatePInfoInProgress || changePasswordInProgress
+      deleteInProgress ||
+      updatePInfoInProgress ||
+      changePasswordInProgress ||
+      sendEmailVerificationInProgress
     );
   }
 
@@ -346,8 +370,13 @@ export function ProfileInfo({ user, userRole = "customer" }) {
               <Button
                 className="button verify mt-1 d-block text-start"
                 disabled={disableAllBtns()}
+                onClick={handleVerifyEmail}
               >
-                verify
+                {sendEmailVerificationInProgress ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  "verify"
+                )}
               </Button>
             )}
           </div>

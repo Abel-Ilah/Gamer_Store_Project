@@ -173,12 +173,6 @@ C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets\msbuild.APIs.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets\msbuild.APIs.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
-C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets\msbuild.build.APIs.props
-C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.APIs.props
-C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.APIs.props
-C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\APIs.csproj.Up2Date
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\APIs.dll
@@ -187,3 +181,8 @@ C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\APIs.genruntimeconfig.cache
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\ref\APIs.dll
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\APIs.sourcelink.json
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets.build.json.cache
