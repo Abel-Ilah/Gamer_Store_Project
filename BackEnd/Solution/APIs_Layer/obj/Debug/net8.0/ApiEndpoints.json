@@ -1,5 +1,30 @@
 [
   {
+    "ContainingType": "YourProject.Controllers.Admin.DashboardController",
+    "Method": "GetDashboardDataAsync",
+    "RelativePath": "api/admin/dashboard",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "DataSource.DTOs.admin.DashboardDataDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
     "ContainingType": "APIs.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/auth/login",
@@ -512,6 +537,42 @@
   },
   {
     "ContainingType": "APIs.Controllers.CustomersController",
+    "Method": "GetCustomersAsync",
+    "RelativePath": "api/customers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      },
+      {
+        "Type": "System.Collections.Generic.List\u00601[[DataSource.DTOs.admin.CustomerBasicDto_Admin, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.CustomersController",
     "Method": "FindAsync",
     "RelativePath": "api/customers/{id}",
     "HttpMethod": "GET",
@@ -762,6 +823,51 @@
   },
   {
     "ContainingType": "APIs.Controllers.OrderController",
+    "Method": "getRecentOrdersAsync",
+    "RelativePath": "api/order",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Collections.Generic.List\u00601[[DataSource.DTOs.admin.OrderDto_Admin, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.OrderController",
     "Method": "GetOrderByIdAsync",
     "RelativePath": "api/order/GetOrderById",
     "HttpMethod": "GET",
@@ -925,7 +1031,7 @@
         "StatusCode": 500
       },
       {
-        "Type": "DataSource.DTOs.ProductsListDTO",
+        "Type": "DataSource.DTOs.ProductsDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1097,6 +1203,66 @@
   },
   {
     "ContainingType": "APIs.Controllers.ProductsController",
+    "Method": "GetProductsAsync",
+    "RelativePath": "api/products/filter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "ProductType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CategoryId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      },
+      {
+        "Type": "DataSource.DTOs.admin.ProductsDTO_Admin",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.ProductsController",
     "Method": "GetBestSellers",
     "RelativePath": "api/products/filtered-best-sellers",
     "HttpMethod": "GET",
@@ -1131,7 +1297,7 @@
         "StatusCode": 500
       },
       {
-        "Type": "DataSource.DTOs.ProductsListDTO",
+        "Type": "DataSource.DTOs.ProductsDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1182,7 +1348,7 @@
         "StatusCode": 500
       },
       {
-        "Type": "DataSource.DTOs.ProductsListDTO",
+        "Type": "DataSource.DTOs.ProductsDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1228,7 +1394,7 @@
         "StatusCode": 500
       },
       {
-        "Type": "DataSource.DTOs.ProductsListDTO",
+        "Type": "DataSource.DTOs.ProductsDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1274,7 +1440,7 @@
         "StatusCode": 500
       },
       {
-        "Type": "DataSource.DTOs.ProductsListDTO",
+        "Type": "DataSource.DTOs.ProductsDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1320,7 +1486,7 @@
         "StatusCode": 500
       },
       {
-        "Type": "DataSource.DTOs.ProductsListDTO",
+        "Type": "DataSource.DTOs.ProductsDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1428,6 +1594,51 @@
           "text/json"
         ],
         "StatusCode": 404
+      }
+    ]
+  },
+  {
+    "ContainingType": "APIs.Controllers.ReviewController",
+    "Method": "GetTopReviewsAsync",
+    "RelativePath": "api/reviews",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[DataSource.DTOs.ReadReviewDTO2, DataSource, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
       }
     ]
   },

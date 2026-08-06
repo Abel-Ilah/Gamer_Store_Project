@@ -1,7 +1,9 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Immutable;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using DataSource.Data;
 using DataSource.DTOs;
+using DataSource.DTOs.admin;
 using DataSource.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -18,10 +20,10 @@ namespace DataSource.Repositories
         }
 
          
-        public async Task<ProductsListDTO> GetAllProductsAsync(int pageNumber,int pageSize,int minPrice,int maxPrice)
+        public async Task<ProductsDTO> GetAllProductsAsync(int pageNumber,int pageSize,int minPrice,int maxPrice)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
-            var dto = new ProductsListDTO();
+            var dto = new ProductsDTO();
             if (pageNumber == 1)
             {
                 dto.TotalProducts = await _context.Products.Where(p=>p.Price>=minPrice && p.Price <=maxPrice).CountAsync();
@@ -37,6 +39,7 @@ namespace DataSource.Repositories
 
 
         }
+        
         public async Task<List<vw_Product>> GetAllProductsAsync(int pageSize)
         {
             var Products = await _context.ProductsView
@@ -48,12 +51,12 @@ namespace DataSource.Repositories
 
         }
 
-        public async Task<ProductsListDTO> GetNewProductsAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ProductsDTO> GetNewProductsAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
             DateOnly _30DaysAgo = today.AddDays(-30);
 
-            var dto = new ProductsListDTO();
+            var dto = new ProductsDTO();
             if (pageNumber == 1)
             {
                 dto.TotalProducts = await _context.Products.Where( p => p.Date >= _30DaysAgo && p.Price >= minPrice && p.Price <= maxPrice).CountAsync();
@@ -86,10 +89,10 @@ namespace DataSource.Repositories
 
         }
 
-        public async Task<ProductsListDTO> GetProductsByCategoryIdAsync(int categoryId, int pageNumber, int pageSize, decimal minPrice, decimal maxPrice)
+        public async Task<ProductsDTO> GetProductsByCategoryIdAsync(int categoryId, int pageNumber, int pageSize, decimal minPrice, decimal maxPrice)
         {
             
-            var dto = new ProductsListDTO();
+            var dto = new ProductsDTO();
             if (pageNumber == 1)
             {
                 dto.TotalProducts = await _context.Products.Where(p => p.CategoryId == categoryId && p.Price >= minPrice && p.Price <= maxPrice).CountAsync();
@@ -118,11 +121,11 @@ namespace DataSource.Repositories
 
         }
 
-        public async Task<ProductsListDTO> GetDiscountedProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ProductsDTO> GetDiscountedProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
            
             var today = DateOnly.FromDateTime(DateTime.Today);
-            var dto = new ProductsListDTO();
+            var dto = new ProductsDTO();
 
           if(pageNumber == 1)
             {
@@ -163,11 +166,10 @@ namespace DataSource.Repositories
             return Products;
         }
 
-
-        public async Task<ProductsListDTO> GetBestSellers(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ProductsDTO> GetBestSellers(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             
-            var dto = new ProductsListDTO();
+            var dto = new ProductsDTO();
 
              if (pageNumber == 1)
              {
@@ -185,7 +187,8 @@ namespace DataSource.Repositories
 
             return dto;
         }
-        public async Task<List<vw_Product>> GetBestSellers( int pageSize)
+      
+        public async Task<List<vw_Product>> GetBestSellers(int pageSize)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
            
@@ -200,10 +203,42 @@ namespace DataSource.Repositories
             return Products;
         }
 
-        public async Task<ProductsListDTO>GetTopRatedProductsAsync (int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<List<TopProductDTO_Admin>> GetTopProductsAsync(int pageNumber = 1, int pageSize = 10)
+        {
+            return await (
+                from p in _context.Products 
+                join orderItem in _context.OrderItems
+                on p.Id equals orderItem.ProductId 
+                join image in _context.ProductImages.Where(i=>i.IsMain)
+                on p.Id equals image.ProductId
+                
+                
+                group new { orderItem,image} by new 
+                { 
+                    p.Id, p.Name,
+                    p.Price,
+                    p.QuantityInStock,
+                } into g
+                orderby g.Sum(i => i.orderItem.TotalPrice) descending 
+                select new TopProductDTO_Admin 
+                { 
+                    Id = g.Key.Id,
+                    Name = g.Key.Name,
+                    Price = g.Key.Price, 
+                    Quantity = g.Key.QuantityInStock,
+                    Sales = g.Sum(i => i.orderItem.Quantity),
+                    Revenue = g.Sum(i => i.orderItem.TotalPrice),
+                    Image =  g.First().image.ImageUrl
+                }).AsNoTracking()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+      
+        public async Task<ProductsDTO>GetTopRatedProductsAsync (int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
-            var dto = new ProductsListDTO();
+            var dto = new ProductsDTO();
             if (pageNumber == 1)
             {
                 dto.TotalProducts = await _context.Products.Where(p => p.Reviews.Any() && p.Price >= minPrice && p.Price <= maxPrice).CountAsync();
@@ -221,6 +256,26 @@ namespace DataSource.Repositories
              return dto;
         }
 
+        public async Task<List<LowStockProductDTO_Admin>>GetLowStockProductsAsync(int pageNumber=1, int pageSize = 10)
+        {
+            var productsList = await _context.Products
+                   .AsNoTracking()
+                   .Where(p => p.QuantityInStock < 10)
+                   .OrderBy(p => p.QuantityInStock)
+                   .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .Select(p => new LowStockProductDTO_Admin
+                   {
+                       id = p.Id,
+                       name = p.Name,
+                       imageUrl = p.ProductImages.Where(i=>i.IsMain).Select(i=>i.ImageUrl).SingleOrDefault(),
+                       Quantity = p.QuantityInStock,
+
+                   }).ToListAsync();
+
+            return productsList;
+        }
+       
         public async Task<ProductDetailsDTO?> GetProductDetailsByIdAsync(int productId)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
@@ -255,7 +310,6 @@ namespace DataSource.Repositories
 
             return productDTO;
         }
-
 
         public async Task<HeroSectionProducts> GetHeroSectionProductsAsync()
         {
@@ -335,6 +389,129 @@ namespace DataSource.Repositories
 
             return products !=null ? products : new List<ShortProductDTO>();
         }
+
+        
+        // admin panel functions : 
+
+        public enum ProductType
+        {
+            All,
+            BestSeller,
+            TopRated,
+            InStock,
+            LowStock,
+            NoStock,
+            Discounted,
+        }
+
+
+        public async Task<ProductsDTO_Admin> GetProductsAsync(ProductsFilterDTO_Admin filter)
+        {
+            var dto = new ProductsDTO_Admin();
+
+            var productType = filter.ProductType;
+
+            var query = _context.ProductsView_Admin.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(filter.Search) && filter.Search.Trim().Length >= 3)
+            {
+                query = query.Where(p =>
+                EF.Functions.Like(p.Name, $"%{filter.Search}%"));
+            }
+
+            if (filter.CategoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == filter.CategoryId.Value);
+            }
+
+            // filtering the products
+            switch (productType)
+            {
+               
+                case ProductType.Discounted:
+                    query = query.Where(p => p.DiscountValue > 0);
+                    break;
+
+                case ProductType.BestSeller:
+                    query = query.Where(p => p.Sales > 0);
+                    break;
+
+                case ProductType.TopRated:
+                    query = query.Where(p => p.Rating > 0);
+                    break;
+
+                case ProductType.InStock:
+                    query = query.Where(p => p.QuantityInStock > 0);
+                    break;
+
+                case ProductType.LowStock:
+                    query = query.Where(p => p.QuantityInStock > 0 && p.QuantityInStock < 10);
+                               
+                    break;
+
+                case ProductType.NoStock:
+                    query = query.Where(p => p.QuantityInStock == 0);
+                              
+                    break;
+            }
+
+            if (filter.PageNumber == 1)
+            {
+                dto.Count = await query.CountAsync();
+                if (dto.Count == 0) return dto;
+            }
+
+            // ordering the products
+            switch (productType)
+            {
+                case ProductType.All:
+                    query = query.OrderBy(p => p.Id);
+                    break;
+
+                case ProductType.Discounted:
+                    query = query.OrderByDescending(p => p.DiscountValue)
+                                 .ThenBy(p => p.Id);
+                    break;
+
+                case ProductType.BestSeller:
+                    query = query.OrderByDescending(p => p.Sales)
+                                 .ThenBy(p => p.Id);
+                    break;
+
+                case ProductType.TopRated:
+                    query = query.OrderByDescending(p => p.Rating)
+                                 .ThenBy(p => p.Id);
+                    break;
+
+                case ProductType.InStock:
+                    query = query.OrderByDescending(p => p.QuantityInStock)
+                                 .ThenBy(p => p.Id);
+                    break;
+
+                case ProductType.LowStock:
+                    query = query.OrderBy(p => p.QuantityInStock)
+                                 .ThenBy(p => p.Id);
+                    break;
+
+                case ProductType.NoStock:
+                    query = query.OrderBy(p => p.Id);
+                    break;
+
+                default:
+                    query = query.OrderBy(p => p.Id);
+                    break;
+            }
+
+            query = query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize);
+
+            dto.Products = await query.ToListAsync();
+
+            return dto;
+
+        }
+
+
+
 
     }
 

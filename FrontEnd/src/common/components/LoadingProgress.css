@@ -1,0 +1,52 @@
+.loading-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+}
+
+.loading-progress .item {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.loading-progress .item:nth-child(1) {
+  background-color: var(--main-color);
+  animation-delay: 0s;
+}
+
+.loading-progress .item:nth-child(2) {
+  background-color: orange;
+  animation-delay: 0.15s;
+}
+
+.loading-progress .item:nth-child(3) {
+  background-color: #ff4d4d;
+  animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+  0%,
+  20% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  40% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+
+  80% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.6; /* pause */
+  }
+}

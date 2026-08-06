@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using DataSource.Data;
 using DataSource.DTOs;
+using DataSource.DTOs.admin;
 using DataSource.Entities;
 using DataSource.exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -78,7 +79,31 @@ namespace DataSource.Repositories
             return await _context.Users.AsNoTracking().Where(u=>u.Email == email && !u.IsDeleted && u.Role.Trim().ToLower() == role.Trim().ToLower()).Select(u=>u.Id).FirstOrDefaultAsync();
         }
 
-       
+        public async Task<List<CustomerBasicDto_Admin>> GetCustomersAsync(int pageNumber,int pageSize)
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .Where(c => !c.IsDeleted && c.Role.ToLower() == "customer")
+                .OrderByDescending(c => c.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new CustomerBasicDto_Admin
+                {
+                    Id = c.Id,
+                    Name = c.FirstName + " " + c.LastName,
+                    Email = c.Email,
+                    createdAt = DateOnly.FromDateTime(c.CreatedAt)
+                })
+                .ToListAsync();
+        }
+
+        public async Task<int> GetCustomersCountAsync(DateTime from, DateTime to)
+        {
+            return await _context.Users.CountAsync(c =>
+                c.Role.ToLower() == "customer" &&
+                c.CreatedAt >= from &&
+                c.CreatedAt < to);
+        }
 
 
     }

@@ -3,6 +3,7 @@ using DataSource.Entities;
 using Microsoft.AspNetCore.Mvc;
 using DataSource.exceptions;
 using Services.services;
+using DataSource.DTOs.admin;
 
 namespace APIs.Controllers
 {
@@ -16,6 +17,25 @@ namespace APIs.Controllers
         {
             _customerService = customerService;
         }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<CustomerBasicDto_Admin>>> GetCustomersAsync(int pageNumber,int pageSize)
+        {
+            if (pageNumber <= 0) return BadRequest("page number not valide");
+            if (pageSize <= 0) return BadRequest("page size not valide");
+            try
+            {
+                var customersList = await _customerService.GetCustomersAsync(pageNumber, pageSize);
+                return Ok(customersList);
+
+            }catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         [HttpGet("{id}",Name ="find")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -33,6 +53,8 @@ namespace APIs.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+      
 
         [HttpPost("add")]
         [ProducesResponseType(StatusCodes.Status200OK)]

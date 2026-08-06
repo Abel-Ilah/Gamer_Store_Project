@@ -81,11 +81,11 @@ namespace Services.services
         {
             return await _userRepository.ChangePasswordAsync(obj);
         }
+
         public async Task<bool>DeleteAsync(int id)
         {
             return await _userRepository.DeleteAsync(id);
         }
-
 
     }
 

@@ -38,7 +38,6 @@ namespace DataSource.Data.Config
                 .HasColumnName("statusId");
 
             entity.Property(e => e.TotalAmount)
-                .HasDefaultValue(0m)
                 .HasColumnType("decimal(18, 2)");
 
           

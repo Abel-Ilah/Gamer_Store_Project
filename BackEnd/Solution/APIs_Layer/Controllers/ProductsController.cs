@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.services;
 using DataSource.DTOs;
+using DataSource.DTOs.admin;
 namespace APIs.Controllers
 {
     [Route("api/products")]
@@ -19,7 +20,7 @@ namespace APIs.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ProductsListDTO>> GetAllProducts(int pageNumber, int pageSize,int minPrice,int maxPrice)
+        public async Task<ActionResult<ProductsDTO>> GetAllProducts(int pageNumber, int pageSize,int minPrice,int maxPrice)
         {
             try
             {
@@ -48,8 +49,6 @@ namespace APIs.Controllers
             }
         }
 
-
-
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -70,7 +69,7 @@ namespace APIs.Controllers
         [HttpGet("filtered-new-products")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ProductsListDTO>> GetNewProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ActionResult<ProductsDTO>> GetNewProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             try
             {
@@ -103,7 +102,7 @@ namespace APIs.Controllers
         [HttpGet("filtered-best-sellers")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ProductsListDTO>> GetBestSellers(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ActionResult<ProductsDTO>> GetBestSellers(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             try
             {
@@ -137,7 +136,7 @@ namespace APIs.Controllers
         [HttpGet("filtered-top-rated")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ProductsListDTO>> GetTopRatedProductsAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ActionResult<ProductsDTO>> GetTopRatedProductsAsync(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {
             try
             {
@@ -154,7 +153,7 @@ namespace APIs.Controllers
         [HttpGet("filtered-Category")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ProductsListDTO>> GetProductsByCategoryIdAsync(int categoryId, int pageNumber, int pageSize, decimal MinPrice, decimal MaxPrice)
+        public async Task<ActionResult<ProductsDTO>> GetProductsByCategoryIdAsync(int categoryId, int pageNumber, int pageSize, decimal MinPrice, decimal MaxPrice)
         {
             try
             {
@@ -186,7 +185,7 @@ namespace APIs.Controllers
         [HttpGet("filtered-discounts")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ProductsListDTO>> GetDiscountedProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
+        public async Task<ActionResult<ProductsDTO>> GetDiscountedProducts(int pageNumber, int pageSize, int minPrice, int maxPrice)
         {   
             try
             {
@@ -256,5 +255,36 @@ namespace APIs.Controllers
 
         }
 
+
+
+        // admin panel : 
+
+        [HttpGet("filter")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ProductsDTO_Admin>> GetProductsAsync([FromQuery] ProductsFilterDTO_Admin filter)
+        {
+            if (filter == null) return BadRequest("invalid filter");
+
+            if (filter.PageNumber < 0) return BadRequest("filter error : invalid page number");
+
+            if (filter.PageSize < 0) return BadRequest("filter error : invalid page size");
+
+            if(filter.ProductType < 0)filter.ProductType = 0;
+
+
+            try
+            {
+                var products = await _ProductService.GetProductsAsync(filter);
+                return Ok(products);
+
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+        }
     }
 }

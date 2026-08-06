@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using DataSource.Data;
 using DataSource.DTOs;
+using DataSource.DTOs.admin;
 using DataSource.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataSource.Repositories
+namespace DataSource.Repositories 
 {
     public class OrderRepository
     {
@@ -75,6 +76,42 @@ namespace DataSource.Repositories
                                              
              return orders;
         }
+
+        public async Task<int> GetOrdersCountAsync(DateTime from, DateTime to)
+        {
+            return await _context.Orders.CountAsync(o =>
+                o.OrderDate >= from &&
+                o.OrderDate < to);
+        }
+
+        public async Task<decimal> GetTotalIncomeAsync(DateTime from, DateTime to)
+        {
+            return await _context.Orders
+                .Where(o => o.OrderDate >= from &&
+                            o.OrderDate < to)
+                .SumAsync(o => o.TotalAmount);
+        }
+
+        public async Task<List<OrderDto_Admin>> GetOrders(int pageNumber, int pageSize)
+        {
+            var query =
+                from order in _context.Orders
+                orderby order.OrderDate descending
+                select new OrderDto_Admin
+                {
+                    Id = order.Id,
+                    CustomerName = order.FullName,
+                    Date = order.OrderDate,
+                    Amount = order.TotalAmount,
+                    Status = order.Status!.Name
+                };
+
+            return await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+      
         public async Task<Guid> AddAsync(Order order)
         {
             _context.Orders.Add(order);
@@ -87,7 +124,7 @@ namespace DataSource.Repositories
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
         }
-
+         
         public async Task DeleteAsync(Order order)
         {
             _context.Orders.Remove(order);

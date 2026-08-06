@@ -8,6 +8,7 @@ using DataSource.Data;
 namespace DataSource.Repositories
 {
     using DataSource.DTOs;
+    using DataSource.DTOs.admin;
     using DataSource.Entities;
     using Microsoft.EntityFrameworkCore;
 
@@ -54,6 +55,38 @@ namespace DataSource.Repositories
                         .SingleOrDefaultAsync(r => r.Id == id);
         }
 
+        public async Task<List<ReviewDTO_Admin>> GetRecentReviewsAsync(int pageNumber,int pageSize)
+        {
+            var ReviewsList = await (from r in _context.Reviews
+                                     join p in _context.Products
+                                     on r.ProductId equals p.Id
+                                     join u in _context.Users
+                                     on r.UserId equals u.Id
+                                     join pi in _context.ProductImages
+                                     on p.Id equals pi.ProductId
+                                     where pi.IsMain == true
+
+                                     orderby r.CreatedAt descending
+                                     
+                                     select new ReviewDTO_Admin
+                                     {
+                                         Id = r.Id,
+                                         Rating = r.Rating,
+                                         Comment = r.Comment,
+                                         CreatedAt = r.CreatedAt,
+                                         UserId = r.UserId,
+                                         UserName = u.FirstName + " " + u.LastName,
+                                         Product = new ShortProductDTO
+                                         {
+                                             id = p.Id,
+                                             name = p.Name,
+                                             imageUrl = pi.ImageUrl,
+                                         },
+
+                                     }).AsNoTracking().Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            return ReviewsList;
+        }
+
         public async Task<List<Review>> GetReviewsByProductIdAsync(int productId)
         {
             return await _context.Reviews
@@ -92,6 +125,7 @@ namespace DataSource.Repositories
                               }).ToListAsync();
             return TopReviews;
         }
+
 
 
     }

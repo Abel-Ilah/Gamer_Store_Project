@@ -188,6 +188,28 @@ namespace APIs.Controllers
         }
 
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public async Task<ActionResult<List<ReadReviewDTO2>>> GetTopReviewsAsync(int pageNumber,int pageSize)
+        {
+            if (pageSize <= 0) return BadRequest("page size not valide");
+            if (pageNumber <= 0) return BadRequest("page number not valide");
+
+            try
+            {
+                var reviewsList = await _reviewService.GetRecentReviewsAsync(pageNumber,pageSize);
+                return Ok(reviewsList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"internal server error : {ex.Message}");
+            }
+
+        }
+
         [HttpGet("top-reviews")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

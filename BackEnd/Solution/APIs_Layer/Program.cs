@@ -38,6 +38,7 @@ builder.Services.AddScoped<CategoriesDiscountsService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<CompareService>();
 builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<DashboardService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<EmailVerificationService>();
 builder.Services.AddScoped<EmailVerificationNotifier>();

@@ -1,44 +1,46 @@
 import "./App.css";
-import "./Components/CustomerSide/Styles.css";
-import "./Components/CustomerSide/Shared.css";
+import "./customer/styles/Shared.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Header } from "./Components/CustomerSide/Header";
-import { Footer } from "./Components/CustomerSide/Footer";
-import { Home } from "./Components/CustomerSide/Home";
+import { Header } from "./customer/components/Header";
+import { Footer } from "./customer/components/Footer";
+import { Home } from "./customer/pages/Home";
 import { CategoriesProvider } from "./contexts/CategoriesProvider";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { ProductDetails } from "./Components/CustomerSide/ProductDetails";
-import { SignUp } from "./Components/CustomerSide/SignUp";
-import { EmailConfirmation } from "./Components/CustomerSide/EmailConfirmation";
-import { Login } from "./Components/CustomerSide/Login";
-import { Cart } from "./Components/CustomerSide/Cart";
-import { Checkout } from "./Components/CustomerSide/Checkout";
-import { OrderConfirmation } from "./Components/CustomerSide/OrderConfirmation";
-import { ProtectedRoute } from "./Components/CustomerSide/ProtectedRoute";
-import ScrollTop from "./ScrollToTop";
-import SnackBar from "./Components/CustomerSide/SnackBar";
+import { ProductDetails } from "./customer/features/product/pages/ProductDetails";
+import { SignUp } from "./customer/pages/SignUp";
+import { EmailConfirmation } from "./customer/features/security/pages/EmailConfirmation";
+import { Login } from "./customer/pages/Login";
+import { Cart } from "./customer/features/cart/pages/Cart";
+import { Checkout } from "./customer/pages/Checkout";
+import { OrderConfirmation } from "./customer/features/order/pages/OrderConfirmation";
+import { ProtectedRoute } from "./customer/components/ProtectedRoute";
+import ScrollTop from "./common/js/helpers";
+import SnackBar from "./customer/components/SnackBar";
+import { FilteredProducts } from "./customer/features/product/pages/FilteredProducts";
+import { Wishlist } from "./customer/features/wishlist/pages/Wishlist";
+import { Comparelist } from "./customer/features/Compare/pages/Comparelist";
+import OrdersHistory from "./customer/features/order/pages/OrdersHistory";
+import { NotFoundPage } from "./customer/pages/NotFoundPage ";
+import { ForgotPassword } from "./customer/features/security/pages/ForgotPassword";
+import { NewPassword } from "./customer/features/security/pages/NewPassword";
+import { ResetTokenSentPage } from "./customer/features/security/pages/ResetTokenSentPage";
+import { CustomerProfile } from "./customer/features/customer/pages/CustomerProfile";
+import CustomerLayout from "./customer/features/customer/components/CustomerLayout";
+import FAQs from "./customer/pages/FAQs";
+import ContactUs from "./customer/pages/ContactUs";
+import AboutUs from "./customer/pages/AboutUs";
+
+import { Panel } from "./admin/pages/Panel";
+import { Profile } from "./admin/pages/Profile";
+import { Dashboard } from "./admin/features/dashboard/pages/Dashboard";
+import { Analytics } from "./admin/pages/Analytics";
+import { Products } from "./admin/features/product/pages/Products";
+import { AddNewProduct } from "./admin/pages/AddProduct";
+import { Categories } from "./admin/pages/Categories";
+
 import { useMemo } from "react";
-import { FilteredProducts } from "./Components/CustomerSide/FilteredProducts";
-import { Wishlist } from "./Components/CustomerSide/Wishlist";
-import { Comparelist } from "./Components/CustomerSide/Comparelist";
-import OrdersHistory from "./Components/CustomerSide/OrdersHistory";
-import { NotFoundPage } from "./Components/CustomerSide/NotFoundPage ";
-import { ForgotPassword } from "./Components/CustomerSide/ForgotPassword";
-import { NewPassword } from "./Components/CustomerSide/NewPassword";
-import { ResetTokenSentPage } from "./Components/CustomerSide/ResetTokenSentPage";
-import { Dashboard } from "./Components/AdminDashBoard/Dashboard";
-import { Profile } from "./Components/AdminDashBoard/Profile";
-import { DashboardHomePage } from "./Components/AdminDashBoard/DashboardHomePage";
-import { Analytics } from "./Components/AdminDashBoard/Analytics";
-import { Products } from "./Components/AdminDashBoard/Products";
-import { AddNewProduct } from "./Components/AdminDashBoard/AddProduct";
-import { Categories } from "./Components/AdminDashBoard/Categories";
-import { CustomerProfile } from "./Components/CustomerSide/CustomerProfile";
-import CustomerLayout from "./Components/CustomerSide/CustomerLayout";
-import FAQs from "./Components/CustomerSide/FAQs";
-import ContactUs from "./Components/CustomerSide/ContactUs";
-import AboutUs from "./Components/CustomerSide/AboutUs";
+
 function App() {
   const location = useLocation();
   const showLayout = useMemo(() => {
@@ -120,8 +122,8 @@ function App() {
           {/* ============ */}
 
           {/* admin routes : */}
-          <Route path="/admin/" element={<Dashboard />}>
-            <Route index element={<DashboardHomePage />} />
+          <Route path="/admin/" element={<Panel />}>
+            <Route index element={<Dashboard />} />
             <Route path="products" element={<Products />} />
             <Route path="products/add" element={<AddNewProduct />} />
             <Route path="categories" element={<Categories />} />{" "}

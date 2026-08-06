@@ -1,0 +1,81 @@
+.statcard {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-4);
+  padding: var(--space-3);
+  background-color: white;
+  min-width: 250px;
+  display: flex;
+  justify-content: space-between;
+}
+.dark .statcard {
+  background-color: color-mix(in oklab, white 3%, transparent);
+}
+.statcard .box1 {
+  text-align: start;
+}
+.statcard .box1 .icon {
+  width: 30px;
+  height: 30px;
+  box-sizing: content-box;
+  padding: var(--space-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-2);
+  color: white;
+  background-color: var(--gray-300);
+}
+.dark .statcard .box1 .icon {
+  color: var(--text-1);
+  background-color: var(--gray-700);
+}
+.statcard .box1 .card-title {
+  color: var(--text-3);
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: block;
+  margin-top: var(--space-3);
+}
+.statcard .box1 .value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0px;
+  margin-top: var(--space-2);
+  color: black;
+}
+
+.dark .statcard .box1 .value {
+  color: white;
+}
+
+.statcard .box2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.statcard .box2 .month-name {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--text-2);
+  text-align: end;
+}
+.statcard .box2 .progress-value {
+  background-color: color-mix(in oklab, var(--green-500) 15%, transparent);
+  color: var(--green-500);
+  border-radius: var(--radius-2);
+  padding: var(--space-1);
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.statcard .box2 .progress-value.no-change {
+  color: var(--text-3);
+  background-color: color-mix(in oklab, var(--text-4) 15%, transparent);
+}
+.statcard .box2 .progress-value.decrease {
+  color: var(--red-500);
+  background-color: color-mix(in oklab, var(--red-500) 15%, transparent);
+}
+.statcard .box2 .icon {
+  font-size: 1rem;
+}

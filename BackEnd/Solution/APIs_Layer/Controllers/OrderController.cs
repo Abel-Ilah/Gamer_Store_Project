@@ -1,4 +1,5 @@
 ﻿using DataSource.DTOs;
+using DataSource.DTOs.admin;
 using DataSource.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -144,6 +145,26 @@ namespace APIs.Controllers
                 var orders = await _orderService.getAllOrdersAsync(UserId);
                 return Ok(orders);
             }catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<OrderDto_Admin>>> getRecentOrdersAsync(int pageNumber,int pageSize)
+        {
+            if (pageNumber <= 0) return BadRequest("page number is not valid");
+            if (pageSize <= 0) return BadRequest("page size is not valid");
+            try
+            {
+
+                var ordersDtoList = await _orderService.GetOrdersAsync(pageNumber,pageSize);
+                return Ok(ordersDtoList);
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }

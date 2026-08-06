@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataSource.DTOs;
+using DataSource.DTOs.admin;
 using DataSource.Entities;
 using DataSource.Repositories;
 
@@ -47,5 +48,19 @@ namespace Services.services
             return await _OrderRepository.getAllOrdersAsync(UserId);
         }
 
+        public async Task<int> GetOrdersCountAsync(DateTime from, DateTime to)
+        {
+            return await _OrderRepository.GetOrdersCountAsync(from, to);
+        }
+
+        public async Task<List<OrderDto_Admin>> GetOrdersAsync(int pageNumber, int pageSize)
+        {
+            return await _OrderRepository.GetOrders(pageNumber, pageSize);
+        }
+
+        public async Task<decimal> GetTotalIncomeAsync(DateTime from, DateTime to)
+        {
+            return await _OrderRepository.GetTotalIncomeAsync(from,to);
+        }
     }
 }
