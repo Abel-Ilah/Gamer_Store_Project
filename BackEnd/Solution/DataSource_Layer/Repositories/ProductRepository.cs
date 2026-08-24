@@ -5,8 +5,10 @@ using DataSource.Data;
 using DataSource.DTOs;
 using DataSource.DTOs.admin;
 using DataSource.Entities;
+using DataSource.exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 
 namespace DataSource.Repositories
 {
@@ -19,7 +21,6 @@ namespace DataSource.Repositories
             _context = context;
         }
 
-         
         public async Task<ProductsDTO> GetAllProductsAsync(int pageNumber,int pageSize,int minPrice,int maxPrice)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
@@ -72,6 +73,7 @@ namespace DataSource.Repositories
             return dto;
 
         }
+      
         public async Task<List<vw_Product>> GetNewProductsAsync(int pageSize)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
@@ -108,6 +110,7 @@ namespace DataSource.Repositories
             return dto;
 
         }
+       
         public async Task<List<vw_Product>> GetProductsByCategoryIdAsync(int categoryId, int pageSize)
         {
 
@@ -158,6 +161,7 @@ namespace DataSource.Repositories
            return dto;
 
         }
+       
         public async Task<List<vw_Product>> GetDiscountedProducts(int pageSize)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
@@ -275,40 +279,54 @@ namespace DataSource.Repositories
 
             return productsList;
         }
-       
+
         public async Task<ProductDetailsDTO?> GetProductDetailsByIdAsync(int productId)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
 
-            var productDTO = await _context.Products.Where(p => p.Id == productId).Select(p => new ProductDetailsDTO
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Price = p.Price,
-                QuantityInStock = p.QuantityInStock,
-                Description = p.Description,
-                Details = p.Details,
-                About = p.About,
-                Date = p.Date,
-                Images = p.ProductImages.Select(pi => new ProductImageDTO { imageUrl = pi.ImageUrl, isMain = pi.IsMain }).ToList(),
-                DiscountValue = Math.Max(
-                        p.ProductDiscounts
-                            .Where(pd => pd.Discount.StartDate <= today && pd.Discount.EndDate >= today && pd.Discount.IsActive)
-                            .Select(pd => pd.Discount.Value)
-                            .FirstOrDefault(),
+            var product = await _context.Products
+                .AsNoTracking()
+                .Where(p => p.Id == productId).Select(p => new
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Category = p.Category.Name,
+                    Quantity = p.QuantityInStock,
+                    Description = p.Description,
+                    Date = p.Date,
+                    Details = p.Details,
+                    Images = p.ProductImages.Select(pi => new ProductImageDTO {Id=pi.Id, imageUrl = pi.ImageUrl, isMain = pi.IsMain }).ToList(),
+                    Discount = Math.Max(
+                               p.ProductDiscounts
+                              .Where(pd => pd.Discount.StartDate < today && pd.Discount.EndDate > today && pd.Discount.IsActive)
+                              .Select(pd => pd.Discount.Value).SingleOrDefault(),
 
-                        p.Category.CategoriesDiscounts
-                            .Where(cd => cd.Discount.StartDate <= today && cd.Discount.EndDate >= today && cd.Discount.IsActive)
-                            .Select(cd => cd.Discount.Value)
-                            .FirstOrDefault()
-                    ),
-                reviewsCount = p.Reviews.Count,
-                Rating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0
+                              p.Category.CategoriesDiscounts
+                              .Where(cd => cd.Discount.StartDate < today && cd.Discount.EndDate > today && cd.Discount.IsActive)
+                              .Select(cd => cd.Discount.Value).SingleOrDefault()
+                              ),
+                    TotalReviews = p.Reviews.Count,
+                    Rating = p.Reviews.Average(r => (double?)r.Rating) ?? 0
+                }).SingleOrDefaultAsync();
 
+             return product == null ? null :
+                  new ProductDetailsDTO
+                  {
+                      Id = product.Id,
+                      Name = product.Name,
+                      Date = product.Date,
+                      Category = product.Category,
+                      Price = product.Price,
+                      Description = product.Description,
+                      Quantity = product.Quantity,
+                      Rating = product.Rating,
+                      TotalReviews = product.TotalReviews,
+                      Discount = product.Discount,
+                      Images = product.Images,
+                      Details = ParseProductDetails(product.Details, ":", "||")
+                  };
 
-            }).AsNoTracking().SingleOrDefaultAsync();
-
-            return productDTO;
         }
 
         public async Task<HeroSectionProducts> GetHeroSectionProductsAsync()
@@ -348,23 +366,6 @@ namespace DataSource.Repositories
             return heroSection;
         }
 
-        public async Task AddAsync(Product product)
-        {
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(Product product)
-        {
-            _context.Products.Update(product);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Product product)
-        {
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-        }
 
         public async Task<List<ShortProductDTO>>FindAsync(string name,int categoryId = 0 )
         {
@@ -404,14 +405,44 @@ namespace DataSource.Repositories
             Discounted,
         }
 
+        public static List<ItemDTO> ParseProductDetails(string? details, string keyValueSeparator, string itemSeparator)
+        {
 
+            if (string.IsNullOrWhiteSpace(details) || !details.Contains(keyValueSeparator))
+                return new List<ItemDTO>();
+
+            return details
+                .Split(itemSeparator)
+                .Select(item => item.Split(keyValueSeparator,2)).Where(parts=>parts.Length ==2).Select(parts => new ItemDTO
+                {
+                    Name = parts[0].Trim(),
+                    Value = parts[1].Trim()
+                }).ToList();
+               
+        }
+       
+        public static string? ConvertProductDetailsToString(List<ItemDTO>? details,string keyValueSeparator,string itemSeparator)
+        {
+           if (details == null || details.Count == 0)
+                return null;
+
+            return string.Join(
+                itemSeparator,
+                details
+                    .Where(item => !string.IsNullOrWhiteSpace(item.Name))
+                    .Select(item =>
+                        $"{item.Name.Trim()}{keyValueSeparator}{item.Value?.Trim() ?? string.Empty}")
+            );
+        }
+       
         public async Task<ProductsDTO_Admin> GetProductsAsync(ProductsFilterDTO_Admin filter)
         {
+          
             var dto = new ProductsDTO_Admin();
 
             var productType = filter.ProductType;
 
-            var query = _context.ProductsView_Admin.AsNoTracking();
+            var query = _context.ProductsView_Admin.AsNoTracking().Where(p=>p.IsDeleted == filter.Deleted);
 
             if (!string.IsNullOrWhiteSpace(filter.Search) && filter.Search.Trim().Length >= 3)
             {
@@ -510,8 +541,129 @@ namespace DataSource.Repositories
 
         }
 
+        public async Task<ProductBasicInfoDTO?> FindProductAsync(int id)
+        {
+            var product =  await _context.Products.AsNoTracking().Where(p => p.Id == id).Select(p => new
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Date = p.Date,
+                Price = p.Price,
+                Description = p.Description ?? "",
+                Quantity = p.QuantityInStock,
+                CategoryId = p.CategoryId,
+                Details = p.Details,
+                Images = p.ProductImages.Select(img=> new ProductImageDTO { Id = img.Id,imageUrl = img.ImageUrl,isMain = img.IsMain}).ToList(),
+            }).SingleOrDefaultAsync();
+            if (product == null) return null;
 
+            var productDTO = new ProductBasicInfoDTO
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Date = product.Date,
+                Price = product.Price,
+                Description = product.Description,
+                Quantity = product.Quantity,
+                Images = product.Images,
+                Details = ParseProductDetails(product.Details,":","||"),
+                CategoryId = product.CategoryId
+            };
+            return productDTO;
 
+        }
+
+        public async Task<ProductDetailsDTO_Admin?>GetProductDetailsAsync(int productId)
+        {
+            DateOnly now = DateOnly.FromDateTime(DateTime.Now);
+
+            var product = await _context.Products.AsNoTracking().Where(p => p.Id == productId).Select(p => new 
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Date = p.Date,
+                Price = p.Price,
+                Description = p.Description ?? "",
+                ImageUrl = p.ProductImages.FirstOrDefault(pi => pi.IsMain)!.ImageUrl,
+                Category = p.Category.Name,
+                Quantity = p.QuantityInStock,
+                Details = p.Details,
+                Rating = p.Reviews.Average(r => (double?)r.Rating) ?? 0,
+                TotalReviews = p.Reviews.Count(),
+                Sales = p.OrderItems.Sum(i => i.Quantity),
+                Revenue = p.OrderItems.Sum(i => i.TotalPrice),
+                Discount = Math.Max(
+                                p.ProductDiscounts
+                               .Where(pd => pd.Discount.StartDate < now && pd.Discount.EndDate > now && pd.Discount.IsActive)
+                               .Select(pd => pd.Discount.Value).SingleOrDefault(),
+
+                               p.Category.CategoriesDiscounts
+                               .Where(cd => cd.Discount.StartDate < now && cd.Discount.EndDate > now && cd.Discount.IsActive)
+                               .Select(cd => cd.Discount.Value).SingleOrDefault()
+                               ),
+                
+            }).SingleOrDefaultAsync();
+
+            return product == null? null:
+                   new ProductDetailsDTO_Admin
+                   {
+                       Id = product.Id,
+                       Name = product.Name,
+                       Date = product.Date,
+                       Price = product.Price,
+                       Description = product.Description,
+                       Category = product.Category,
+                       Quantity = product.Quantity,
+                       Rating = product.Rating,
+                       TotalReviews = product.TotalReviews,
+                       Sales = product.Sales,
+                       Revenue = product.Revenue,
+                       Discount = product.Discount,
+                       ImageUrl = product.ImageUrl,
+                       Details = ParseProductDetails(product.Details, ":", "||")
+                   };
+                  
+        }
+
+        public async Task<int>AddNewProductAsync(Product product)
+        {
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+            return product.Id;
+        }
+
+        public async Task<bool> UpdateProductAsync(Product product)
+        {
+           
+            var p = await _context.Products.FindAsync(product.Id);
+            if (p == null) return false;
+            p.Name = product.Name;
+            p.Price = product.Price;
+            p.QuantityInStock = product.QuantityInStock;
+            p.CategoryId = product.CategoryId;
+            p.Details = product.Details;
+            p.Description = product.Description;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteProductAsync(int productId)
+        {
+            var p = await _context.Products.Where(c =>c.Id == productId && c.IsDeleted == false).SingleOrDefaultAsync();
+            if (p == null) throw new NotFoundException("product not found");
+            p.IsDeleted = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RestoreProductAsync(int productId)
+        {
+            var p = await _context.Products.Where(c=>c.Id == productId && c.IsDeleted == true).SingleOrDefaultAsync();
+            if (p == null) throw new NotFoundException("product not found");
+            p.IsDeleted = false;
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
     }
 

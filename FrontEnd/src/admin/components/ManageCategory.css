@@ -1,0 +1,134 @@
+.add-category-page {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0%;
+  left: 0%;
+  z-index: 100;
+  padding: var(--space-2);
+  background-color: rgba(0, 0, 0, 0.457);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.add-category-page .content {
+  width: 100%;
+  max-width: 600px;
+  height: fit-content !important;
+  background-color: white;
+  color: var(--text-3);
+  border-radius: var(--radius-2);
+  box-shadow: 0px 0px 15px rgb(86, 86, 86);
+  padding: var(--space-2);
+}
+.dark .add-category-page .content {
+  background-color: var(--gray-900);
+}
+
+.add-category-page .add-category-title {
+  text-decoration: underline;
+  color: var(--main-color);
+  text-transform: capitalize;
+  font-weight: bold;
+}
+.add-category-page form {
+  margin-top: var(--space-3);
+}
+
+.add-category-page .drop-zone {
+  border: 2px dashed var(--gray-400);
+  padding: var(--space-4);
+  text-align: center;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+}
+.add-category-page .category-image-wraper {
+  margin-bottom: var(--space-3);
+}
+.add-category-page .category-image-wraper .image-preview {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+.add-category-page .category-image-wraper .image {
+  max-width: 250px;
+  border: 1px solid var(--text-4);
+}
+
+.add-category-page .category-image-wraper .text {
+  color: var(--text-4);
+  margin: 0;
+}
+
+.add-category-page .featured-checkbox {
+  color: var(--text-3);
+}
+
+/* Checked */
+.add-category-page .featured-checkbox.Mui-checked {
+  color: var(--green-400);
+}
+
+.add-category-page form .clear-btn {
+  background: none;
+}
+.add-category-page .clear-btn svg {
+  width: 30px;
+  height: 30px;
+}
+.add-category-page .clear-btn svg.enabled {
+  color: var(--red-500);
+}
+.add-category-page .clear-btn svg.disabled {
+  color: var(--gray-400);
+}
+.add-category-page .clear-btn svg.disabled {
+  color: var(--gray-300);
+}
+.add-category-page form .save-wraper {
+  text-align: right;
+}
+.add-category-page form .save-btn {
+  border-radius: var(--radius-1);
+  background-color: transparent;
+  color: var(--gray-400);
+  box-shadow: none;
+  border: 1px solid var(--gray-400);
+  font-weight: bold;
+  transition: var(--main-tr);
+}
+.add-category-page form .save-btn:hover {
+  background-color: var(--main-color);
+  color: white;
+  border-color: var(--main-color);
+}
+
+.add-category-page .btns-wraper button {
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: capitalize;
+  border-radius: var(--radius-2);
+  box-shadow: none;
+  /* transition: var(--main-tr); */
+}
+.add-category-page .btns-wraper button.save {
+  background-color: var(--main-color);
+  color: white;
+}
+.add-category-page .btns-wraper button.cancel {
+  background-color: transparent;
+  color: var(--gray-400);
+  border: 1.5px solid var(--gray-400);
+}
+.add-category-page .btns-wraper button.save:hover {
+  background-color: var(--green-500);
+}
+.add-category-page .btns-wraper button.cancel:hover {
+  background-color: var(--red-500);
+  border-color: var(--red-500);
+  color: white;
+}
+.add-category-page .btns-wraper button.disabled {
+  pointer-events: none;
+}

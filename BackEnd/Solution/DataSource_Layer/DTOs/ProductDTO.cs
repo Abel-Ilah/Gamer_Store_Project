@@ -19,10 +19,7 @@ namespace DataSource.DTOs
 
         public double Rating { get; set; } = 0;
 
-        public string? ImageUrl { get; set; }
-
-       
-
+        public string ImageUrl { get; set; } = null!;
 
     }
 }

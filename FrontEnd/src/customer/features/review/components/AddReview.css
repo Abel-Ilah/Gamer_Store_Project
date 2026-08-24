@@ -1,6 +1,9 @@
 .new-review {
   text-align: start;
   margin-bottom: 20px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-3);
+  padding: var(--space-2);
 }
 
 .new-review .user {
@@ -10,31 +13,64 @@
   align-items: center;
 }
 .new-review .user .avatar {
-  font-size: 50px;
-  color: rgb(161, 161, 161);
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--blue-200);
+  color: var(--color-primary);
 }
+.new-review .user .avatar svg {
+  font-size: 21px;
+}
+
 .new-review .user .name {
   margin: 0;
-  color: gray;
+  font-weight: bold;
 }
+.new-review .rate {
+  font-size: 1.7rem;
+  margin: var(--space-1) 0;
+}
+.new-review .rate.required {
+  animation: rating-shake 0.45s ease-in-out;
+}
+
+@keyframes rating-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-8px);
+  }
+
+  40% {
+    transform: translateX(8px);
+  }
+
+  60% {
+    transform: translateX(-6px);
+  }
+
+  80% {
+    transform: translateX(6px);
+  }
+}
+
 .new-review .content {
-  position: relative;
-  margin-left: 60px;
   max-width: 600px;
-}
-.new-review .content::before {
-  content: "";
-  position: absolute;
-  height: 100%;
-  width: 1px;
-  background-color: gray;
-  left: -36px;
 }
 
 .new-review .comment {
   width: 100%;
   resize: none;
   display: block;
+  border: 1px solid var(--gray-300);
   border-radius: 5px;
   padding: 10px;
   outline: none;

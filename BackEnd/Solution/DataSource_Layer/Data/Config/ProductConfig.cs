@@ -13,7 +13,7 @@ namespace DataSource.Data.Config
 
             entity.Property(e => e.Date).HasDefaultValueSql("(CONVERT([date],getdate()))");
             entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
-
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

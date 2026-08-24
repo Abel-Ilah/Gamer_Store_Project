@@ -74,7 +74,7 @@ namespace APIs.Controllers
                     Rating = review.Rating,
                     Comment = review.Comment,
                     CreatedAt = review.CreatedAt,
-                    User = new ShortUserDTO
+                    User = new CustomerShortDTO
                     {
                         Id = review.UserId,
                         FirstName = review.User.FirstName,
@@ -152,16 +152,18 @@ namespace APIs.Controllers
         [HttpGet("product/{productId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<ReadReviewDTO>>> GetReviewsByProductId(int productId)
+        public async Task<ActionResult<List<ReadReviewDTO>>> GetReviewsByProductId(int productId,int pageNumber,int pageSize)
         {
+          
             if (productId <= 0) return BadRequest("invalid productId");
+            if (pageNumber <= 0) return BadRequest("invalid pageNumber");
+            if (pageSize <= 0) return BadRequest("invalid pageSize");
 
             try
             {
-                var reviews = await _reviewService.GetReviewsByProductIdAsync(productId);
-                if(reviews == null || reviews.Count == 0) return NotFound("no review found for this product");
+                var reviews = await _reviewService.GetReviewsByProductIdAsync(productId,pageNumber,pageSize);
+                if(reviews == null || reviews.Count == 0) return Ok(new List<ReadReviewDTO>());
                 var reviewDtos = reviews.Select(r => new ReadReviewDTO
                 {
                     Id = r.Id,
@@ -170,7 +172,7 @@ namespace APIs.Controllers
                     Rating = r.Rating,
                     Comment = r.Comment,
                     CreatedAt = r.CreatedAt,
-                    User = new ShortUserDTO 
+                    User = new CustomerShortDTO 
                        { 
                         Id = r.UserId,
                         FirstName = r.User.FirstName,

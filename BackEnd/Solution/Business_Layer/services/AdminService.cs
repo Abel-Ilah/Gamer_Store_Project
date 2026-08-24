@@ -14,14 +14,10 @@ using Services.exceptions;
 
 namespace Services.services
 {
-    public class AdminService:UserServiceBase
+    public class AdminService
     {
-        
-        protected override string  Role => "admin";
-
-
-        public AdminService(UserRepository userRepository, EmailVerificationService emailVerificationService)
-             : base(userRepository, emailVerificationService)
+        public AdminService()
+            
         {
 
         }

@@ -14,6 +14,8 @@ namespace DataSource.Data.Config
             entity.Property(e => e.ImagePath).HasColumnName("imagePath");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e=>e.IsFeatured).HasDefaultValue(false);
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
         }
     }
 

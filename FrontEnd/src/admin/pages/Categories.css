@@ -5,6 +5,7 @@
   border-radius: var(--radius-4);
   padding: var(--space-3);
   width: 100%;
+  min-height: 85vh;
 }
 .dark .categories-page {
   background-color: var(--bg-card);
@@ -19,6 +20,7 @@
 .categories-page > header .categories-section-title {
   color: var(--text-1);
   font-weight: bold;
+  margin: 0;
 }
 .categories-page > header #add-category-btn {
   box-shadow: none;

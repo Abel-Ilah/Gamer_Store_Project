@@ -1,0 +1,183 @@
+/* ============================= */
+/* ===== Customers Section ===== */
+/* ============================= */
+
+.all-customers-section {
+  text-align: start;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-4);
+  padding: var(--space-3);
+  width: 100%;
+  color: var(--text-2);
+  height: 100%;
+}
+
+.dark .all-customers-section {
+  background-color: var(--bg-card);
+}
+
+/* ===== Header ===== */
+
+.all-customers-section > header {
+  border-bottom: 1px solid var(--gray-200);
+  padding-bottom: var(--space-2);
+}
+
+.dark .all-customers-section > header {
+  border-color: var(--gray-700);
+}
+
+.all-customers-section > header .customers-section-title {
+  color: var(--text-1);
+  font-weight: bold;
+}
+
+/* ===== Filters ===== */
+
+.all-customers-section #customers-filters {
+  border-bottom: 1px solid var(--gray-200);
+  padding-bottom: var(--space-2);
+}
+
+.dark .all-customers-section #customers-filters {
+  border-color: var(--gray-700);
+}
+
+.all-customers-section #customers-filters .search-customername {
+  position: relative;
+  width: fit-content;
+  min-width: 250px;
+}
+
+#customers-filters .search-customername .input .MuiInputBase-input {
+  padding-right: var(--space-5);
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+  color: var(--text-2);
+}
+
+#customers-filters .search-customername .input .MuiOutlinedInput-root {
+  border-radius: var(--radius-2);
+}
+
+#customers-filters .search-customername .input .MuiOutlinedInput-root fieldset {
+  border: 1px solid var(--gray-300);
+}
+
+.dark
+  #customers-filters
+  .search-customername
+  .input
+  .MuiOutlinedInput-root
+  fieldset {
+  border-color: var(--gray-600);
+}
+
+.all-customers-section #customers-filters .search-customername .search-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  color: var(--text-2);
+}
+
+.all-customers-section
+  #customers-filters
+  .search-customername
+  .search-btn:hover {
+  color: var(--main-color);
+}
+.all-customers-section .styled-select {
+  min-width: 150px;
+}
+/* ===== Customer Table ===== */
+
+.all-customers-section .customers-table {
+  margin-top: var(--space-4);
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Customer information */
+
+.all-customers-section .customer-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.all-customers-section .customer-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background-color: var(--gray-200);
+  color: var(--text-3);
+
+  flex-shrink: 0;
+}
+
+.dark .all-customers-section .customer-icon {
+  background-color: var(--gray-700);
+  color: var(--gray-200);
+}
+
+/* Name + email */
+
+.all-customers-section .customer-details {
+  min-width: 200px;
+}
+
+.all-customers-section .customer-name {
+  color: var(--text-2);
+  margin: 0;
+  font-weight: bold;
+}
+
+.all-customers-section .customer-email {
+  color: var(--text-3);
+  font-size: 0.85rem;
+}
+
+/* Delete */
+
+.all-customers-section .customers-table td button {
+  background: none;
+}
+.all-customers-section .customers-table td .icon {
+  font-size: 1.7rem;
+}
+.all-customers-section .customers-table td .icon.delete {
+  color: var(--red-600);
+}
+.all-customers-section .customers-table td .icon.restore {
+  color: var(--main-color);
+}
+
+/* ===== Pagination ===== */
+
+.all-customers-section .customers-pagination {
+  margin-top: var(--space-3);
+}
+
+.all-customers-section .customers-pagination li button {
+  color: white;
+  background-color: var(--main-color);
+  font-weight: bold;
+}
+
+.all-customers-section .customers-pagination li div {
+  color: var(--text-2);
+}
+
+.all-customers-section
+  .customers-pagination
+  .MuiPaginationItem-root.Mui-selected {
+  background-color: var(--green-400);
+}

@@ -32,9 +32,9 @@ import TableBody from "@mui/material/TableBody";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import RestoreIcon from "@mui/icons-material/Restore";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import settings from "../../../../appsettings.json";
+import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogActions,
@@ -43,141 +43,212 @@ import {
   DialogTitle,
   Pagination,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 
-const products = [
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "Razer Gaming Keyboard V2",
-    quantityInStock: 2,
-    price: 950,
-    sales: 18,
-    rating: 4.5,
-    discount: 15,
-  },
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "Corsair RGB Headset Pro",
-    quantityInStock: 120,
-    price: 400,
-    sales: 97,
-    rating: 5,
-    discount: 0,
-  },
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "ASUS 27'' Gaming Monitor",
-    quantityInStock: 0,
-    price: 105065680,
-    sales: 9,
-    rating: 4,
-    discount: 0,
-  },
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "SteelSeries Mouse Pad XL",
-    quantityInStock: 79,
-    price: 100,
-    sales: 130,
-    rating: 3.5,
-    discount: 20,
-  },
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "Logitech G Pro Wireless Mouse",
-    quantityInStock: 4,
-    price: 400,
-    sales: 65,
-    rating: 5,
-    discount: 0,
-  },
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "Razer Gaming Keyboard V2",
-    quantityInStock: 2,
-    price: 950,
-    sales: 18,
-    rating: 4.5,
-    discount: 15,
-  },
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "Corsair RGB Headset Pro",
-    quantityInStock: 120,
-    price: 400,
-    sales: 97,
-    rating: 5,
-    discount: 0,
-  },
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "ASUS 27'' Gaming Monitor",
-    quantityInStock: 0,
-    price: 1050,
-    sales: 9,
-    rating: 4,
-    discount: 0,
-  },
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "SteelSeries Mouse Pad XL",
-    quantityInStock: 79,
-    price: 100,
-    sales: 130,
-    rating: 3.5,
-    discount: 20,
-  },
-  {
-    imageUrl: "/assets/pc-gamer1.png",
-    name: "Logitech G Pro Wireless Mouse",
-    quantityInStock: 4,
-    price: 400,
-    sales: 65,
-    rating: 5,
-    discount: 0,
-  },
-];
+import {
+  deleteProduct,
+  getProducts,
+  restoreProduct,
+} from "../APIs/ProductAPIs";
+import settings from "../../../../appsettings.json";
+import { GetImage } from "../../../../common/js/helpers";
+import {
+  ProductType,
+  setCategory,
+  setDeleteStatus,
+  setPageNumber,
+  setProductType,
+  setSearch,
+} from "../slices/productsFilterSlice";
+import LoadingProgress from "../../../../common/components/LoadingProgress";
+import ErrorMessage from "../../../../common/components/ErrorMessage";
+import EmptyState from "../../../../common/components/EmptyState";
+import BackButton from "../../../../common/components/BackButton";
+import CustomDialog from "../../../../common/components/CustomDialog";
+import {
+  SEVERITY_ERROR,
+  SEVERITY_SUCCESS,
+  showMessage,
+} from "../../../../customer/features/snackbar/SnackbarSlice";
 
 export function Products() {
+  const filter = useSelector((state) => state.productsFilter);
+  const [searchText, setSearchText] = useState("");
+  const [productsState, setProductsState] = useState({
+    loading: true,
+    error: null,
+    data: null,
+  });
   const [openFilter, setOpenFilter] = useState(false);
   const [openStockFilter, setOpenStockFilter] = useState(false);
-  const [category, setCategory] = useState("All");
-  const [CurrentPage, setCurrentPage] = useState(1);
+  const [openActionDialog, setOpenActionDialog] = useState(false);
+  const [actionState, setActionState] = useState({
+    productId: null,
+    loading: false,
+  });
+  const [productsCount, setProductsCount] = useState(0);
 
   const navigate = useNavigate();
-  function handleCategoryChange(e) {
-    setCategory(e.target.value);
+  const dispatch = useDispatch();
+
+  let totalPages = useMemo(() => {
+    return Math.ceil(productsCount / filter.pageSize);
+  }, [productsCount, filter.pageSize]);
+
+  const { categories } = useSelector((state) => state.category);
+  useEffect(() => {
+    setProductsState((prev) => ({
+      data: null,
+      loading: true,
+      error: null,
+    }));
+
+    dispatch(getProducts(filter))
+      .unwrap()
+      .then((data) => {
+        setProductsState({
+          loading: false,
+          error: null,
+          data,
+        });
+        if (filter.pageNumber === 1) setProductsCount(data.count);
+      })
+      .catch((error) => {
+        setProductsState((prev) => ({
+          ...prev,
+          loading: false,
+          error: error,
+        }));
+      });
+  }, [filter, dispatch]);
+
+  const action = useMemo(() => {
+    return filter.deleted ? "restore" : "delete";
+  }, [filter.deleted]);
+
+  function handleCategoryChange(categoryId) {
+    clearSearchText();
+    if (categoryId === null) dispatch(setProductType(ProductType.All));
+    else dispatch(setCategory(categoryId));
   }
+  console.log("filter : ", filter);
+  console.log("action : ", action);
+
   function handleClickFilter() {
     setOpenFilter(!openFilter);
   }
   function handleCloseFilter() {
     setOpenFilter(false);
   }
-
   const handleStockFilterClick = () => {
     setOpenStockFilter(!openStockFilter);
   };
-  const handlePageChange = (_, value) => {
-    setCurrentPage(value);
-  };
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
-  const handleOpenDialog = () => {
-    setOpenDeleteDialog(true);
+  const handlePageChange = (_, page) => {
+    dispatch(setPageNumber(page));
   };
 
-  const handleCloseDialog = () => {
-    setOpenDeleteDialog(false);
-  };
   function handleAddProduct() {
     navigate("/admin/products/add");
+  }
+
+  function filterProductsByType(productType) {
+    dispatch(setProductType(productType));
+    clearSearchText();
+  }
+  function handleSearchForProduct(text) {
+    dispatch(setSearch(searchText));
+  }
+  function clearSearchText() {
+    setSearchText("");
+  }
+  const handleCloseDialog = () => {
+    setOpenActionDialog(false);
+    setActionState((prev) => ({ loading: false, productId: null }));
+  };
+  function handleDeleteOrRestoreIconCLick(productId) {
+    setActionState((prev) => ({ ...prev, productId: productId }));
+    setOpenActionDialog(true);
+  }
+  function handleDeleteProduct() {
+    if (!actionState.productId) return;
+    setActionState((prev) => ({ ...prev, loading: true }));
+    dispatch(deleteProduct(actionState.productId))
+      .unwrap()
+      .then(() => {
+        dispatch(
+          showMessage({
+            message: "the product has been deleted successfully.",
+            severity: SEVERITY_SUCCESS,
+          }),
+        );
+        setProductsState((prev) => ({
+          ...prev,
+          data: {
+            count: prev.data.count - 1,
+            products: prev.data.products.filter(
+              (p) => p.id !== actionState.productId,
+            ),
+          },
+        }));
+      })
+      .catch((err) => {
+        dispatch(
+          showMessage({
+            message: err,
+            severity: SEVERITY_ERROR,
+          }),
+        );
+      })
+      .finally(() => handleCloseDialog());
+  }
+  function handleRestoreProduct() {
+    if (!actionState.productId) return;
+    setActionState((prev) => ({ ...prev, loading: true }));
+    dispatch(restoreProduct(actionState.productId))
+      .unwrap()
+      .then(() => {
+        dispatch(
+          showMessage({
+            message: "the product has been restored successfully.",
+            severity: SEVERITY_SUCCESS,
+          }),
+        );
+        setProductsState((prev) => ({
+          ...prev,
+          data: {
+            count: prev.data.count - 1,
+            products: prev.data.products.filter(
+              (p) => p.id !== actionState.productId,
+            ),
+          },
+        }));
+      })
+      .catch((err) => {
+        dispatch(
+          showMessage({
+            message: err,
+            severity: SEVERITY_ERROR,
+          }),
+        );
+      })
+      .finally(() => handleCloseDialog());
+  }
+  function handleConfirm() {
+    if (action === "delete") {
+      handleDeleteProduct();
+    } else if (action === "restore") {
+      handleRestoreProduct();
+    }
   }
   return (
     <section className="all-products-section">
       <header className="d-flex justify-content-between align-items-center flex-wrap my1 gap-2">
-        <div>
-          <h3 className="products-section-title">Products List</h3>
-          <h6>Track your store's progress to boost your sales.</h6>
+        <div className="d-flex align-items-start gap-2">
+          <BackButton />
+          <div>
+            <h3 className="products-section-title">Products List</h3>
+            <h6>Track your store's progress to boost your sales.</h6>
+          </div>
         </div>
         <Button
           id="add-product-btn"
@@ -188,314 +259,412 @@ export function Products() {
           add product
         </Button>
       </header>
-      <div
-        id="products-filters"
-        className="d-flex justify-content-between align-items-center flex-wrap my1 gap-3 mt-2"
-      >
-        <div className="left-filter d-flex  align-items-center gap-3 flex-wrap flex-grow-1">
-          <form className="search-productname">
-            <TextField
-              placeholder="product name..."
-              required
-              className="input"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "transparent", // default
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "transparent", // remove border on hover
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "transparent", // remove border on focus
-                  },
-                  "&.Mui-focused": {
-                    boxShadow: "none", // remove glow
-                  },
-                },
-              }}
-            />
-            <IconButton type="submit" className="search-btn">
-              <SearchOutlinedIcon />
-            </IconButton>
-          </form>
-          <FormControl fullWidth className="custom-select">
-            <InputLabel className="label" id="demo-simple-select-label">
-              category
-            </InputLabel>
-            <Select
-              className="select"
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={category}
-              label="category"
-              onChange={(e) => handleCategoryChange(e)}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    padding: "5px",
-                    marginTop: "5px",
-                    borderRadius: "10px",
-                    boxShadow: "none",
-                    border: "1px solid #ddd8d8ff",
-                    "& .MuiMenuItem-root": {
-                      color: "gray",
-                      borderRadius: "5px",
-                      "&:hover": {
-                        backgroundColor: "#f5f5f5",
-                        color: "#333333",
-                      },
-                      "&.Mui-selected": {
-                        backgroundColor: "#e0e0e0",
-                        color: "#333333",
-                      },
-                    },
-                    "& .MuiMenuItem-root:not(:last-of-type)": {
-                      marginBottom: "5px",
-                    },
-                  },
-                },
-              }}
-            >
-              <MenuItem className="item" value={"all"}>
-                All
-              </MenuItem>
-              <MenuItem className="select-item" value={"pc gamers"}>
-                Pc Gamers dsfsdf dsfs dsf
-              </MenuItem>
-              <MenuItem className="select-item" value={"laptops"}>
-                Laptops
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </div>
-        <div className="right-filter align-self-start">
-          <Button
-            variant="contained"
-            className="f-btn"
-            startIcon={<TuneIcon />}
-            onClick={handleClickFilter}
+      {productsState.data && (
+        <div>
+          {/* filter */}
+          <div
+            id="products-filters"
+            className="d-flex justify-content-between align-items-center flex-wrap my1 gap-3 my-2"
           >
-            Filter
-          </Button>
+            <div className="left-filter d-flex  align-items-center gap-3 flex-wrap flex-grow-1">
+              <form className="search-productname">
+                <TextField
+                  placeholder="product name..."
+                  required
+                  className="input"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "transparent",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "transparent",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "transparent",
+                      },
+                      "&.Mui-focused": {
+                        boxShadow: "none",
+                      },
+                    },
+                  }}
+                  value={searchText}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                  }}
+                />
+                <IconButton
+                  disabled={!searchText || searchText.length < 3}
+                  className="search-btn"
+                  onClick={handleSearchForProduct}
+                >
+                  <SearchOutlinedIcon />
+                </IconButton>
+              </form>
 
-          {openFilter && (
-            <ClickAwayListener onClickAway={handleCloseFilter}>
-              <List
-                className="f-list"
-                component="nav"
-                aria-labelledby="nested-list-subheader"
+              {categories && (
+                <FormControl fullWidth className="custom-select">
+                  <InputLabel className="label" id="demo-simple-select-label">
+                    category
+                  </InputLabel>
+                  <Select
+                    className="select"
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={
+                      filter.categoryId === null
+                        ? "all"
+                        : categories.find((c) => c.id === filter.categoryId)
+                            .name
+                    }
+                    label="category"
+                    MenuProps={{
+                      PaperProps: {
+                        className: "category-select-paper",
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      key={"all"}
+                      value={"all"}
+                      onClick={() => handleCategoryChange(null)}
+                    >
+                      All
+                    </MenuItem>
+                    {categories.map((c) => (
+                      <MenuItem
+                        key={c.id}
+                        value={`${c.name}`}
+                        onClick={() => handleCategoryChange(c.id)}
+                      >
+                        {c.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+
+              <FormControl className="styled-select">
+                <InputLabel className="label" id="status-label">
+                  Status
+                </InputLabel>
+
+                <Select
+                  className="select"
+                  labelId="status-label"
+                  id="status"
+                  value={filter.deleted}
+                  label="Status"
+                  onChange={(e) => dispatch(setDeleteStatus(e.target.value))}
+                  MenuProps={{
+                    PaperProps: {
+                      className: "styled-menu",
+                    },
+                  }}
+                >
+                  <MenuItem value={false}>Active</MenuItem>
+                  <MenuItem value={true}>Deleted</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+
+            <div className="right-filter align-self-start">
+              <Button
+                variant="contained"
+                className="f-btn"
+                startIcon={<TuneIcon />}
+                onClick={handleClickFilter}
               >
-                <ListItemButton
-                  onClick={handleCloseFilter}
-                  className="option-btn"
-                >
-                  <ListItemIcon>
-                    <LocalGroceryStoreOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Best Sellers" />
-                </ListItemButton>
-                <ListItemButton
-                  onClick={handleCloseFilter}
-                  className="option-btn"
-                >
-                  <ListItemIcon>
-                    <StarPurple500OutlinedIcon className="star" />
-                  </ListItemIcon>
-                  <ListItemText primary="Top Rated" />
-                </ListItemButton>
-                <ListItemButton
-                  onClick={handleCloseFilter}
-                  className="option-btn"
-                >
-                  <ListItemIcon>
-                    <DiscountOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Discounted" />
-                </ListItemButton>
-                <ListItemButton
-                  onClick={handleStockFilterClick}
-                  className="option-btn"
-                >
-                  <ListItemIcon>
-                    <StorefrontOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Stock" />
-                  {openStockFilter ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={openStockFilter} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
+                Filter
+              </Button>
+
+              {openFilter && (
+                <ClickAwayListener onClickAway={handleCloseFilter}>
+                  <List
+                    className="f-list"
+                    component="nav"
+                    aria-labelledby="nested-list-subheader"
+                  >
                     <ListItemButton
-                      onClick={handleCloseFilter}
+                      disabled={filter.productType === ProductType.BestSeller}
+                      onClick={() => {
+                        filterProductsByType(ProductType.BestSeller);
+                        handleCloseFilter();
+                      }}
                       className="option-btn"
-                      sx={{ pl: 3 }}
                     >
                       <ListItemIcon>
-                        <KeyboardArrowRightIcon />
+                        <LocalGroceryStoreOutlinedIcon />
                       </ListItemIcon>
-                      <ListItemText primary="In Stock" />
+                      <ListItemText primary="Best Sellers" />
                     </ListItemButton>
+
                     <ListItemButton
-                      onClick={handleCloseFilter}
+                      onClick={() => {
+                        filterProductsByType(ProductType.TopRated);
+                        handleCloseFilter();
+                      }}
                       className="option-btn"
-                      sx={{ pl: 3 }}
+                      disabled={filter.productType === ProductType.TopRated}
                     >
                       <ListItemIcon>
-                        <KeyboardArrowRightIcon />
+                        <StarPurple500OutlinedIcon className="star" />
                       </ListItemIcon>
-                      <ListItemText primary="Low Stock" />
+                      <ListItemText primary="Top Rated" />
                     </ListItemButton>
+
                     <ListItemButton
-                      onClick={handleCloseFilter}
+                      onClick={() => {
+                        filterProductsByType(ProductType.Discounted);
+                        handleCloseFilter();
+                      }}
                       className="option-btn"
-                      sx={{ pl: 3 }}
+                      disabled={filter.productType === ProductType.Discounted}
                     >
                       <ListItemIcon>
-                        <KeyboardArrowRightIcon />
+                        <DiscountOutlinedIcon />
                       </ListItemIcon>
-                      <ListItemText primary="Out Of Stock" />
+                      <ListItemText primary="Discounted" />
                     </ListItemButton>
+
+                    <ListItemButton
+                      onClick={handleStockFilterClick}
+                      className="option-btn"
+                    >
+                      <ListItemIcon>
+                        <StorefrontOutlinedIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Stock" />
+                      {openStockFilter ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openStockFilter} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        <ListItemButton
+                          onClick={() => {
+                            filterProductsByType(ProductType.InStock);
+                            handleCloseFilter();
+                          }}
+                          className="option-btn"
+                          sx={{ pl: 3 }}
+                          disabled={filter.productType === ProductType.InStock}
+                        >
+                          <ListItemIcon>
+                            <KeyboardArrowRightIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="In Stock" />
+                        </ListItemButton>
+
+                        <ListItemButton
+                          onClick={() => {
+                            filterProductsByType(ProductType.LowStock);
+                            handleCloseFilter();
+                          }}
+                          className="option-btn"
+                          sx={{ pl: 3 }}
+                          disabled={filter.productType === ProductType.LowStock}
+                        >
+                          <ListItemIcon>
+                            <KeyboardArrowRightIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="Low Stock" />
+                        </ListItemButton>
+
+                        <ListItemButton
+                          onClick={() => {
+                            filterProductsByType(ProductType.NoStock);
+                            handleCloseFilter();
+                          }}
+                          className="option-btn"
+                          sx={{ pl: 3 }}
+                          disabled={filter.productType === ProductType.NoStock}
+                        >
+                          <ListItemIcon>
+                            <KeyboardArrowRightIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="Out Of Stock" />
+                        </ListItemButton>
+                      </List>
+                    </Collapse>
                   </List>
-                </Collapse>
-              </List>
-            </ClickAwayListener>
+                </ClickAwayListener>
+              )}
+            </div>
+          </div>
+          {/* products table */}
+          {productsState.data.products.length > 0 && (
+            <>
+              {/* table */}
+              <div className="products-table">
+                <TableContainer className="table-container styled-scrollbar">
+                  <Table
+                    style={{ minWidth: 1200 }}
+                    className="styled-table"
+                    aria-label="table"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name</TableCell>
+                        <TableCell align="left">Price</TableCell>
+                        <TableCell align="left">Discount</TableCell>
+                        <TableCell align="left">Sales</TableCell>
+                        <TableCell align="left">Rating</TableCell>
+                        <TableCell align="left">Stock</TableCell>
+                        <TableCell align="left">Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {productsState.data.products.map((product) => (
+                        <TableRow key={product.id}>
+                          <TableCell>
+                            <div className="d-flex align-items-center gap-2">
+                              <Link to={`/admin/products/${product.id}`}>
+                                <div className="p-image">
+                                  <img
+                                    src={GetImage(product.imageUrl, 100)}
+                                    alt={"preview"}
+                                    title={product.name}
+                                  />
+                                </div>
+                              </Link>
+                              <div className="info">
+                                <Link to={`/admin/products/${product.id}`}>
+                                  <p className="name">{product.name}</p>
+                                </Link>
+                                <span className="p-quantity">
+                                  Q: {product.quantityInStock}
+                                  {` item${product.quantityInStock > 1 ? "s" : ""}`}
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell align="left">
+                            {product.price}
+                            <span style={{ fontSize: "11px" }}>
+                              {" "}
+                              {settings.currrency}
+                            </span>
+                          </TableCell>
+                          <TableCell align="left">
+                            {`${product.discountValue}%`}
+                          </TableCell>
+                          <TableCell align="left">{product.sales}</TableCell>
+                          <TableCell align="left">
+                            <StarPurple500OutlinedIcon
+                              style={{ fontSize: "1rem", color: "orange" }}
+                            />
+                            {" " + product.rating}
+                          </TableCell>
+                          <TableCell align="left">
+                            <span
+                              className={`stock ${
+                                product.quantityInStock === 0
+                                  ? "out-of-stock"
+                                  : product.quantityInStock < 10
+                                    ? "low-stock"
+                                    : "in-stock"
+                              }`}
+                            >
+                              {product.quantityInStock === 0
+                                ? "out of stock"
+                                : product.quantityInStock < 10
+                                  ? "low stock"
+                                  : "in stock"}
+                            </span>
+                          </TableCell>
+                          <TableCell
+                            className="d-flex flex-nowrap gap-1"
+                            align="left"
+                          >
+                            {action === "delete" && (
+                              <>
+                                <IconButton
+                                  onClick={() =>
+                                    navigate(`/admin/products/${product.id}`)
+                                  }
+                                >
+                                  <VisibilityIcon className="icon show" />
+                                </IconButton>
+
+                                <IconButton
+                                  onClick={() =>
+                                    navigate(
+                                      `/admin/products/update/${product.id}`,
+                                    )
+                                  }
+                                >
+                                  <EditIcon className="icon edit" />
+                                </IconButton>
+
+                                <IconButton
+                                  onClick={() =>
+                                    handleDeleteOrRestoreIconCLick(product.id)
+                                  }
+                                >
+                                  <DeleteIcon className="icon delete" />
+                                </IconButton>
+                              </>
+                            )}
+
+                            {action === "restore" && (
+                              <IconButton
+                                onClick={() =>
+                                  handleDeleteOrRestoreIconCLick(product.id)
+                                }
+                              >
+                                <RestoreIcon className="icon restore" />
+                              </IconButton>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+              {/* pagination */}
+              {totalPages > 1 && (
+                <div className="products-pagination d-flex justify-content-end">
+                  <Pagination
+                    variant="outlined"
+                    // shape="rounded"
+                    // size="small"
+                    count={totalPages}
+                    page={filter.pageNumber}
+                    onChange={handlePageChange}
+                    siblingCount={1}
+                    boundaryCount={0}
+                    showFirstButton
+                    showLastButton
+                    hideNextButton
+                    hidePrevButton
+                  />
+                </div>
+              )}
+              {/* delete/restore product dialog */}
+
+              <CustomDialog
+                open={openActionDialog}
+                onClose={handleCloseDialog}
+                confirmText={action}
+                confirmStartIcon={
+                  action === "delete" ? <DeleteIcon /> : <RestoreIcon />
+                }
+                message={`are you sure you want to ${action} this product ?`}
+                onConfirm={() => handleConfirm()}
+                loading={actionState.loading}
+              />
+              {/* ================ */}
+            </>
+          )}
+          {/* handle empty case  */}
+          {productsState.data.products.length === 0 && (
+            <EmptyState message={"No Product Found."} />
           )}
         </div>
-      </div>
-      <div className="products-table">
-        <TableContainer className="table-container styled-scrollbar">
-          <Table
-            style={{ minWidth: 1200 }}
-            className="styled-table"
-            aria-label="table"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell align="left">Price</TableCell>
-                <TableCell align="left">Discount</TableCell>
-                <TableCell align="left">Sales</TableCell>
-                <TableCell align="left">Rating</TableCell>
-                <TableCell align="left">Stock</TableCell>
-                <TableCell align="left">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {products.map((product) => (
-                <TableRow key={product.name}>
-                  <TableCell>
-                    <div className="d-flex align-items-center gap-2">
-                      <Link>
-                        <div className="p-image">
-                          <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            title={product.name}
-                          />
-                        </div>
-                      </Link>
-                      <div className="info">
-                        <Link>
-                          <p className="name">{product.name}</p>
-                        </Link>
-                        <span className="p-quantity">
-                          Q: {product.quantityInStock}
-                          {` item${product.quantityInStock > 1 ? "s" : ""}`}
-                        </span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell align="left">
-                    {product.price}
-                    <span style={{ fontSize: "11px" }}>
-                      {" "}
-                      {settings.currrency}
-                    </span>
-                  </TableCell>
-                  <TableCell align="left">
-                    {product.discount > 0 ? `-${product.discount}%` : "__"}
-                  </TableCell>
-                  <TableCell align="left">{product.sales}</TableCell>
-                  <TableCell align="left">
-                    <StarPurple500OutlinedIcon
-                      style={{ fontSize: "1rem", color: "orange" }}
-                    />
-                    {" " + product.rating}
-                  </TableCell>
-                  <TableCell align="left">
-                    <span
-                      className={`stock ${
-                        product.quantityInStock === 0
-                          ? "out-of-stock"
-                          : product.quantityInStock <= 5
-                            ? "low-stock"
-                            : "in-stock"
-                      }`}
-                    >
-                      {product.quantityInStock === 0
-                        ? "out of stock"
-                        : product.quantityInStock <= 5
-                          ? "low stock"
-                          : "in stock"}
-                    </span>
-                  </TableCell>
-                  <TableCell className="d-flex flex-nowrap gap-1" align="left">
-                    <IconButton>
-                      <VisibilityIcon className="icon show" />
-                    </IconButton>
-                    <IconButton>
-                      <EditIcon className="icon edit" />
-                    </IconButton>
-                    <IconButton onClick={handleOpenDialog}>
-                      <DeleteIcon className="icon delete" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-      <div className="products-pagination d-flex justify-content-end">
-        <Pagination
-          variant="outlined"
-          // shape="rounded"
-          // size="small"
-          count={50} //totalPages
-          page={CurrentPage}
-          onChange={handlePageChange}
-          siblingCount={1}
-          boundaryCount={0}
-          showFirstButton
-          showLastButton
-          hideNextButton
-          hidePrevButton
-        />
-      </div>
-      {/* delete product dialog */}
-      <Dialog
-        open={openDeleteDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Delete Product"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this product? This action cannot be
-            undone!
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} autoFocus>
-            Cancel
-          </Button>
-          <Button variant="outlined" onClick={handleCloseDialog}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* ================ */}
+      )}
+      {productsState.loading && <LoadingProgress />}
+      {productsState.error && <ErrorMessage message={productsState.error} />}
     </section>
   );
 }

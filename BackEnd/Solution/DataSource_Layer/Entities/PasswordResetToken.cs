@@ -20,7 +20,7 @@ namespace DataSource.Entities
 
         public bool IsUsed { get; set; } = false;
 
-        public User User { get; set; } = null!;
+        public Customer User { get; set; } = null!;
     }
 
 }

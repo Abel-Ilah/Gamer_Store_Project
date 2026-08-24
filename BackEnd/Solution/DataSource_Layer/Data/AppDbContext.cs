@@ -15,12 +15,18 @@ public partial class AppDbContext : DbContext
         : base(options)
     {
     }
+
+    public virtual DbSet<Admin> Admins { get; set; }
+
     public virtual DbSet<CartItem> CartItems { get; set; }
+
     public virtual DbSet<CategoriesDiscount> CategoriesDiscounts { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<CompareItem> CompareItems { get; set; }
+
+    public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<Discount> Discounts { get; set; }
 
@@ -44,8 +50,6 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<ProductsDiscounts> ProductsDiscounts { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
-
-    public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UsersPermission> UsersPermissions { get; set; }
 

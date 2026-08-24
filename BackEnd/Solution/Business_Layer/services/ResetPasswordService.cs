@@ -17,10 +17,10 @@ namespace Services.services
         }
 
  
-        public async Task<bool> AddRequestAsync(string email , string role)
+        public async Task<bool> AddRequestAsync(string email )
         {
             
-            var Request = await _resetPasswordRepository.AddRequestAsync(email,role);
+            var Request = await _resetPasswordRepository.AddRequestAsync(email);
             
             if (Request.Id > 0)
             {
@@ -28,7 +28,6 @@ namespace Services.services
                                                   new EmailEvent
                                                   {
                                                       Email = email,
-                                                      UserType = role,
                                                       Payload = Request.Token
                                                   }
                                                   ); 

@@ -43,7 +43,6 @@ namespace DataSource.Repositories
             var review = await _context.Reviews.FindAsync(id);
             if (review == null)
                 return false;
-
             _context.Reviews.Remove(review);
             await _context.SaveChangesAsync();
             return true;
@@ -60,7 +59,7 @@ namespace DataSource.Repositories
             var ReviewsList = await (from r in _context.Reviews
                                      join p in _context.Products
                                      on r.ProductId equals p.Id
-                                     join u in _context.Users
+                                     join u in _context.Customers
                                      on r.UserId equals u.Id
                                      join pi in _context.ProductImages
                                      on p.Id equals pi.ProductId
@@ -87,13 +86,16 @@ namespace DataSource.Repositories
             return ReviewsList;
         }
 
-        public async Task<List<Review>> GetReviewsByProductIdAsync(int productId)
+        public async Task<List<Review>> GetReviewsByProductIdAsync(int productId,int pageNumber = 1,int pageSize = 10)
         {
             return await _context.Reviews
-                .Where(r => r.ProductId == productId)
-                .Include(r => r.User)
-                .OrderByDescending(r => r.CreatedAt).AsNoTracking()
-                .ToListAsync();
+                         .AsNoTracking()
+                         .Where(r => r.ProductId == productId)
+                         .Include(r => r.User)
+                         .OrderByDescending(r => r.CreatedAt)
+                         .Skip((pageNumber - 1) * pageSize)
+                         .Take(pageSize)
+                         .ToListAsync();
         }
 
         public async Task<List<ReadReviewDTO2>> GetTopReviews(int pageSize)
@@ -101,7 +103,7 @@ namespace DataSource.Repositories
             var TopReviews =await (from r in _context.Reviews
                               join p in _context.Products
                               on r.ProductId equals p.Id
-                              join u in _context.Users
+                              join u in _context.Customers
                               on r.UserId equals u.Id
                               join pi in _context.ProductImages
                               on p.Id equals pi.ProductId
@@ -126,9 +128,7 @@ namespace DataSource.Repositories
             return TopReviews;
         }
 
-
-
-    }
+    } 
 
 
 

@@ -28,6 +28,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
 import { PaginationItem, useTheme, useMediaQuery } from "@mui/material";
+import ErrorMessage from "../../../../common/components/ErrorMessage";
 let pageSize = settings.productsPageSize;
 
 export function FilteredProducts() {
@@ -191,13 +192,7 @@ export function FilteredProducts() {
                 <h4 className="msg">no products found</h4>
               </div>
             )}
-            {error && (
-              <div className="error">
-                <div className="icon"></div>
-                <h3 className="error-title">Error</h3>
-                <h4 className="text">{error}</h4>
-              </div>
-            )}
+            {error && <ErrorMessage message={error} />}
           </div>
         </div>
       </div>

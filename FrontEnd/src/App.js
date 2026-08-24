@@ -8,6 +8,7 @@ import { Home } from "./customer/pages/Home";
 import { CategoriesProvider } from "./contexts/CategoriesProvider";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { ProductDetails } from "./customer/features/product/pages/ProductDetails";
+import ProductInfo from "./admin/features/product/pages/ProductDetails";
 import { SignUp } from "./customer/pages/SignUp";
 import { EmailConfirmation } from "./customer/features/security/pages/EmailConfirmation";
 import { Login } from "./customer/pages/Login";
@@ -36,16 +37,24 @@ import { Profile } from "./admin/pages/Profile";
 import { Dashboard } from "./admin/features/dashboard/pages/Dashboard";
 import { Analytics } from "./admin/pages/Analytics";
 import { Products } from "./admin/features/product/pages/Products";
-import { AddNewProduct } from "./admin/pages/AddProduct";
+import { ManageProduct } from "./admin/pages/ManageProduct";
 import { Categories } from "./admin/pages/Categories";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { getCategories } from "./common/slices/categorySlice";
+import { Customers } from "./admin/features/adminCustomer/pages/Customers";
 
 function App() {
   const location = useLocation();
+  const dispatch = useDispatch();
   const showLayout = useMemo(() => {
     return !location.pathname.startsWith("/admin");
   }, [location]);
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [dispatch]);
+
   return (
     <CategoriesProvider>
       <div className="App">
@@ -124,10 +133,16 @@ function App() {
           {/* admin routes : */}
           <Route path="/admin/" element={<Panel />}>
             <Route index element={<Dashboard />} />
-            <Route path="products" element={<Products />} />
-            <Route path="products/add" element={<AddNewProduct />} />
-            <Route path="categories" element={<Categories />} />{" "}
+            <Route path="products/" element={<Products />} />
+            <Route path="products/add" element={<ManageProduct />} />
+            <Route
+              path="products/update/:productId"
+              element={<ManageProduct />}
+            />
+            <Route path="products/:productId" element={<ProductInfo />} />
+            <Route path="categories" element={<Categories />} />
             {/* <Route path="categories/add" element={<Categories />} /> */}
+            <Route path="customers/" element={<Customers />} />
             <Route path="profile" element={<Profile />} />
             <Route path="analytics" element={<Analytics />} />
           </Route>

@@ -2,18 +2,20 @@
 using DataSource.DTOs.admin;
 using DataSource.Entities;
 using DataSource.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
+using Services.Interfaces;
 
 namespace Services.services
 {
     public class ProductService
     {
         private readonly ProductRepository _ProductRepository;
-
-        public ProductService(ProductRepository productRepository)
+        private readonly ICloudinaryService _cloudinaryService;
+        private readonly ProductImageRepository _productImagesRepository;
+        public ProductService(ProductRepository productRepository, ICloudinaryService cloudinaryService, ProductImageRepository productImagesRepository)
         {
             _ProductRepository = productRepository;
+            _cloudinaryService = cloudinaryService;
+            _productImagesRepository = productImagesRepository;
         }
 
         //get products with filter :
@@ -84,7 +86,130 @@ namespace Services.services
         }
 
 
-        // admin panel : 
+        // admin : 
+
+        public async Task<int> AddNewProductAsync(AddProductDTO_Admin productDto)
+        {
+            var productImages = new List<ProductImage>();
+
+            foreach (var image in productDto.Images)
+            {
+                if(image.Stream != null && image.FileName != null)
+                {
+                    var imageUrl = await _cloudinaryService.UploadImageAsync(image.Stream,image.FileName);
+                    productImages.Add(new ProductImage
+                    {
+                        ImageUrl = imageUrl,
+                        IsMain = image.IsMain
+                    });
+                } 
+             
+            }
+
+            // check if product has one and only one main image :
+            var mainImagesCount = productImages.Count(img => img.IsMain);
+            if (productImages.Count > 0 && mainImagesCount != 1)
+            {
+                for (int i = 0; i < productImages.Count; i++)
+                    productImages[i].IsMain = i == 0;
+            }
+            var product = new Product
+            {
+                Name = productDto.Name,
+                Price = productDto.Price,
+                QuantityInStock = productDto.Quantity,
+                CategoryId = productDto.CategoryId,
+                Details = ProductRepository.ConvertProductDetailsToString(productDto.Details, ":", "||"),
+                Description = productDto.Description,
+                Date = DateOnly.FromDateTime(DateTime.Now),
+                ProductImages = productImages
+            };
+             return await _ProductRepository.AddNewProductAsync(product);
+        }
+
+        public async Task<bool> UpdateProductAsync(UpdateProductDTO_Admin productDto)
+        {
+            var OldImages = await _productImagesRepository.GetAllAsync(productDto.Id);
+
+            var uploadedImages = productDto.Images?.ToList() ?? new List<ImageUploadDTO>();
+
+            if (uploadedImages.Count == 0) throw new Exception("you can't delete all images, the product should have at least one image.");
+
+            var oldMainImageId = OldImages.Where(img => img.IsMain).SingleOrDefault()?.Id;
+
+
+            if (uploadedImages.Count(img => img.IsMain) != 1)
+            {
+                if (oldMainImageId != null && uploadedImages.Any(img => img.Id == oldMainImageId.Value))
+                {
+                    for (int i = 0; i < uploadedImages.Count; i++)
+                        uploadedImages[i].IsMain = uploadedImages[i].Id == oldMainImageId.Value;
+
+                }
+                else
+                {
+                    for (int i = 0; i < uploadedImages.Count; i++)
+                        uploadedImages[i].IsMain = i == 0;
+                }
+            }
+
+            var updatedMainImage = new UpdateMainImageDTO_Admin
+            {
+                OldMainImageId = oldMainImageId,
+                NewMainImageId = uploadedImages.SingleOrDefault(img => img.IsMain)!.Id
+            };
+
+
+            var newImages = uploadedImages.Where(img=>img.Id == null && img.Stream != null && !string.IsNullOrEmpty(img.FileName)).ToList();
+
+            var addedImages = new List<ProductImage>();
+
+            var deletedImages = new List<ProductImage>();
+
+            //handle new images :
+
+            foreach (var img in newImages)
+            {
+              if (img.Stream != null && !string.IsNullOrEmpty(img.FileName))
+              {
+                  string imageUrl = await _cloudinaryService.UploadImageAsync(img.Stream,img.FileName);
+                  addedImages.Add(new ProductImage { ImageUrl = imageUrl, IsMain = img.IsMain, ProductId = productDto.Id });
+              }
+            }
+
+            //handle deleted images :
+
+            foreach (var img in OldImages)
+            {
+                bool isDeleted = true;
+                for (int i = 0; i < uploadedImages.Count; i++)
+                {
+                   if(img.Id == uploadedImages[i].Id) isDeleted = false;
+                }
+                if(isDeleted)
+                {
+                    img.ProductId = productDto.Id;
+                    deletedImages.Add(img);
+                    await _cloudinaryService.DeleteImageAsync(_cloudinaryService.GetImagePublicId(img.ImageUrl));
+                }
+            }
+
+            if( await _productImagesRepository.UpdateAsync(productDto.Id, addedImages, deletedImages, updatedMainImage))
+            {  
+                var product = new Product
+                {   Id  = productDto.Id,
+                    Name = productDto.Name,
+                    Price = productDto.Price,
+                    QuantityInStock = productDto.Quantity,
+                    Description = productDto.Description,
+                    CategoryId = productDto.CategoryId,
+                    Details = ProductRepository.ConvertProductDetailsToString(productDto.Details, ":", "||")
+                };
+                return await _ProductRepository.UpdateProductAsync(product);
+            }
+            return false;
+
+        }
 
         public async Task<ProductsDTO_Admin> GetProductsAsync(ProductsFilterDTO_Admin filter)
         {
@@ -100,6 +225,26 @@ namespace Services.services
         public async Task<List<TopProductDTO_Admin>> GetTopProductsAsync(int pageNumber = 1, int pageSize = 10)
         {
             return await _ProductRepository.GetTopProductsAsync(pageNumber,pageSize);
+        }
+
+        public async Task<ProductBasicInfoDTO?> FindProductAsync(int id)
+        {
+            return await _ProductRepository.FindProductAsync(id);
+        }
+
+        public async Task<ProductDetailsDTO_Admin?> GetProductDetailsAsync(int productId)
+        {
+            return await _ProductRepository.GetProductDetailsAsync(productId);
+        }
+
+        public async Task<bool> DeleteProductAsync(int porductId)
+        {
+            return await _ProductRepository.DeleteProductAsync(porductId);
+        }
+
+        public async Task<bool> RestoreProductAsync(int productId)
+        {
+            return await _ProductRepository.RestoreProductAsync(productId);
         }
 
     }

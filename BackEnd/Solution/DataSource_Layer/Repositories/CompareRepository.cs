@@ -63,7 +63,6 @@ namespace DataSource.Repositories
             var compareItems = await (from ci in _context.CompareItems
                                    join p in _context.ProductsView
                                    on ci.ProductId equals p.Id
-
                                    where ci.UserId == userId
 
                                    select new CompareItemReadDTO

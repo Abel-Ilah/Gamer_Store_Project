@@ -25,7 +25,7 @@ import {
   saveCustomerLoginInfo,
 } from "../features/auth/CustomerAuthSlice";
 
-export function Login() {
+export function Login({ backTo = "/home" }) {
   const [login, setLogin] = useState(() => {
     var savedLogin = getSavedCustomerLoginInfo();
     return savedLogin
@@ -64,7 +64,6 @@ export function Login() {
     dispatch(loginAsCustomer({ email: login.email, password: login.password }))
       .unwrap()
       .then((customer) => {
-        console.log(customer);
         setLoginDisabled(true);
         saveCustomerLoginInfo(login.email, login.password);
         if (customer.isEmailConfirmed) {
@@ -90,7 +89,7 @@ export function Login() {
                   severity: SEVERITY_ERROR,
                 }),
               );
-              navigate("/");
+              navigate(backTo);
             });
         }
       })

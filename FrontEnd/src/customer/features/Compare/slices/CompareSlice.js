@@ -20,7 +20,7 @@ export const getUserCompareList = createAsyncThunk(
       }));
 
       const action = await thunkAPI.dispatch(
-        addColllectionOfComparelistItems(itemsToAddToComparelist)
+        addColllectionOfComparelistItems(itemsToAddToComparelist),
       );
       if (action.meta.requestStatus === "fulfilled") {
         localStorage.setItem("hasComparelist", "true");
@@ -33,13 +33,13 @@ export const getUserCompareList = createAsyncThunk(
 
     try {
       const res = await axios.get(
-        `http://localhost:5268/api/compare?userId=${userId}`
+        `http://localhost:5268/api/compare?userId=${userId}`,
       );
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 export const addNewComparelistItem = createAsyncThunk(
@@ -51,7 +51,7 @@ export const addNewComparelistItem = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 export const addColllectionOfComparelistItems = createAsyncThunk(
@@ -60,14 +60,14 @@ export const addColllectionOfComparelistItems = createAsyncThunk(
     try {
       const res = await axios.post(
         "http://localhost:5268/api/compare/AddRange",
-        items
+        items,
       );
 
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 export const deleteComparelistItem = createAsyncThunk(
@@ -75,21 +75,20 @@ export const deleteComparelistItem = createAsyncThunk(
   async (itemId, { rejectWithValue }) => {
     try {
       const res = await axios.delete(
-        `http://localhost:5268/api/compare?itemId=${itemId}`
+        `http://localhost:5268/api/compare?itemId=${itemId}`,
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 const initialState = {
-  compare: null,
+  compare: [],
   loading: false,
   success: false,
   error: null,
-  operation: null,
 };
 
 export const CompareSlice = createSlice({
@@ -97,16 +96,14 @@ export const CompareSlice = createSlice({
   initialState,
   reducers: {
     clearCompareState: (state) => {
-      state.compare = null;
+      state.compare = [];
       state.error = null;
       state.loading = false;
-      state.success = false;
-      state.operation = null;
     },
 
     getGuestCompareList: (state) => {
       const storedCompareList = JSON.parse(
-        sessionStorage.getItem("comparelist")
+        sessionStorage.getItem("comparelist"),
       );
       state.compare = storedCompareList || [];
       state.error = null;
@@ -115,29 +112,20 @@ export const CompareSlice = createSlice({
       state.ready = true;
       state.operation = GET_COMPARELIST;
     },
-    // update local comparelist state to be async with database :
     AddNewCompareListItemLocal: (state, action) => {
       const newItem = action.payload;
       if (
-        !state.compare ||
-        state.compare.length === 0 ||
         !state.compare.some((item) => item.product.id === newItem.product.id)
       ) {
         state.compare =
-          state.compare && state.compare.length > 0
-            ? [...state.compare, newItem]
-            : [newItem];
+          state.compare.length > 0 ? [newItem, ...state.compare] : [newItem];
 
-        if (newItem.userId) {
-          if (state.compare.length === 1)
-            localStorage.setItem("hasComparelist", true);
-        } else {
-          //add wishlist to session storage as guest wishlist
+        if (!newItem.userId) {
           sessionStorage.setItem("comparelist", JSON.stringify(state.compare));
         }
+        console.log("compare : ", state.compare);
       }
     },
-
     deleteComparelistItemLocal: (state, action) => {
       const itemId = action.payload;
       if (state.compare && state.compare.length > 0) {
@@ -153,38 +141,31 @@ export const CompareSlice = createSlice({
           } else {
             sessionStorage.setItem(
               "comparelist",
-              JSON.stringify(state.compare)
+              JSON.stringify(state.compare),
             );
           }
         }
       }
     },
-    // ========================================================
   },
   extraReducers: (builder) => {
     // get wishlist items :
     builder.addCase(getUserCompareList.pending, (state) => {
-      state.compare = null;
+      state.compare = [];
       state.loading = true;
       state.error = null;
-      state.success = false;
-      state.operation = GET_COMPARELIST;
     });
 
     builder.addCase(getUserCompareList.fulfilled, (state, action) => {
       state.compare = action.payload;
       state.loading = false;
-      state.success = true;
       state.error = null;
-      state.operation = GET_COMPARELIST;
     });
 
     builder.addCase(getUserCompareList.rejected, (state, action) => {
-      state.compare = null;
+      state.compare = [];
       state.loading = false;
       state.error = action.payload;
-      state.success = false;
-      state.operation = GET_COMPARELIST;
     });
   },
 });

@@ -14,11 +14,11 @@ namespace DataSource.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<(int Id, string Token)> AddRequestAsync(string  email,string role)
+        public async Task<(int Id, string Token)> AddRequestAsync(string  email)
         {
             // check if user (customer / admin) exists :
-            var UserId = await _dbContext.Users.AsNoTracking().
-                Where(u => u.Email == email && u.Role == role.Trim().ToLower())
+            var UserId = await _dbContext.Customers.AsNoTracking().
+                Where(u => u.Email == email)
                 .Select(u => u.Id).FirstOrDefaultAsync();
             if (UserId == 0)
                 throw new NotFoundException("Email not found");

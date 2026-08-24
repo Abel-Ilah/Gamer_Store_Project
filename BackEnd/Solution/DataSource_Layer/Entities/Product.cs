@@ -9,12 +9,10 @@ public partial class Product
 
     public string Name { get; set; } = null!;
    
-    public string? Description { get; set; } 
+    public string Description { get; set; } = string.Empty;
 
     public string? Details { get; set; } 
-
-    public string? About { get; set; } 
-
+     
     public decimal Price { get; set; }
 
     public int QuantityInStock { get; set; }
@@ -23,7 +21,7 @@ public partial class Product
 
     public DateOnly Date { get; set; }
 
-   
+   public bool IsDeleted { get; set; } = false;
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
    
     public virtual ICollection<CompareItem> CompareItems { get; set; } = new List<CompareItem>();

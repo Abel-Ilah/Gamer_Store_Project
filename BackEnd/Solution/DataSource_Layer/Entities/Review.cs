@@ -15,7 +15,7 @@ namespace DataSource.Entities
         public string? Comment { get; set; }
         public DateTime CreatedAt { get; set; }
         public Product Product { get; set; } = null!;
-        public User User { get; set; } = null!;
+        public Customer User { get; set; } = null!;
     }
 
 }

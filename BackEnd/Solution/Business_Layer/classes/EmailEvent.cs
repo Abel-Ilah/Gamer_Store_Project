@@ -9,7 +9,6 @@ namespace Services.classes
     public class EmailEvent
     {
         public string Email { get; set; } = null!;
-        public string UserType { get; set; } = null!; // verify | reset
         public string Payload { get; set; } = null!;
     }
 

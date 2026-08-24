@@ -86,6 +86,7 @@ export function SignUp() {
       .catch((err) => {
         setLoading(false);
         setErrors([err]);
+        console.log("the error is : ", err);
       });
   }
 

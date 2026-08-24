@@ -1,0 +1,36 @@
+#back-button-cmp {
+  min-width: auto;
+  padding: 0 var(--space-1);
+  background: none;
+  height: fit-content;
+  color: var(--text-2);
+  box-shadow: none;
+  text-transform: none;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.dark #back-button-cmp {
+  background-color: transparent;
+}
+#back-button-cmp:hover {
+  color: var(--main-color);
+}
+@media (max-width: 600px) {
+  #back-button-cmp {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--text-3);
+  }
+
+  #back-button-cmp .MuiButton-startIcon {
+    margin: 0;
+  }
+
+  #back-button-cmp {
+    font-size: 0;
+  }
+}

@@ -18,5 +18,7 @@ namespace DataSource.DTOs.admin
         public string? Search { get; set; }
 
         public int? CategoryId { get; set; }
+
+        public bool Deleted { get; set; } = false;
     }
 }

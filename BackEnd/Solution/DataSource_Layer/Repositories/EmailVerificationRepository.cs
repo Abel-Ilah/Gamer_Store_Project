@@ -22,14 +22,14 @@ namespace DataSource.Repositories
 
         public async Task<int> AddAsync(EmailVerification newVerification)
         {
-            bool exists = await _context.Users
+            bool exists = await _context.Customers
             .AnyAsync(u => u.Id == newVerification.UserId);
 
             if (!exists)
                 throw new NotFoundException("user not found");
             
 
-            bool isConfirmed = await _context.Users
+            bool isConfirmed = await _context.Customers
                 .Where(u => u.Id == newVerification.UserId)
                 .Select(u => u.IsEmailConfirmed)
                 .FirstAsync();

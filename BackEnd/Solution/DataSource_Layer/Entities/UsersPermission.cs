@@ -9,5 +9,5 @@ public partial class UsersPermission
 
     public byte Permissions { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    public virtual Customer User { get; set; } = null!;
 }

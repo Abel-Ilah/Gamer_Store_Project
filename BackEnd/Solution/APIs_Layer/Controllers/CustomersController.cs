@@ -36,38 +36,18 @@ namespace APIs.Controllers
             }
         }
 
-
-        [HttpGet("{id}",Name ="find")]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<User>>> FindAsync(int id)
-        {
-            try
-            {
-                var User = await _customerService.FindAsync(id);
-                return User != null ? Ok(User) : NotFound($"User with id [{id}] not found!");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-      
-
-        [HttpPost("add")]
+        [HttpPost("add/me")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserReadDTO>>AddCustomerAsync(UserWriteDTO customer)
+        public async Task<ActionResult<DataSource.DTOs.CustomerInfoDTO>>AddCustomerAsync(AddCustomerDTO customer)
         {
             try
             {
                  customer.Id =  await _customerService.AddAsync(customer);
 
-                    var createdCustomer = new UserReadDTO
+                    var createdCustomer = new DataSource.DTOs.CustomerInfoDTO
                     {
                         Id = customer.Id,
                         FirstName = customer.FirstName,
@@ -83,7 +63,7 @@ namespace APIs.Controllers
             }
             catch(AlreadyExitsException ex)
             {
-                return Conflict(new {message =  ex.Message});
+                return Conflict(ex.Message);
             }
             catch (Exception ex)
             {
@@ -91,12 +71,12 @@ namespace APIs.Controllers
             }
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/me")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteCustomerAsync(int id)
+        public async Task<ActionResult> DeleteMeAsync(int id)
         {
             if(id <= 0) return BadRequest("Invalid customer id.");
             try
@@ -115,11 +95,11 @@ namespace APIs.Controllers
         }
 
 
-        [HttpPut("update-personal-info")]
+        [HttpPut("update-my-info")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdatePerosonalInfoAsync(PersonalInfoDTO info)
+        public async Task<ActionResult> UpdatePerosonalInfoAsync(CustomerPersonalInfoDTO info)
         {
             if (info == null) return BadRequest("object is empty");
             if (info.Id <= 0) return BadRequest("Invalid UserId.");
@@ -128,7 +108,7 @@ namespace APIs.Controllers
 
             try
             {
-               bool IsUpdated =  await _customerService.UpdatePersonalInfo(info);
+               bool IsUpdated =  await _customerService.UpdateAsync(info);
                 return IsUpdated? Ok("Info Updated successfully."): StatusCode(500, "something went wrong");
             }
             catch (NotFoundException ex)
@@ -142,8 +122,7 @@ namespace APIs.Controllers
         }
 
 
-
-        [HttpPut("change-password")]
+        [HttpPut("change-my-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -175,6 +154,8 @@ namespace APIs.Controllers
             }
            
         }
+
+
 
     }
 }

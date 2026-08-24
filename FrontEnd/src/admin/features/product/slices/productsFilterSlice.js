@@ -16,6 +16,7 @@ const initialState = {
   productType: ProductType.All,
   pageNumber: 1,
   pageSize: 20,
+  deleted: false,
 };
 
 const productsFilterSlice = createSlice({
@@ -25,27 +26,38 @@ const productsFilterSlice = createSlice({
     setSearch(state, action) {
       state.search = action.payload;
       state.pageNumber = 1;
+      state.productType = ProductType.All;
+      state.categoryId = null;
     },
 
     setCategory(state, action) {
       state.categoryId = action.payload;
       state.pageNumber = 1;
+      state.productType = ProductType.All;
+      state.search = "";
+      state.deleted = false;
     },
 
     setProductType(state, action) {
       state.productType = action.payload;
       state.pageNumber = 1;
+      state.categoryId = null;
+      state.search = "";
+      state.deleted = false;
     },
 
     setPageNumber(state, action) {
       state.pageNumber = action.payload;
     },
-
-    setPageSize(state, action) {
-      state.pageSize = action.payload;
+    setDeleteStatus(state, action) {
+      const isDeleted = action.payload;
+      console.log("isdeleted ? ,", isDeleted);
+      state.deleted = isDeleted;
+      state.search = "";
       state.pageNumber = 1;
+      state.productType = ProductType.All;
+      state.categoryId = null;
     },
-
     resetFilter() {
       return initialState;
     },
@@ -64,9 +76,9 @@ export const {
   setCategory,
   setProductType,
   setPageNumber,
-  setPageSize,
   resetFilter,
   setFilter,
+  setDeleteStatus,
 } = productsFilterSlice.actions;
 
 export default productsFilterSlice.reducer;

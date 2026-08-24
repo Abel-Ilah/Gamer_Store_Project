@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../../../components/Arrows.css";
 import "./TopReviews.css";
-import { getTopReviews } from "../../review/slices/reviewSlice";
+import { getTopReviews } from "../../../../common/APIs/ReviewAPIs";
 import { ReviewCard } from "./ReviewCard";
 import { ProductsListHeader } from "../../product/components/ProductsListHeader";
 

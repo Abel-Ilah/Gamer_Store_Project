@@ -131,26 +131,6 @@ export function Sidebar({ isSidebarFixed }) {
         )}
         {/* ========== */}
 
-        {/* categories */}
-
-        <ListItemButton
-          className={`item categories ${
-            openSection === "categories" ? "active" : ""
-          }`}
-          onClick={() => {
-            handleActiveBtn("categories");
-            handleOpenSection("categories");
-            navigate("/admin/categories");
-          }}
-        >
-          <ListItemIcon>
-            <CategoryOutlinedIcon />
-          </ListItemIcon>
-          <ListItemText primary={expand ? "Categories" : ""} />
-        </ListItemButton>
-
-        {/* ========== */}
-
         {/* orders */}
         <ListItemButton
           className={`item orders ${openSection === "orders" ? "active" : ""}`}
@@ -196,56 +176,43 @@ export function Sidebar({ isSidebarFixed }) {
           </Collapse>
         )}
         {/* ========== */}
+
+        {/* categories */}
+
+        <ListItemButton
+          className={`item categories ${
+            openSection === "categories" ? "active" : ""
+          }`}
+          onClick={() => {
+            handleActiveBtn("categories");
+            handleOpenSection("categories");
+            navigate("/admin/categories");
+          }}
+        >
+          <ListItemIcon>
+            <CategoryOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary={expand ? "Categories" : ""} />
+        </ListItemButton>
+
+        {/* ========== */}
+
         {/* customers */}
         <ListItemButton
-          className={`item customers ${
-            openSection === "customers" ? "active" : ""
+          className={`item all-customers ${
+            activeBtn === "all-customers" ? "active" : ""
           }`}
-          onClick={() => handleOpenSection("customers")}
+          onClick={() => {
+            handleActiveBtn("all-customers");
+            navigate("/admin/customers");
+          }}
         >
           <ListItemIcon>
             <AccountCircleOutlinedIcon />
           </ListItemIcon>
-          <ListItemText primary={expand ? "Customers" : ""} />
-          {expand &&
-            (openSection === "customers" ? <ExpandLess /> : <ExpandMore />)}
+          <ListItemText primary={expand ? "All customers" : ""} />
         </ListItemButton>
 
-        {expand && (
-          <Collapse
-            in={openSection === "customers"}
-            timeout="auto"
-            unmountOnExit
-          >
-            <List component="div" disablePadding>
-              <ListItemButton
-                className={`item all-customers ${
-                  activeBtn === "all-customers" ? "active" : ""
-                }`}
-                sx={{ pl: 4 }}
-                onClick={() => handleActiveBtn("all-customers")}
-              >
-                <ListItemIcon>
-                  <KeyboardArrowRightOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary={expand ? "All customers" : ""} />
-              </ListItemButton>
-
-              <ListItemButton
-                className={`item new-customer ${
-                  activeBtn === "new-customer" ? "active" : ""
-                }`}
-                sx={{ pl: 4 }}
-                onClick={() => handleActiveBtn("new-customer")}
-              >
-                <ListItemIcon>
-                  <KeyboardArrowRightOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary={expand ? "New Customer" : ""} />
-              </ListItemButton>
-            </List>
-          </Collapse>
-        )}
         {/* ========== */}
         {/* analytics */}
         <ListItemButton

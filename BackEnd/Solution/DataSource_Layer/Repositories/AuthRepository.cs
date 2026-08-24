@@ -19,10 +19,10 @@ namespace DataSource.Repositories
             _context = context;
         }
 
-        public async Task<User?> Login(LoginRequestDTO credentials)
+        public async Task<Customer?> CustomerLogin(LoginRequestDTO credentials)
         {
-            var user = await _context.Users.AsNoTracking()
-            .SingleOrDefaultAsync(u => !u.IsDeleted && u.Email == credentials.Email && u.Password == credentials.Password && u.Role.ToLower().Trim() == credentials.Role.ToLower().Trim());
+            var user = await _context.Customers.AsNoTracking()
+            .SingleOrDefaultAsync(u => !u.IsDeleted && u.Email == credentials.UserName && u.Password == credentials.Password);
             return user;
         }
 

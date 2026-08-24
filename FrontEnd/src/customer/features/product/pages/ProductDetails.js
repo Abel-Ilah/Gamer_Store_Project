@@ -11,9 +11,11 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import MessageIcon from "@mui/icons-material/Message";
 import Divider from "@mui/material/Divider";
-
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import settings from "../../../../appsettings.json";
 import {
   AddNewItem,
@@ -25,17 +27,29 @@ import {
   SEVERITY_SUCCESS,
   showMessage,
 } from "../../snackbar/SnackbarSlice";
-import { LoadingPage } from "../../../components/LoadingPage";
-import { Review } from "../../review/components/Review";
 import { AddReview } from "../../review/components/AddReview";
-import { getProductById } from "../../product/slices/productSlice";
-import { getProductReviews } from "../../review/slices/reviewSlice";
 import {
   addNewWishlistItem,
   AddNewWishlistItemLocal,
 } from "../../wishlist/slices/WishlistSlice";
+import Tooltip from "@mui/material/Tooltip";
+import { IconButton, Typography } from "@mui/material";
+import { getProductDetails } from "../slices/productsSlice";
+import {
+  deleteReview,
+  getProductReviews,
+} from "../../../../common/APIs/ReviewAPIs";
+import { GetImage, GetMainImageURL } from "../../../../common/js/helpers";
+import LoadingProgress from "../../../../common/components/LoadingProgress";
+import ErrorMessage from "../../../../common/components/ErrorMessage";
+import BackButton from "../../../../common/components/BackButton";
+import {
+  addNewComparelistItem,
+  AddNewCompareListItemLocal,
+} from "../../Compare/slices/CompareSlice";
 
-export function ProductDetails() {
+export function ProductDetails({ onBack = () => {} }) {
+  // states management ===========
   const [productState, setProductState] = useState({
     product: null,
     loading: false,
@@ -53,54 +67,75 @@ export function ProductDetails() {
     success: false,
     operation: null,
   });
-
+  const [addToComparePending, setAddToComparePending] = useState(false);
+  const [reviewsState, setReviewsState] = useState({
+    reviews: [],
+    loading: false,
+    error: null,
+    hasMore: false,
+  });
+  const [reviewsToDelete, setReviewsToDelete] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [quantity, setQuantity] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  // ===============================
+  //  variables ====================
+  //productID :
+  const { id: productId } = useParams();
   const { customer: user } = useSelector((state) => state.customerAuth);
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
-
-  const { reviews: productReviews } = useSelector((state) => state.review);
-
+  const { compare } = useSelector((state) => state.compare);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // product-id:
-  const { id } = useParams();
+  const isProductInCart = useMemo(() => {
+    if (!cart || cart.length === 0) return false;
+    return cart.some((item) => item.product.id === +productId);
+  }, [cart, productId]);
+  const isProductInWishlist = useMemo(() => {
+    if (!wishlist || wishlist.length === 0) return false;
+    return wishlist.some((item) => item.product.id === +productId);
+  }, [wishlist, productId]);
 
-  useEffect(() => {
-    setProductState({ product: null, loading: true, error: null });
-    dispatch(getProductById(id))
-      .unwrap()
-      .then((product) => {
-        setProductState({ product: product, loading: false, error: null });
-
-        dispatch(getProductReviews(product.id));
-      })
-      .catch((err) =>
-        setProductState({ product: null, loading: false, error: err }),
-      );
-  }, [id, dispatch]);
+  const isProductIComparelist = useMemo(() => {
+    if (!compare || compare.length === 0) return false;
+    return compare.some((item) => item.product.id === +productId);
+  }, [compare, productId]);
 
   const realPrice = useMemo(() => {
     return productState.product
       ? calculatePrice(
           productState.product.price,
-          productState.product.discountValue,
+          productState.product.discount,
         )
       : 0;
   }, [productState.product]);
 
-  const isProductInCart = useMemo(() => {
-    if (!cart || cart.length === 0) return false;
-    return cart.some((item) => item.product.id === +id);
-  }, [cart, id]);
+  // ===============================
+  useEffect(() => {
+    setProductState({ loading: true, error: null, product: null });
+    if (productId) {
+      dispatch(getProductDetails(productId))
+        .unwrap()
+        .then((product) => {
+          setProductState({ loading: false, error: null, product: product });
+          setSelectedImage(GetMainImageURL(product.images));
+          if (product.totalReviews > 0) {
+            handleGetReviews(product.id, pageNumber);
+          }
+        })
+        .catch((err) => {
+          setProductState({ loading: false, error: err, product: null });
+        });
+    }
+  }, [productId, dispatch]);
 
-  const isProductInWishlist = useMemo(() => {
-    if (!wishlist || wishlist.length === 0) return false;
-    return wishlist.some((item) => item.product.id === +id);
-  }, [wishlist, id]);
-
-  const [quantity, setQuantity] = useState(1);
-
-  const [totalPrice, setTotalPrice] = useState(null);
+  useEffect(() => {
+    if (productId && pageNumber > 1) {
+      handleGetReviews(productId, pageNumber);
+    }
+  }, [pageNumber, productId]);
 
   useEffect(() => {
     if (realPrice && !isNaN(realPrice)) {
@@ -108,6 +143,76 @@ export function ProductDetails() {
     }
   }, [realPrice, quantity]);
 
+  //  handlers ======================
+
+  function handleGetReviews(productId, page) {
+    setReviewsState((prev) => ({
+      ...prev,
+      loading: true,
+      error: null,
+    }));
+
+    dispatch(
+      getProductReviews({
+        productId: productId,
+        pageNumber: page,
+        pageSize: settings.reviewsPerRequest,
+      }),
+    )
+      .unwrap()
+      .then((rv) => {
+        setReviewsState((prev) => ({
+          ...prev,
+          reviews: [...prev.reviews, ...rv],
+          loading: false,
+          error: null,
+          hasMore: rv.length === settings.reviewsPerRequest,
+        }));
+      })
+      .catch((err) => {
+        setReviewsState((prev) => ({
+          ...prev,
+          loading: false,
+          error: err,
+          hasMore: false,
+        }));
+      });
+  }
+  function handleDeleteReview(reviewId) {
+    setReviewsToDelete((prev) => [...prev, reviewId]);
+    dispatch(deleteReview(reviewId))
+      .unwrap()
+      .then(() => {
+        dispatch(
+          showMessage({
+            message: "the review has been deleted",
+            severity: SEVERITY_SUCCESS,
+          }),
+        );
+        setReviewsState((prev) => ({
+          ...prev,
+          reviews: reviewsState.reviews.filter((rv) => rv.id !== reviewId),
+        }));
+        setProductState((prev) => ({
+          ...prev,
+          product: {
+            ...prev.product,
+            totalReviews: prev.product.totalReviews - 1,
+          },
+        }));
+      })
+      .catch((err) => {
+        dispatch(
+          showMessage({
+            message: err,
+            severity: SEVERITY_ERROR,
+          }),
+        );
+      })
+      .finally(() => {
+        setReviewsToDelete((prev) => prev.filter((id) => id !== reviewId));
+      });
+  }
   function handleAddToCart() {
     const product = productState.product;
     const cartItemProduct = {
@@ -115,9 +220,9 @@ export function ProductDetails() {
       name: product.name,
       price: product.price,
       date: product.date,
-      quantityInStock: product.quantityInStock,
-      discountValue: product.discountValue,
-      imageUrl: getMainImageUrl(),
+      quantityInStock: product.quantity,
+      discountValue: product.discount,
+      imageUrl: GetMainImageURL(product.images),
     };
 
     if (user) {
@@ -177,7 +282,6 @@ export function ProductDetails() {
       dispatch(AddNewItemLocal(newItem));
     }
   }
-
   function handleAddToWishlist() {
     const product = productState.product;
     const wishlistItemProduct = {
@@ -185,9 +289,9 @@ export function ProductDetails() {
       name: product.name,
       price: product.price,
       date: product.date,
-      quantityInStock: product.quantityInStock,
-      discountValue: product.discountValue,
-      imageUrl: getMainImageUrl(),
+      quantityInStock: product.quantity,
+      discountValue: product.discount,
+      imageUrl: GetMainImageURL(product.images),
     };
     if (user) {
       setWishlistItemStatus({
@@ -247,6 +351,58 @@ export function ProductDetails() {
       dispatch(AddNewWishlistItemLocal(newItem));
     }
   }
+  function handleAddToComparelist() {
+    const p = productState.product;
+    const itemProduct = {
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      quantityInStock: p.quantity,
+      discountValue: p.discount,
+      rating: p.rating,
+      imageUrl: GetMainImageURL(p.images),
+    };
+    if (user) {
+      setAddToComparePending(true);
+      dispatch(
+        addNewComparelistItem({
+          userId: user.id,
+          productId: productState.product.id,
+        }),
+      )
+        .unwrap()
+        .then((addedItem) => {
+          const localItem = {
+            id: addedItem.id,
+            userId: addedItem.userId,
+            product: itemProduct,
+          };
+          dispatch(AddNewCompareListItemLocal(localItem));
+          dispatch(
+            showMessage({
+              message: "The product has been added to your compare list.",
+              severity: SEVERITY_SUCCESS,
+            }),
+          );
+        })
+        .catch((err) => {
+          dispatch(
+            showMessage({
+              message: err,
+              severity: SEVERITY_ERROR,
+            }),
+          );
+        })
+        .finally(() => setAddToComparePending(false));
+    } else {
+      const newItem = {
+        id: crypto.randomUUID(),
+        userId: null,
+        product: itemProduct,
+      };
+      dispatch(AddNewCompareListItemLocal(newItem));
+    }
+  }
   function handleBuyNow() {
     const product = productState.product;
     navigate("/checkout", {
@@ -259,72 +415,11 @@ export function ProductDetails() {
           date: product.date,
           quantityInStock: product.quantityInStock,
           discountValue: product.discountValue,
-          imageUrl: getMainImageUrl(),
+          imageUrl: GetMainImageURL(),
         },
         quantity,
       },
     });
-  }
-
-  function generateProductDetails() {
-    const details = productState.product.details
-      ? productState.product.details.split("||")
-      : null;
-    return details != null ? (
-      <table style={{ marginTop: "20px" }}>
-        <tbody>
-          {details.map((element, index) => {
-            const [key, val] = element.split(":");
-            return key !== null && key !== "" ? (
-              <tr
-                key={index}
-                style={{
-                  textAlign: "start",
-                  fontSize: "18px",
-                  height: "35px",
-                }}
-              >
-                <td>
-                  <span
-                    style={{
-                      marginRight: "20px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {key}
-                  </span>
-                </td>
-                <td>
-                  <span>{val}</span>
-                </td>
-              </tr>
-            ) : null;
-          })}
-        </tbody>
-      </table>
-    ) : null;
-  }
-  function generateProductAbout() {
-    const about = productState.product.about
-      ? productState.product.about.split("||")
-      : null;
-    return about ? (
-      <div className="about-product">
-        <h5 className="sub-title">About item</h5>
-        <ul
-          style={{
-            listStyle: "outside",
-            textAlign: "start",
-            fontSize: "18px",
-            lineHeight: "1.8",
-          }}
-        >
-          {about.map((element) => (
-            <li style={{ padding: "5px 0", marginLeft: "25px" }}>{element}</li>
-          ))}
-        </ul>
-      </div>
-    ) : null;
   }
   function calculatePrice(price, discountValue = 0) {
     if (typeof price !== "number") return 0;
@@ -332,208 +427,312 @@ export function ProductDetails() {
       discountValue === 0 ? price : price - (price * discountValue) / 100;
     return newPrice.toFixed(2);
   }
-  function addCloudinaryTransform(
-    url,
-    transform = "w_800,c_fill,q_auto,f_auto",
-  ) {
-    return url.length > 0
-      ? url.replace("/upload/", `/upload/${transform}/`)
-      : url;
+  function addReviewToLocalState(review) {
+    setReviewsState((prev) => ({
+      ...prev,
+      reviews: [review, ...prev.reviews],
+    }));
   }
-  function getMainImageUrl() {
-    if (
-      !productState.product ||
-      !Array.isArray(productState.product.images) ||
-      productState.product.images.length === 0
-    ) {
-      return "";
-    }
+  function handleViewMoreClick() {
+    setPageNumber((prev) => prev + 1);
+  }
+  // ===============================
 
-    const mainImage = productState.product.images.find((img) => img.isMain);
-    return mainImage
-      ? mainImage.imageUrl
-      : productState.product.images[0].imageUrl;
-  }
-  if (productState.loading) return <LoadingPage />;
-  if (productState.error) return <p>Error: {productState.error}</p>;
-  if (!productState.product) return <p>No product found.</p>;
-  else
-    return (
-      <div className="product-details">
-        <Container maxWidth="xl">
-          <div className="box">
-            <Grid container spacing={1}>
-              <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
-                <div className="images">
+  return (
+    <div className="product-details">
+      <Container maxWidth="xl">
+        <div className="product-page-header">
+          <BackButton />
+
+          <h1 className="page-title">Product Details</h1>
+        </div>
+        {productState.loading && (
+          <div className="product-loading">
+            <LoadingProgress />
+          </div>
+        )}
+        {productState.error && <ErrorMessage message={productState.error} />}
+        {productState.product && (
+          <>
+            {/* ================= MAIN PRODUCT ================= */}
+            <div className="product-main">
+              {/* ---------- IMAGE ---------- */}
+              <div className="product-image-card">
+                {/* Large image */}
+                <div className="image-wrapper">
+                  {productState.product.discount > 0 && (
+                    <span className="discount-badge-image">
+                      -{productState.product.discount}%
+                    </span>
+                  )}
+
                   <img
-                    className="image"
-                    src={addCloudinaryTransform(getMainImageUrl())}
-                    alt="product"
+                    src={GetImage(selectedImage, 600)}
+                    alt={productState.product.name}
+                    className="product-image"
                   />
                 </div>
-              </Grid>
-              <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
-                <div className="info">
-                  <div>
-                    <h3 className="product-name">
-                      {productState.product.name}
-                    </h3>
-                    <div className="rating">
-                      <Rating
-                        name="read-only"
-                        value={
-                          productState.product.rating > 0
-                            ? productState.product.rating
-                            : 5
-                        }
-                        readOnly
-                        precision={0.5}
-                      />
-                      <span style={{ fontSize: "18px", fontWeight: "bold" }}>
-                        {"("}
-                        {productState.product.reviewsCount}
-                        <MessageIcon
-                          style={{
-                            fontSize: "20px",
-                            color: "teal",
-                            marginLeft: "1px",
-                          }}
+
+                {/* Image thumbnails */}
+                {productState.product.images?.length > 1 && (
+                  <div className="image-thumbnails">
+                    {productState.product.images.map((img, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className={`image-thumbnail ${
+                          selectedImage === img.imageUrl ? "selected" : ""
+                        }`}
+                        onClick={() => setSelectedImage(img.imageUrl)}
+                      >
+                        <img
+                          src={GetImage(img.imageUrl, 120)}
+                          alt={`${productState.product.name} ${index + 1}`}
                         />
-                        {")"}
-                      </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* ---------- PRODUCT INFO ---------- */}
+              <div className="product-info-card">
+                {/* Header */}
+                <div className="product-header">
+                  <span className="category">
+                    {productState.product.category}
+                  </span>
+
+                  <h1 className="product-name">{productState.product.name}</h1>
+
+                  <div className="rating">
+                    <Rating
+                      name="product-rating"
+                      value={productState.product.rating || 0}
+                      readOnly
+                      precision={0.5}
+                    />
+
+                    <span className="rating-value">
+                      {productState.product.rating > 0
+                        ? productState.product.rating.toFixed(1)
+                        : "No rating"}
+                    </span>
+
+                    <span className="review-count">
+                      ({productState.product.totalReviews} reviews)
+                    </span>
+                  </div>
+                </div>
+
+                <Divider />
+
+                {/* Price */}
+                <div className="price-section">
+                  {productState.product.discount > 0 && (
+                    <span className="old-price">
+                      {productState.product.price} {settings.currrency}
+                    </span>
+                  )}
+
+                  <span className="new-price">
+                    {realPrice} {settings.currrency}
+                  </span>
+
+                  {productState.product.discount > 0 && (
+                    <span className="discount-badge">
+                      -{productState.product.discount}%
+                    </span>
+                  )}
+                </div>
+
+                {/* Stock */}
+                <div
+                  className={`stock ${
+                    productState.product.quantity > 0
+                      ? "in-stock"
+                      : "out-of-stock"
+                  }`}
+                >
+                  <span className="stock-dot"></span>
+
+                  {productState.product.quantity > 0
+                    ? `In Stock — ${productState.product.quantity} available`
+                    : "Out of Stock"}
+                </div>
+
+                {/* ================= DETAILS ================= */}
+                {productState.product.details &&
+                  productState.product.details.length > 0 && (
+                    <div className="product-specifications">
+                      <div className="specifications-list">
+                        {productState.product.details.map((item, index) => (
+                          <div className="specification-row" key={index}>
+                            <span className="specification-name">
+                              {item.name}
+                            </span>
+
+                            <span className="specification-value">
+                              {item.value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="price" style={{ textAlign: "start" }}>
-                      {productState.product.discountValue > 0 && (
-                        <span className="old-price">
-                          {productState.product.price} {settings.currrency}
-                        </span>
-                      )}
-                      <span className="new-price">
-                        {realPrice} {settings.currrency}
-                      </span>
-                    </div>
-                    <h5
-                      style={{
-                        color:
-                          productState.product.quantityInStock > 0
-                            ? "green"
-                            : "orange",
-                        textAlign: "start",
-                        margin: 0,
+                  )}
+
+                {/* ================= CTA ================= */}
+                <div className="product-cta">
+                  <div className="total-price">
+                    <span>Total Price</span>
+
+                    <strong>
+                      {totalPrice !== null
+                        ? `${totalPrice.toFixed(2)} ${settings.currrency}`
+                        : "Calculating..."}
+                    </strong>
+                  </div>
+
+                  <Grid className="btns" container gap={1} spacing={1}>
+                    {/* Quantity */}
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 3,
+                        md: 7,
+                        lg: 3,
+                      }}
+                      order={{
+                        xs: 1,
+                        lg: 1,
                       }}
                     >
-                      {productState.product.quantityInStock > 0
-                        ? "IN STOCK"
-                        : "OUT OF STOCK"}
-                    </h5>
-                    <div className="details">{generateProductDetails()}</div>
-                  </div>
-                  <div className="product-cta">
-                    <div className="total-price">
-                      Total Price :{" "}
-                      <span>
-                        {totalPrice !== null
-                          ? `${totalPrice.toFixed(2)} ${settings.currrency}`
-                          : "Calculating..."}
-                      </span>
-                    </div>
+                      <div className="quantity">
+                        <button
+                          className="minus"
+                          onClick={() => {
+                            setQuantity((prevQuantity) => {
+                              const newQuantity = prevQuantity - 1;
 
-                    <Grid className="btns" container spacing={1}>
-                      <Grid
-                        size={{ xs: 12, sm: 3, md: 7, lg: 3 }}
-                        order={{ xs: 1, lg: 1 }}
-                      >
-                        <div className="quantity">
-                          <button
-                            variant="contained"
-                            className="minus"
-                            onClick={() => {
-                              setQuantity((prevQuantity) => {
-                                const newQuantity = prevQuantity - 1;
-                                setTotalPrice(realPrice * newQuantity);
-                                return newQuantity;
-                              });
-                            }}
-                            disabled={quantity === 1}
-                            style={{
-                              color: quantity > 1 ? "orange" : "gray",
-                            }}
-                          >
-                            -
-                          </button>
-                          <input
-                            type="text"
-                            className="number"
-                            disabled
-                            value={quantity}
-                          />
-                          <button
-                            className="plus"
-                            onClick={() => {
-                              setQuantity((prevQuantity) => {
-                                const newQuantity = prevQuantity + 1;
-                                setTotalPrice(realPrice * newQuantity);
-                                return newQuantity;
-                              });
-                            }}
-                            disabled={
-                              quantity === productState.product.quantityInStock
-                            }
-                            style={{
-                              color:
-                                quantity < productState.product.quantityInStock
-                                  ? "orange"
-                                  : "gray",
-                            }}
-                          >
-                            +
-                          </button>
-                        </div>
-                      </Grid>
-                      <Grid
-                        size={{ xs: 9, sm: 9, md: 12, lg: 9 }}
-                        order={{ xs: 2, sm: 2, md: 4, lg: 2 }}
-                      >
-                        <Button
-                          loading={addToCartStatus.loading}
-                          loadingIndicator={
-                            <CircularProgress
-                              size={25}
-                              style={{ color: "white" }}
-                            />
-                          }
-                          variant="contained"
-                          className="add-to-cart"
-                          onClick={handleAddToCart}
-                          disabled={
-                            productState.product.quantityInStock === 0 ||
-                            isProductInCart
-                          }
-                          style={
-                            isProductInCart
-                              ? { backgroundColor: "#cccccc" }
-                              : null
-                          }
+                              setTotalPrice(realPrice * newQuantity);
+
+                              return newQuantity;
+                            });
+                          }}
+                          disabled={quantity === 1}
                         >
-                          add to cart <ShoppingCartIcon />
-                        </Button>
-                      </Grid>
-                      <Grid
-                        size={{ xs: 3, sm: 1.5, md: 2.5, lg: 1.5 }}
-                        order={3}
+                          −
+                        </button>
+
+                        <input
+                          type="text"
+                          className="number"
+                          disabled
+                          value={quantity}
+                        />
+
+                        <button
+                          className="plus"
+                          onClick={() => {
+                            setQuantity((prevQuantity) => {
+                              const newQuantity = prevQuantity + 1;
+
+                              setTotalPrice(realPrice * newQuantity);
+
+                              return newQuantity;
+                            });
+                          }}
+                          disabled={quantity === productState.product.quantity}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </Grid>
+
+                    {/* Add to cart */}
+                    <Grid
+                      size={{
+                        xs: 9,
+                        sm: 9,
+                        md: 12,
+                        lg: 9,
+                      }}
+                      order={{
+                        xs: 2,
+                        sm: 2,
+                        md: 4,
+                        lg: 2,
+                      }}
+                    >
+                      <Button
+                        loading={addToCartStatus.loading}
+                        loadingIndicator={
+                          <CircularProgress
+                            size={25}
+                            style={{ color: "white" }}
+                          />
+                        }
+                        variant="contained"
+                        className="add-to-cart"
+                        onClick={handleAddToCart}
+                        disabled={
+                          productState.product.quantity === 0 || isProductInCart
+                        }
+                        style={
+                          isProductInCart
+                            ? {
+                                backgroundColor: "#cccccc",
+                              }
+                            : null
+                        }
                       >
+                        {isProductInCart ? "Added to Cart" : "Add to Cart"}
+
+                        <ShoppingCartIcon />
+                      </Button>
+                    </Grid>
+
+                    {/* Compare */}
+                    <Grid
+                      size={{
+                        xs: 3,
+                        sm: 1.5,
+                        md: 2.5,
+                        lg: 1.5,
+                      }}
+                      order={3}
+                    >
+                      <Tooltip title="Compare">
                         <Button
                           variant="contained"
                           className="compare"
-                          disabled={productState.product.quantityInStock === 0}
+                          disabled={
+                            productState.product.quantity === 0 ||
+                            isProductIComparelist
+                          }
+                          onClick={handleAddToComparelist}
                         >
                           <AutorenewIcon />
                         </Button>
-                      </Grid>
-                      <Grid
-                        size={{ xs: 3, sm: 1.5, md: 2.5, lg: 1.5 }}
-                        order={{ xs: 5, sm: 2, md: 2, lg: 4 }}
-                      >
+                      </Tooltip>
+                    </Grid>
+
+                    {/* Wishlist */}
+                    <Grid
+                      size={{
+                        xs: 3,
+                        sm: 1.5,
+                        md: 2.5,
+                        lg: 1.5,
+                      }}
+                      order={{
+                        xs: 5,
+                        sm: 2,
+                        md: 2,
+                        lg: 4,
+                      }}
+                    >
+                      <Tooltip title="Add to wishlist">
                         <Button
                           loading={wishlistItemStatus.loading}
                           loadingIndicator={
@@ -546,62 +745,150 @@ export function ProductDetails() {
                           className="wishlist"
                           onClick={handleAddToWishlist}
                           disabled={
-                            productState.product.quantityInStock === 0 ||
+                            productState.product.quantity === 0 ||
                             isProductInWishlist
                           }
                           style={
                             isProductInWishlist
-                              ? { backgroundColor: "#cccccc" }
+                              ? {
+                                  backgroundColor: "#cccccc",
+                                }
                               : null
                           }
                         >
                           <FavoriteIcon />
                         </Button>
-                      </Grid>
-                      <Grid
-                        size={{ xs: 9, sm: 9, md: 12, lg: 9 }}
-                        order={{ xs: 4, sm: 5, md: 5, lg: 5 }}
-                      >
-                        <Button
-                          variant="contained"
-                          className="buy-now"
-                          onClick={handleBuyNow}
-                          disabled={productState.product.quantityInStock === 0}
-                        >
-                          buy now <LocalMallIcon />
-                        </Button>
-                      </Grid>
+                      </Tooltip>
                     </Grid>
-                  </div>
+
+                    {/* Buy now */}
+                    <Grid
+                      size={{
+                        xs: 9,
+                        sm: 9,
+                        md: 12,
+                        lg: 9,
+                      }}
+                      order={{
+                        xs: 4,
+                        sm: 5,
+                        md: 5,
+                        lg: 5,
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        className="buy-now"
+                        onClick={handleBuyNow}
+                        disabled={productState.product.quantity === 0}
+                      >
+                        Buy Now
+                        <LocalMallIcon />
+                      </Button>
+                    </Grid>
+                  </Grid>
                 </div>
-              </Grid>
-            </Grid>
-            {generateProductAbout()}
-            <Divider style={{ height: "1px", backgroundColor: "black" }} />
-            {productState.product.description && (
-              <div className="product-description">
-                <h5 className="sub-title">Description</h5>
-                <p style={{ textAlign: "start", lineHeight: "1.8" }}>
-                  {productState.product.description}
-                </p>
-                <Divider style={{ height: "1px", backgroundColor: "black" }} />
               </div>
-            )}
-            <div className="reviews">
-              <AddReview productId={productState.product.id} />
-              {productReviews && productReviews.length > 0 && (
-                <div>
-                  <h5 className="sub-title" style={{ marginBottom: "15px" }}>
-                    Last Reviews
-                  </h5>
-                  {productReviews.map((r, i) => (
-                    <Review review={r} key={i} />
-                  ))}
-                </div>
-              )}
             </div>
-          </div>
-        </Container>
-      </div>
-    );
+
+            {/* ================= DESCRIPTION ================= */}
+            {productState.product.description && (
+              <section className="product-section description">
+                <h2 className="description-title">Description</h2>
+
+                <p className="text">{productState.product.description}</p>
+              </section>
+            )}
+
+            {/* ================= REVIEWS ================= */}
+            {(user || reviewsState.reviews.length > 0) && (
+              <section className="product-section reviews-section">
+                <AddReview
+                  productId={productState.product.id}
+                  onAdd={addReviewToLocalState}
+                />
+                {reviewsState.reviews.length > 0 && (
+                  <div className="reviews-list">
+                    {reviewsState.reviews.map((review, index) => (
+                      <div className="review-item" key={review.id || index}>
+                        {/* Customer + actions */}
+                        <div className="review-top">
+                          <div className="review-customer">
+                            <div className="customer-avatar">
+                              <PersonOutlineOutlinedIcon />
+                            </div>
+                            <div className="customer-info">
+                              <Typography className="customer-name">
+                                {review.user.firstName +
+                                  " " +
+                                  review.user.lastName}
+                              </Typography>
+
+                              <Typography className="review-date">
+                                {review.createdAt.split("T")[0]}
+                              </Typography>
+                            </div>
+                          </div>
+
+                          {user?.id === review.user.id &&
+                            reviewsToDelete.every((id) => id !== review.id) && (
+                              <IconButton
+                                className="delete-review-button"
+                                onClick={() => handleDeleteReview(review.id)}
+                                aria-label="Delete review"
+                              >
+                                <DeleteOutlineOutlinedIcon />
+                              </IconButton>
+                            )}
+                          {reviewsToDelete.some((id) => id === review.id) && (
+                            <CircularProgress size={20} />
+                          )}
+                        </div>
+
+                        {/* Rating */}
+                        <div className="review-rating">
+                          <Rating
+                            value={review.rating}
+                            precision={1}
+                            size="small"
+                            readOnly
+                          />
+
+                          <Typography className="rating-text">
+                            {review.rating}/5
+                          </Typography>
+                        </div>
+
+                        {/* Comment */}
+                        <Typography className="review-comment">
+                          {review.comment}
+                        </Typography>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {reviewsState.hasMore && (
+                  <Button
+                    className="btn-view-more"
+                    onClick={handleViewMoreClick}
+                    disabled={reviewsState.loading}
+                  >
+                    {reviewsState.loading ? (
+                      <>
+                        loading <CircularProgress size={15} color="white" />
+                      </>
+                    ) : (
+                      <>
+                        view more <KeyboardArrowDownIcon />
+                      </>
+                    )}
+                  </Button>
+                )}
+              </section>
+            )}
+          </>
+        )}
+      </Container>
+    </div>
+  );
 }

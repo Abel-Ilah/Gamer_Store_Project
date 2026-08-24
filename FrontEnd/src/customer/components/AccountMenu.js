@@ -22,7 +22,7 @@ import { customerLogout } from "../../customer/features/auth/CustomerAuthSlice";
 export function AccountMenu() {
   const { customer } = useSelector((state) => state.customerAuth);
   const dispatch = useDispatch();
-
+  console.log("customer account : ", customer);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);

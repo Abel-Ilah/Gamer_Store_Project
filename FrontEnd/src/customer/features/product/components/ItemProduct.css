@@ -1,11 +1,9 @@
 .item-product {
-  margin-bottom: 10px;
-  box-shadow: 0px 0px 3px rgb(170, 167, 167);
-  border-bottom: 1px solid rgb(170, 167, 167);
-  border-right: 1px solid rgb(170, 167, 167);
-  border-radius: 0px;
-  /* background-color: rgb(250, 250, 250); */
-  padding: 5px;
+  margin-bottom: var(--space-2);
+  padding: var(--space-1);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-2);
+  background-color: white;
 }
 .item-product .image {
   aspect-ratio: 4/3;
@@ -61,19 +59,14 @@
 
 .item-product .btns-wraper .add {
   color: var(--main-color);
-}
-.item-product .btns-wraper .add:hover {
-  background-color: var(--main-color);
-  color: white;
+  background: none;
 }
 
 .item-product .btns-wraper .delete {
   color: red;
+  background: none;
 }
-.item-product .btns-wraper .delete:hover {
-  background-color: red;
-  color: white;
-}
+
 @media (max-width: 600px) {
   .item-product {
     padding: 10px;

@@ -4,6 +4,7 @@
   background-color: var(--gray-50);
   border-radius: 10px;
   padding-top: 10px;
+  min-height: 300px;
   height: 100%;
   display: flex;
   flex-flow: column nowrap;

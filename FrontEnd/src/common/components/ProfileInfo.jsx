@@ -12,7 +12,6 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import UpdateIcon from "@mui/icons-material/Update";
 import {
-  deleteAccount,
   updateCustomerPersonalInfoLocally,
   updateSavedLoginInfoLocallyForCustomer,
 } from "../../customer/features/auth/CustomerAuthSlice";
@@ -25,8 +24,9 @@ import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { LinearProgress } from "@mui/material";
 import {
-  changeCustomerPassword,
-  updateCustomerPersonalInfo,
+  changeMyPassword,
+  deleteMyAccount,
+  updateMyInfo,
 } from "../../customer/features/customer/slices/customerSlice";
 import { SendEmailVerificationCode } from "../../customer/features/security/slices/securitySlice";
 
@@ -38,7 +38,7 @@ export function ProfileInfo({ user, userRole = "customer" }) {
   function handleDeleteAccount() {
     if (!user || userRole !== "customer") return;
     setDeleteInProgress(true);
-    dispatch(deleteAccount(user.id))
+    dispatch(deleteMyAccount(user.id))
       .unwrap()
       .then(() => {
         dispatch(
@@ -136,7 +136,7 @@ export function ProfileInfo({ user, userRole = "customer" }) {
 
     setUpdatePInfoInProgress(true);
 
-    dispatch(updateCustomerPersonalInfo({ ...formData, id: user.id }))
+    dispatch(updateMyInfo({ ...formData, id: user.id }))
       .unwrap()
       .then(() => {
         dispatch(updateCustomerPersonalInfoLocally(formData));
@@ -238,7 +238,7 @@ export function ProfileInfo({ user, userRole = "customer" }) {
     setChangePasswordInProgress(true);
 
     dispatch(
-      changeCustomerPassword({
+      changeMyPassword({
         userId: user.id,
         currentPassword: passwordInputs.currentPassword,
         newPassword: passwordInputs.newPassword,

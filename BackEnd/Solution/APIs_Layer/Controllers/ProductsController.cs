@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Services.services;
 using DataSource.DTOs;
 using DataSource.DTOs.admin;
+using APIs.DTOs;
+using DataSource.exceptions;
 namespace APIs.Controllers
 {
     [Route("api/products")]
@@ -257,7 +259,191 @@ namespace APIs.Controllers
 
 
 
-        // admin panel : 
+        // admin : 
+
+        [HttpPost("add")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<int>> AddNewProductAsync([FromForm] AddProductRequestDTO request)
+        {
+            if (request == null) return BadRequest("product is null");
+            if (string.IsNullOrEmpty(request.Name)) return BadRequest("product name required");
+            if (string.IsNullOrEmpty(request.Description)) return BadRequest("product description required");
+            if (request.Quantity < 0) return BadRequest("product quantity not valid");
+            if (request.Price <= 0) return BadRequest("product price not valid");
+            if (request.CategoryId <= 0) return BadRequest("categoryID not valid");
+
+            if (request.Images == null || request.Images.Count == 0) return BadRequest("Product needs at least one image");
+
+            if (request.Details != null)
+            {
+                    request.Details = request.Details
+                    .Where(item=>!string.IsNullOrWhiteSpace(item.Name) 
+                     && !string.IsNullOrWhiteSpace(item.Value))
+                    .ToList();
+            }
+
+            var images = new List<ImageUploadDTO>();
+
+            try
+            {
+                foreach (var imageFile in request.Images)
+                {  
+                    if(imageFile.Image != null)
+                    {
+                        var stream = imageFile.Image.OpenReadStream();
+                        images.Add(new ImageUploadDTO { Stream = stream, FileName = imageFile.Image.FileName, IsMain = imageFile.IsMain });
+                    }
+                }
+
+                var productDTO = new AddProductDTO_Admin
+                {
+                    Name = request.Name,
+                    Price = request.Price,
+                    CategoryId = request.CategoryId,
+                    Description = request.Description,
+                    Quantity = request.Quantity,
+                    Details = request.Details,
+                    Images = images
+                };
+
+                int productID = await _ProductService.AddNewProductAsync(productDTO);
+                return productID <= 0 ? StatusCode(500, "Product was not added") : Ok(productID);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            finally
+            {
+                // dispose stream after service has finished using them
+                foreach (var image in images)
+                {   
+                    if(image.Stream != null)
+                    await image.Stream.DisposeAsync();
+                }
+            }
+        }
+
+        [HttpPut("update")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<int>> UpdateProductAsync([FromForm] UpdateProductRequestDTO updatedProduct)
+        {
+            if (updatedProduct == null) return BadRequest("product is null");
+            if (updatedProduct.Id < 0) return BadRequest("productID not valid");
+            if (string.IsNullOrEmpty(updatedProduct.Name)) return BadRequest("product name required");
+            if (string.IsNullOrEmpty(updatedProduct.Description)) return BadRequest("product description required");
+            if (updatedProduct.Quantity < 0) return BadRequest("product quantity not valid");
+            if (updatedProduct.Price <= 0) return BadRequest("product price not valid");
+            if (updatedProduct.CategoryId <= 0) return BadRequest("categoryID not valid");
+
+            if (updatedProduct.Images == null || updatedProduct.Images.Count == 0) return BadRequest("Product needs at least one image");
+
+            if (updatedProduct.Details != null)
+            {
+                updatedProduct.Details = updatedProduct.Details
+                .Where(item => !string.IsNullOrWhiteSpace(item.Name)
+                 && !string.IsNullOrWhiteSpace(item.Value))
+                .ToList();
+            }
+
+            var images = new List<ImageUploadDTO>();
+
+            try
+            {
+                foreach (var imageFile in updatedProduct.Images)
+                {   
+                    if(imageFile != null) 
+                    { 
+                      images.Add(new ImageUploadDTO 
+                      {
+                          Id =imageFile.Id,
+                          Stream = imageFile.Image?.OpenReadStream(),
+                          FileName = imageFile.Image?.FileName,
+                          IsMain = imageFile.IsMain 
+                      });
+                    }
+                }
+
+                var productDTO = new UpdateProductDTO_Admin
+                {   Id = updatedProduct.Id,
+                    Name = updatedProduct.Name,
+                    Price = updatedProduct.Price,
+                    CategoryId = updatedProduct.CategoryId,
+                    Description = updatedProduct.Description,
+                    Quantity = updatedProduct.Quantity,
+                    Details = updatedProduct.Details,
+                    Images = images
+                };
+
+
+                bool sucess = await _ProductService.UpdateProductAsync(productDTO);
+                return sucess ? Ok("product has been updated.") : StatusCode(500, "something went wrong!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            finally
+            {
+                //// dispose stream after service has finished using them
+                //foreach (var image in images)
+                //{   if(image.Stream != null)
+                //    await image.Stream.DisposeAsync();
+                //}
+            }
+        }
+
+        [HttpDelete("delete/{productId}")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<int>> DeleteProductAsync(int productId)
+        {
+            if (productId <= 0) return BadRequest("not valid producID");
+
+            try
+            {
+                bool isDeleted = await _ProductService.DeleteProductAsync(productId);
+                return isDeleted ? Ok("product has been deleted successfullly."):StatusCode(500, "something went wrong!");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("restore/{productId}")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<int>> RestoreProductAsync(int productId)
+        {
+            if (productId <= 0) return BadRequest("not valid producID");
+
+            try
+            {
+                bool isRestored = await _ProductService.RestoreProductAsync(productId);
+                return isRestored ? Ok("product has been restored successfullly.") : StatusCode(500, "something went wrong!");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "internal server error!");
+            }
+        }
 
         [HttpGet("filter")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -286,5 +472,49 @@ namespace APIs.Controllers
             }
 
         }
+
+
+        [HttpGet("find/{productId}")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task <ActionResult<ProductBasicInfoDTO>>FindProductAsync(int productId)
+        {
+            if (productId < 0) return BadRequest("productID is not valid");
+
+            try
+            {
+                var productDTO = await _ProductService.FindProductAsync(productId);
+                return productDTO == null ? NotFound("product not found!") : Ok(productDTO);
+
+            }catch(Exception ex)
+            {
+                return StatusCode(500,ex.Message);
+            }
+        }
+
+
+        [HttpGet("product/{productId}")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ProductDetailsDTO_Admin>> GetProductDetailsAsync(int productId)
+        {
+            if (productId < 0) return BadRequest("productID is not valid");
+
+            try
+            {
+                var productDTO = await _ProductService.GetProductDetailsAsync(productId);
+                return productDTO == null ? NotFound("product not found!") : Ok(productDTO);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }

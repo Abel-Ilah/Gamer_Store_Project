@@ -29,6 +29,7 @@ import {
 // itemType = "wihslist" or "comparelist"; important to handle delete click
 export function ItemProduct({ item, itemType = "wishlist" }) {
   const { customer } = useSelector((state) => state.customerAuth);
+
   const { cart } = useSelector((state) => state.cart);
 
   const [addStatus, setAddStatus] = useState({
@@ -41,15 +42,13 @@ export function ItemProduct({ item, itemType = "wishlist" }) {
     error: null,
     success: false,
   });
-  const [addBtnDisabled, setAddBtnDisabled] = useState(false);
-  const [deleteBtnDisabled, setDeleteBtnDisabled] = useState(false);
+
   const dispatch = useDispatch();
 
   const isItemInCart = useMemo(() => {
     if (!cart || cart.length === 0) return false;
     return cart.some((i) => i.product.id === item.product.id);
   }, [cart, item.product]);
-
   function calculatePrice(price, discountValue = 0) {
     if (typeof price !== "number") return 0;
     const newPrice =
@@ -92,7 +91,6 @@ export function ItemProduct({ item, itemType = "wishlist" }) {
               severity: SEVERITY_SUCCESS,
             }),
           );
-          setAddBtnDisabled(true);
         })
         .catch((err) => {
           setAddStatus({

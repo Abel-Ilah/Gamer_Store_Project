@@ -22,6 +22,7 @@ namespace Services.services
 
         public async Task SendAsync(string toEmail, string subject, string body)
         {
+            
             using var client = new SmtpClient(_settings.SmtpServer, _settings.SmtpPort)
             {
                 Credentials = new NetworkCredential(_settings.SenderEmail, _settings.SenderPassword),
@@ -33,11 +34,11 @@ namespace Services.services
                 From = new MailAddress(_settings.SenderEmail, _settings.SenderName),
                 Subject = subject,
                 Body = body,
-                IsBodyHtml = true
+                IsBodyHtml = true,
             };
 
             mailMessage.To.Add(toEmail);
-
+         
             await client.SendMailAsync(mailMessage);
         }
 

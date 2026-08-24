@@ -11,6 +11,98 @@ export const GET_TOP_RATED_PRODUCTS = "GET_TOP_RATED_PRODUCTS";
 
 const controller = new AbortController();
 
+// add product :
+export const addNewProduct = createAsyncThunk(
+  "products/add",
+  async (product, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", product.name);
+      formData.append("price", product.price);
+      formData.append("quantity", product.quantity);
+      formData.append("categoryId", product.categoryId);
+      formData.append("description", product.description);
+      product.details.forEach((detail, index) => {
+        formData.append(`details[${index}].name`, detail.name);
+        formData.append(`details[${index}].value`, detail.value);
+      });
+      // If you have an image
+      if (product.images && product.images.length > 0) {
+        product.images.forEach((img, index) => {
+          if (img.image !== null) {
+            formData.append(`images[${index}].image`, img.image);
+          }
+          formData.append(`images[${index}].isMain`, img.isMain);
+        });
+      }
+      const response = await axios.post(
+        "http://localhost:5268/api/products/add",
+        formData,
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  },
+);
+
+// update product :
+export const updateProduct = createAsyncThunk(
+  "products/update",
+  async (product, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("id", product.id);
+      formData.append("name", product.name);
+      formData.append("price", product.price);
+      formData.append("quantity", product.quantity);
+      formData.append("categoryId", product.categoryId);
+      formData.append("description", product.description);
+      product.details.forEach((detail, index) => {
+        formData.append(`details[${index}].name`, detail.name);
+        formData.append(`details[${index}].value`, detail.value);
+      });
+      // If you have an image
+      if (product.images && product.images.length > 0) {
+        product.images.forEach((img, index) => {
+          if (img.id !== null) {
+            formData.append(`images[${index}].id`, img.id);
+          }
+          if (img.image !== null) {
+            formData.append(`images[${index}].image`, img.image);
+          }
+          formData.append(`images[${index}].isMain`, img.isMain);
+        });
+      }
+      const response = await axios.put(
+        "http://localhost:5268/api/products/update",
+        formData,
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  },
+);
+
+//get Product Details
+export const getProductDetails = createAsyncThunk(
+  "products/GetById",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5268/api/products/${productId}`,
+        {
+          signal: controller.signal,
+        },
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  },
+);
+
 // get products with filter :
 
 export const getFilteredProducts = createAsyncThunk(

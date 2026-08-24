@@ -1,4 +1,5 @@
 import "../../../styles/Shared.css";
+import "./Comparelist.css";
 import { ItemProduct } from "../../product/components/ItemProduct";
 import { LoadingPage } from "../../../components/LoadingPage";
 
@@ -12,7 +13,7 @@ export function Comparelist() {
   const { compare, loading, error } = useSelector((state) => state.compare);
 
   return (
-    <div className="comparelist shared">
+    <div className="compare-page shared">
       <Container maxWidth="xl">
         <div className="head">
           <LoopIcon className="icon" />

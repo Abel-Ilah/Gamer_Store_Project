@@ -21,8 +21,8 @@ namespace Services.services
         {
 
             var subject = "Reset Your Password";
-            var path = data.UserType.ToLower() == "admin" ? "/admin" : "";
-            var resetLink = $"http://localhost:3000{path}/account/password/reset/{data.Payload}";
+            
+            var resetLink = $"http://localhost:3000/account/password/reset/{data.Payload}";
             var body = $@"
         <div style=""font-family: Arial, sans-serif; background-color: #f9f9f9; 
                     padding: 20px; border-radius: 10px; max-width: 500px; 

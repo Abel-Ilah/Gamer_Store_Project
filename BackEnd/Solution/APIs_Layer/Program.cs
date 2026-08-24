@@ -12,11 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<AdminRepository>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<CartItemRepository>();
 builder.Services.AddScoped<CategoriesDiscountsRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<CompareRepository>();
+builder.Services.AddScoped<CustomerRepository>();
 builder.Services.AddScoped<DiscountRepository>();
 builder.Services.AddScoped<EmailVerificationRepository>();
 builder.Services.AddScoped<OrderItemRepository>();
@@ -25,7 +27,6 @@ builder.Services.AddScoped<ProductImageRepository>();
 builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<ProductsDiscountsRepository>();
 builder.Services.AddScoped<UserPermissionsRepository>();
-builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<ReviewRepository>();
 builder.Services.AddScoped<ResetPasswordRepository>();
 builder.Services.AddScoped<WishlistRepository>();
@@ -56,9 +57,15 @@ builder.Services.AddKeyedScoped<IEmailListener, EmailVerificationSender>("verify
 builder.Services.AddKeyedScoped<IEmailNotifier, ResetPasswordNotifier>("reset-password-notifier");
 builder.Services.AddKeyedScoped<IEmailNotifier, EmailVerificationNotifier>("verify-email-notifier");
 
+//cloudinary service :
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+
 builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("EmailSettings"));
 
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("Cloudinary"));
 
 
 // Add CORS service

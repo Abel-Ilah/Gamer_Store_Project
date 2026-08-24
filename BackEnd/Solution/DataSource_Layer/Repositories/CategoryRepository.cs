@@ -1,6 +1,7 @@
 ﻿using DataSource.Data;
 using DataSource.DTOs;
 using DataSource.Entities;
+using DataSource.exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataSource.Repositories
@@ -16,11 +17,12 @@ namespace DataSource.Repositories
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories.Where(c=> !c.IsDeleted).ToListAsync();
         }
+
         public async Task<IEnumerable<Category>> GetFeaturedCategoriesAsync()
         {
-            return await _context.Categories.Where(c=>c.IsFeatured).ToListAsync();
+            return await _context.Categories.Where(c=>c.IsFeatured && !c.IsDeleted).ToListAsync();
         }
 
         public async Task<Category?> GetByIdAsync(int id)
@@ -28,25 +30,33 @@ namespace DataSource.Repositories
             return await _context.Categories.FindAsync(id);
         }
 
-        public async Task AddAsync(Category category)
+        public async Task<int> AddAsync(Category category)
         {
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
+            return category.Id;
         }
 
-        public async Task UpdateAsync(Category category)
+        public async Task<bool> UpdateAsync(Category category)
         {
-            _context.Categories.Update(category);
+            var c = await _context.Categories.FindAsync(category.Id);
+            if (c == null) throw new NotFoundException("category not found");
+            c.Name = category.Name;
+            c.IsFeatured = category.IsFeatured;
+            c.ImagePath = category.ImagePath;
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task DeleteAsync(Category category)
+        public async Task<bool> DeleteAsync(int categoryId)
         {
-            _context.Categories.Remove(category);
+            var category = await _context.Categories.FindAsync(categoryId);
+            if (category == null) throw new NotFoundException("category not found");
+            category.IsDeleted = true;
             await _context.SaveChangesAsync();
+            return true;
         }
 
-       
     }
 
 }

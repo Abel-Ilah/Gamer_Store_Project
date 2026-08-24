@@ -8,6 +8,6 @@ namespace DataSource.DTOs
 {
     public class ReadReviewDTO:ReviewDTO
     {
-        public ShortUserDTO User { get; set; } = null!;
+        public CustomerShortDTO User { get; set; } = null!;
     }
 }

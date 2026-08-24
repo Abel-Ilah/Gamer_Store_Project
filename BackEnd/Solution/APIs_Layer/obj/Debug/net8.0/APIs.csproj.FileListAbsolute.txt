@@ -186,3 +186,5 @@ C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\bin\Debug\net8.0\CloudinaryDotNet.dll
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\APIs_Layer\bin\Debug\net8.0\Newtonsoft.Json.dll

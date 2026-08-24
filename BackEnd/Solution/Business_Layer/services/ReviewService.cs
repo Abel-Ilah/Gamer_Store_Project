@@ -41,15 +41,16 @@ namespace Services.services
             return await _reviewRepository.GetByIdAsync(id);
         }
 
-        public async Task<List<Review>> GetReviewsByProductIdAsync(int productId)
+        public async Task<List<Review>> GetReviewsByProductIdAsync(int productId, int pageNumber = 1, int pageSize = 10)
         {
-            return await _reviewRepository.GetReviewsByProductIdAsync(productId);
+            return await _reviewRepository.GetReviewsByProductIdAsync(productId,pageNumber,pageSize);
         }
 
         public async Task<List<ReviewDTO_Admin>> GetRecentReviewsAsync(int pageNumber, int pageSize)
         {
             return await _reviewRepository.GetRecentReviewsAsync(pageNumber, pageSize);
         }
+
         public async Task<List<ReadReviewDTO2>> GetTopReviews(int pageSize)
         {
             return await _reviewRepository.GetTopReviews(pageSize);

@@ -26,6 +26,6 @@ public partial class Order
 
     public virtual OrderStatus? Status { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual Customer? User { get; set; }
 }
 

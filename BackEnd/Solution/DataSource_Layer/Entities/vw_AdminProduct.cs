@@ -10,6 +10,7 @@ namespace DataSource.Entities
     public class vw_AdminProduct:ProductViewBase
     {
         public int Sales { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }

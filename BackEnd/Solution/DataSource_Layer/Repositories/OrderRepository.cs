@@ -52,7 +52,7 @@ namespace DataSource.Repositories
                                                   PhoneNumber = o.PhoneNumber,
                                                   Email = o.Email,
                                                   Address = o.Address,
-                                                  status = o.Status.Name,
+                                                  status = o.Status!.Name,
                                                   OrderItems = o.OrderItems.Select(oi => new ReadOrderItemDTO
                                                   {
                                                       Id = oi.Id,

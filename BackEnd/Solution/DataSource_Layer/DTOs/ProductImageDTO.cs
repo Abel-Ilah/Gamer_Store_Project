@@ -8,6 +8,7 @@ namespace DataSource.DTOs
 {
     public class ProductImageDTO
     {
+        public int Id {get; set;}
         public string imageUrl { get; set; } = "";
         public bool isMain { get; set; }=false;
     }

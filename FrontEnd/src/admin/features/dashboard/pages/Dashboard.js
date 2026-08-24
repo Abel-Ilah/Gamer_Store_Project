@@ -10,7 +10,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import settings from "../../../../appsettings.json";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -19,6 +19,11 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { GetDashboardData } from "../slices/dashboardSlice";
 import { GetImage } from "../../../../common/js/helpers";
+import ErrorMessage from "../../../../common/components/ErrorMessage";
+import {
+  ProductType,
+  setProductType,
+} from "../../product/slices/productsFilterSlice";
 
 export function Dashboard() {
   const [dashboardData, setDashboardData] = useState({
@@ -26,8 +31,9 @@ export function Dashboard() {
     data: null,
     error: null,
   });
-  console.log("dashboardData", dashboardData);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setDashboardData({ loading: true, data: null, error: null });
@@ -41,6 +47,10 @@ export function Dashboard() {
       });
   }, [dispatch]);
 
+  function handleSeeAllTopProducts() {
+    dispatch(setProductType(ProductType.BestSeller));
+    navigate("/admin/products");
+  }
   return (
     <div className="dashboard">
       {/* handle loading  */}
@@ -100,7 +110,16 @@ export function Dashboard() {
                 className="top-products-table flex-grow-1"
                 style={{ overflowX: "auto" }}
               >
-                <h4 className="cards-title">Top Products</h4>
+                <div className="d-flex justify-content-between align-items-center gap-3 mb-3">
+                  <h4 className="cards-title mb-0">Top Products</h4>
+                  <Button
+                    variant="contained"
+                    id="button-see-all"
+                    onClick={handleSeeAllTopProducts}
+                  >
+                    See all
+                  </Button>
+                </div>
                 <TableContainer className="table-container">
                   <Table aria-label="table">
                     <TableHead>
@@ -335,11 +354,7 @@ export function Dashboard() {
         </main>
       )}
       {/* handle error */}
-      {dashboardData.error && (
-        <div className="loading-container">
-          <p className="error-message">{dashboardData.error}</p>
-        </div>
-      )}
+      {dashboardData.error && <ErrorMessage message={dashboardData.error} />}
     </div>
   );
 }

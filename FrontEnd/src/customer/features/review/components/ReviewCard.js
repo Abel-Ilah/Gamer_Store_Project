@@ -10,7 +10,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import EastIcon from "@mui/icons-material/East";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({

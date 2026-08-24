@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-export const GetImage = (url, imagewidth = 300) => {
+export const GetImage = (url, imagewidth = 350) => {
   const transform = `w_${imagewidth},c_fill,q_auto,f_auto`;
   return url.length > 0
     ? url.replace("/upload/", `/upload/${transform}/`)
@@ -16,4 +16,9 @@ export default function ScrollToTop() {
   }, [pathname]);
 
   return null;
+}
+// list of images [{imageUrl,isMain},....]
+export function GetMainImageURL(images) {
+  if (!images || images.length === 0) return "";
+  return images.find((image) => image.isMain)?.imageUrl || images[0].imageUrl;
 }

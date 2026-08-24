@@ -1,10 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createLoginThunk, CUSTOMER } from "./loginThunkFactory";
-import { createDeleteUserThunk } from "../SharedThunks/sharedThunks";
 
 export const loginAsCustomer = createLoginThunk("customerAuth", CUSTOMER);
-
-export const deleteAccount = createDeleteUserThunk("customerAuth");
 
 const initialState = {
   customer: null,
@@ -45,7 +42,7 @@ const customerAuthSlice = createSlice({
         if (savedLogin.autoLogin) {
           localStorage.setItem(
             "customer-login",
-            JSON.stringify({ ...savedLogin, autoLogin: false })
+            JSON.stringify({ ...savedLogin, autoLogin: false }),
           );
         }
       }
@@ -91,24 +88,6 @@ const customerAuthSlice = createSlice({
         state.isAuthenticated = false;
         state.isAuthReady = true;
       });
-    // Delete Customer Account (self deletion)
-    builder
-      .addCase(deleteAccount.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteAccount.fulfilled, (state) => {
-        state.loading = false;
-        state.error = null;
-        state.customer = null;
-        state.token = null;
-        state.isAuthenticated = false;
-        state.isAuthReady = true;
-      })
-      .addCase(deleteAccount.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
   },
 });
 
@@ -127,7 +106,7 @@ export const saveCustomerLoginInfo = (email, password) => {
       email,
       password,
       autoLogin: true,
-    })
+    }),
   );
 };
 
