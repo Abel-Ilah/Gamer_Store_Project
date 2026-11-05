@@ -30,9 +30,9 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import DeleteIcon from "@mui/icons-material/Delete";
+import RestoreIcon from "@mui/icons-material/Restore";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import RestoreIcon from "@mui/icons-material/Restore";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -131,8 +131,6 @@ export function Products() {
     if (categoryId === null) dispatch(setProductType(ProductType.All));
     else dispatch(setCategory(categoryId));
   }
-  console.log("filter : ", filter);
-  console.log("action : ", action);
 
   function handleClickFilter() {
     setOpenFilter(!openFilter);

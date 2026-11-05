@@ -13,6 +13,25 @@ export const getCategories = createAsyncThunk(
   },
 );
 
+export const status = {
+  deleted: true,
+  active: false,
+};
+
+export const getFilteredCategories = createAsyncThunk(
+  "category/getFilteredCategories",
+  async (isDeleted, thunkAPI) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5268/api/categories/status?isDeleted=${isDeleted}`,
+      );
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  },
+);
+
 export const addCategory = createAsyncThunk(
   "category/add",
   async (category, thunkAPI) => {
@@ -71,6 +90,20 @@ export const deleteCategory = createAsyncThunk(
   },
 );
 
+export const restoreCategory = createAsyncThunk(
+  "category/restore",
+  async (categoryId, thunkAPI) => {
+    try {
+      const res = await axios.put(
+        `http://localhost:5268/api/categories/restore?categoryId=${categoryId}`,
+      );
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  },
+);
+
 let initialState = {
   categories: [],
   loading: false,
@@ -84,8 +117,12 @@ const categorySlice = createSlice({
   reducers: {
     deleteLocalCategory: (state, action) => {
       const { categoryId } = action.payload;
-      console.log("category id is : ", categoryId);
       state.categories = state.categories.filter((c) => c.id !== categoryId);
+    },
+    addLocalCategory: (state, action) => {
+      state.categories = state.categories
+        ? [...state.categories, action.payload]
+        : [action.payload];
     },
   },
 
@@ -107,5 +144,5 @@ const categorySlice = createSlice({
     });
   },
 });
-export const { deleteLocalCategory } = categorySlice.actions;
+export const { addLocalCategory, deleteLocalCategory } = categorySlice.actions;
 export default categorySlice.reducer;

@@ -21,9 +21,9 @@ C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\n
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\DataSource.AssemblyInfoInputs.cache
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\DataSource.AssemblyInfo.cs
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\DataSource.csproj.CoreCompileInputs.cache
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\DataSource.sourcelink.json
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\DataSource.dll
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\refint\DataSource.dll
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\DataSource.pdb
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\DataSource.genruntimeconfig.cache
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\ref\DataSource.dll
-C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\DataSource_Layer\obj\Debug\net8.0\DataSource.sourcelink.json

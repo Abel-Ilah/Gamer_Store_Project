@@ -15,6 +15,7 @@ namespace DataSource.Classess
         public decimal DiscountValue { get; set; }
         public double Rating { get; set; }
         public string ImageUrl { get; set; } = "";
+        public bool IsDeleted { get; set; }
         public int CategoryId { get; set; }
 
     }

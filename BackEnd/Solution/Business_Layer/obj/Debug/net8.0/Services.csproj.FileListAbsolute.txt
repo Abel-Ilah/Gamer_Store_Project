@@ -23,9 +23,9 @@ C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\Services.AssemblyInfoInputs.cache
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\Services.AssemblyInfo.cs
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\Services.csproj.CoreCompileInputs.cache
+C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\Services.sourcelink.json
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\Services.csproj.Up2Date
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\Services.dll
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\refint\Services.dll
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\Services.pdb
 C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\ref\Services.dll
-C:\Users\abdel\Desktop\GamingStore\backEnd\Solution\Business_Layer\obj\Debug\net8.0\Services.sourcelink.json

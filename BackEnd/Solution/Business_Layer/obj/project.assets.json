@@ -5537,7 +5537,7 @@
       "projectName": "Services",
       "projectPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\Business_Layer\\Services.csproj",
       "packagesPath": "C:\\Users\\abdel\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\backEnd\\Solution\\Business_Layer\\obj\\",
+      "outputPath": "C:\\Users\\abdel\\Desktop\\GamingStore\\BackEnd\\Solution\\Business_Layer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -5601,7 +5601,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.316/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.317/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

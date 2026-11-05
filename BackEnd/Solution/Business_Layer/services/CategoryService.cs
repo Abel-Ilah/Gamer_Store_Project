@@ -28,10 +28,10 @@ namespace Services.services
             
         }
 
-        public async Task<List<CategoryDTO>> GetAllCategoriesAsync()
+        public async Task<List<CategoryDTO>> GetCategoriesAsync(bool isDeleted)
         {
-            var categories = await _categoryRepository.GetAllAsync();
-            return categories.Select(c => new CategoryDTO { Id = c.Id,imagePath =c.ImagePath,Name = c.Name,IsFeatured = c.IsFeatured}).ToList();
+            var categories = await _categoryRepository.GetCategoriesAsync(isDeleted);
+            return categories.Select(c => new CategoryDTO { Id = c.Id,imagePath =c.ImagePath,Name = c.Name,IsFeatured = c.IsFeatured,IsDeleted = c.IsDeleted}).ToList();
         }
 
         public async Task<IEnumerable<CategoryDTO>> GetFeaturedCategoriesAsync()
@@ -95,6 +95,10 @@ namespace Services.services
           return await _categoryRepository.DeleteAsync(id);
         }
 
+        public async Task<bool> RestoreAsync(int categoryId)
+        {
+            return await _categoryRepository.RestoreAsync(categoryId);
+        }
     }
 
   

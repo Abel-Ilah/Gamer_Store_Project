@@ -26,6 +26,8 @@ namespace DataSource.DTOs.admin
 
         public string Description { get; set; } = null !;
 
+        public bool IsDeleted { get; set; } = false;
+
         public double Rating { get; set; }
 
         public int TotalReviews { get; set; }

@@ -132,14 +132,54 @@ namespace APIs.Controllers
             }
         }
 
+        [HttpPut("restore")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<bool>> RestoreAsync(int categoryId)
+        {
+            if (categoryId <= 0) return BadRequest("categoryID not valid");
+
+            try
+            {
+                var isDeleted = await _CategoryService.RestoreAsync(categoryId);
+                return isDeleted ? Ok(isDeleted) : StatusCode(500, "something went wrong");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occurred.");
+            }
+        }
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CategoryDTO>>> GetAllCategories()
+        public async Task<ActionResult<List<CategoryDTO>>> GetAllCategoriesAsync()
         {
             try
             {
-                var Categories = await _CategoryService.GetAllCategoriesAsync();
+                var Categories = await _CategoryService.GetCategoriesAsync(false);
+                return Ok(Categories);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("status")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<CategoryDTO>>> GetFilteredCategoriesAsync(bool isDeleted)
+        {
+            try
+            {
+                var Categories = await _CategoryService.GetCategoriesAsync(isDeleted);
                 return Ok(Categories);
             }
             catch (Exception ex)

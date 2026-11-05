@@ -15,9 +15,9 @@ namespace DataSource.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync()
+        public async Task<IEnumerable<Category>> GetCategoriesAsync(bool isDeleted)
         {
-            return await _context.Categories.Where(c=> !c.IsDeleted).ToListAsync();
+            return await _context.Categories.Where(c=> c.IsDeleted == isDeleted).ToListAsync();
         }
 
         public async Task<IEnumerable<Category>> GetFeaturedCategoriesAsync()
@@ -50,9 +50,18 @@ namespace DataSource.Repositories
 
         public async Task<bool> DeleteAsync(int categoryId)
         {
-            var category = await _context.Categories.FindAsync(categoryId);
+            var category = await _context.Categories.Where(c=>c.Id == categoryId && !c.IsDeleted).SingleOrDefaultAsync();
             if (category == null) throw new NotFoundException("category not found");
             category.IsDeleted = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RestoreAsync(int categoryId)
+        {
+            var category = await _context.Categories.Where(c => c.Id == categoryId && c.IsDeleted).SingleOrDefaultAsync();
+            if (category == null) throw new NotFoundException("category not found");
+            category.IsDeleted = false;
             await _context.SaveChangesAsync();
             return true;
         }

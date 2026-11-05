@@ -10,11 +10,13 @@
 .dark .categories-page {
   background-color: var(--bg-card);
 }
-.categories-page > header {
+.categories-page > header,
+.categories-page .category-status-filter {
   border-bottom: 1px solid var(--gray-200);
   padding-bottom: var(--space-2);
 }
-.dark .categories-page > header {
+.dark .categories-page > header,
+.dark .categories-page .category-status-filter {
   border-color: var(--gray-700);
 }
 .categories-page > header .categories-section-title {
@@ -35,12 +37,25 @@
 .categories-page > header #add-category-btn:hover {
   background-color: var(--red-600);
 }
+.categories-page .styled-select {
+  min-width: 120px;
+}
 
 .categories-page .categories-table button {
   background: none;
 }
+.categories-page .categories-table .featured {
+  color: var(--green-600);
+}
+.categories-page .categories-table .not-featured {
+  color: var(--red-400);
+}
 .categories-page .categories-table .icon.delete {
   color: red;
+}
+.categories-page .categories-table .icon.restore {
+  color: var(--main-color);
+  font-size: 1.7rem;
 }
 .categories-page .categories-table .icon.edit {
   color: var(--main-color);

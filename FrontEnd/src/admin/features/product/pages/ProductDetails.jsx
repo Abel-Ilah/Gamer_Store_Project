@@ -15,10 +15,16 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RestoreIcon from "@mui/icons-material/Restore";
 import appsettings from "../../../../appsettings.json";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { getProductDetails } from "../APIs/ProductAPIs";
+import {
+  deleteProduct,
+  getProductDetails,
+  restoreProduct,
+} from "../APIs/ProductAPIs";
 import ErrorMessage from "../../../../common/components/ErrorMessage";
 import LoadingProgress from "../../../../common/components/LoadingProgress";
 import { GetImage } from "../../../../common/js/helpers";
@@ -32,6 +38,7 @@ import {
   SEVERITY_SUCCESS,
   showMessage,
 } from "../../../../customer/features/snackbar/SnackbarSlice";
+import CustomDialog from "../../../../common/components/CustomDialog";
 
 const ProductDetails = () => {
   const [productState, setProductState] = useState({
@@ -51,7 +58,11 @@ const ProductDetails = () => {
 
   const [pageNumber, setPageNumber] = useState(1);
 
-  const { productId } = useParams();
+  const [openActionDialog, setOpenActionDialog] = useState(false);
+
+  const [actionPending, setActionPending] = useState(false);
+
+  let { productId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -157,6 +168,77 @@ const ProductDetails = () => {
         }));
       });
   }
+  // handle delete/restore product :
+
+  function handleDeleteProduct() {
+    if (!productId) return;
+    setActionPending(true);
+    dispatch(deleteProduct(productId))
+      .unwrap()
+      .then(() => {
+        dispatch(
+          showMessage({
+            message: "the product has been deleted successfully.",
+            severity: SEVERITY_SUCCESS,
+          }),
+        );
+        setProductState((prev) => ({
+          ...prev,
+          product: { ...prev.product, isDeleted: true },
+        }));
+      })
+      .catch((err) => {
+        dispatch(
+          showMessage({
+            message: err,
+            severity: SEVERITY_ERROR,
+          }),
+        );
+      })
+      .finally(() => {
+        setActionPending(false);
+        setOpenActionDialog(false);
+      });
+  }
+  function handleRestoreProduct() {
+    if (!productId) return;
+    setActionPending(true);
+    dispatch(restoreProduct(productId))
+      .unwrap()
+      .then(() => {
+        dispatch(
+          showMessage({
+            message: "the product has been restored successfully.",
+            severity: SEVERITY_SUCCESS,
+          }),
+        );
+        setProductState((prev) => ({
+          ...prev,
+          product: { ...prev.product, isDeleted: false },
+        }));
+      })
+      .catch((err) => {
+        dispatch(
+          showMessage({
+            message: err,
+            severity: SEVERITY_ERROR,
+          }),
+        );
+      })
+      .finally(() => {
+        setActionPending(false);
+        setOpenActionDialog(false);
+      });
+  }
+  function handleConfirm() {
+    if (action === "delete") {
+      handleDeleteProduct();
+    } else if (action === "restore") {
+      handleRestoreProduct();
+    }
+  }
+  console.log("product : ", productState.product);
+  console.log("action : ", action);
   return (
     <div className="product-details-page">
       {productState.loading && <LoadingProgress />}
@@ -166,34 +248,51 @@ const ProductDetails = () => {
           {/* ================= HEADER ================= */}
           <div className="product-details-header">
             <div className="product-details-header-left">
-              <BackButton />
-              <div>
-                <Typography className="product-details-title">
-                  Product Details
-                </Typography>
-                <Typography className="product-details-subtitle">
-                  View product information and statistics
-                </Typography>
-              </div>
+              <Typography className="product-details-title">
+                Product Details
+              </Typography>
+              <Typography className="product-details-subtitle">
+                View product information and statistics
+              </Typography>
             </div>
-            <div className="product-details-actions">
-              <Button
-                className="product-edit-button"
-                variant="contained"
-                startIcon={<EditOutlinedIcon />}
-                onClick={() => navigate(`/admin/products/update/${productId}`)}
-              >
-                Edit Product
-              </Button>
-              <Button
-                className="product-delete-button"
-                variant="outlined"
-                startIcon={<DeleteOutlineOutlinedIcon />}
-                // onClick={onDelete}
-              >
-                Delete
-              </Button>
-            </div>
+
+            <fieldset
+              className="product-details-actions"
+              disabled={actionPending}
+            >
+              {action === "delete" && (
+                <>
+                  <Button
+                    className="product-edit-button"
+                    variant="contained"
+                    startIcon={<EditOutlinedIcon />}
+                    onClick={() =>
+                      navigate(`/admin/products/update/${productId}`)
+                    }
+                  >
+                    Edit Product
+                  </Button>
+                  <Button
+                    className="product-delete-button"
+                    variant="outlined"
+                    startIcon={<DeleteOutlineOutlinedIcon />}
+                    onClick={() => setOpenActionDialog(true)}
+                  >
+                    Delete
+                  </Button>
+                </>
+              )}
+              {action === "restore" && (
+                <Button
+                  className="product-restore-button"
+                  variant="outlined"
+                  startIcon={<RestoreIcon />}
+                  onClick={() => setOpenActionDialog(true)}
+                >
+                  Restore
+                </Button>
+              )}
+            </fieldset>
           </div>
           {/* ================= MAIN PRODUCT ================= */}
           <div className="product-main-card">
@@ -423,6 +522,22 @@ const ProductDetails = () => {
             {reviewsState.error && (
               <ErrorMessage message={reviewsState.error} />
             )}
+            {/* delete/restore product dialog */}
+
+            {(action === "delete" || action === "restore") && (
+              <CustomDialog
+                open={openActionDialog}
+                onClose={() => setOpenActionDialog(false)}
+                confirmText={action}
+                confirmStartIcon={
+                  action === "delete" ? <DeleteIcon /> : <RestoreIcon />
+                }
+                message={`are you sure you want to ${action} this product ?`}
+                onConfirm={() => handleConfirm()}
+                loading={actionPending}
+              />
+            )}
+            {/* ================ */}
           </section>
         </div>
       )}
